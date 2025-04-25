@@ -5,7 +5,7 @@ let container = document.getElementById('container')
 
 
 const homepage =()=>{
-	window.location.href="index.html";
+	window.location.href="index.php";
 }
 
 toggle = () => {

@@ -1,19 +1,9 @@
-<!-- filepath: c:\Users\mandy\jobportal-php-mysql\main\job-list.php -->
+<!-- filepath: c:\Users\mandy\jobportal-php-mysql\main\contact.php -->
 <?php
 session_start();
-require_once '../php/db.php';
-
-// Fetch jobs from the database
-$query = "SELECT designation, description, salary, company, location FROM `job-post`";
-$result = $conn->query($query);
 
 // Check if the user is logged in
 $username = $_SESSION['username'] ?? null;
-
-// Debugging: Check if the query failed
-if (!$result) {
-    die("Database query failed: " . $conn->error);
-}
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +11,7 @@ if (!$result) {
 
 <head>
     <meta charset="utf-8">
-    <title>Job List</title>
+    <title>Contact Us</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/img/favicon.ico" rel="icon">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
@@ -67,53 +57,35 @@ if (!$result) {
     <!-- Header Start -->
     <div class="container-xxl py-5 bg-dark page-header mb-5">
         <div class="container my-5 pt-5 pb-4">
-            <h1 class="display-3 text-white mb-3 animated slideInDown">Job List</h1>
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Contact Us</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb text-uppercase">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                    <li class="breadcrumb-item text-white active" aria-current="page">Job List</li>
+                    <li class="breadcrumb-item"><a href="/main/index.php">Home</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Contact</li>
                 </ol>
             </nav>
         </div>
     </div>
     <!-- Header End -->
 
-    <!-- Jobs Start -->
+    <!-- Contact Section with Google Maps -->
     <div class="container-xxl py-5">
         <div class="container">
-            <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Job Listing</h1>
-            <div class="row">
-                <?php if ($result->num_rows > 0): ?>
-                <?php while ($row = $result->fetch_assoc()): ?>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="job-item p-4 border rounded">
-                        <h5 class="mb-3">
-                            <?= htmlspecialchars($row['designation']) ?>
-                        </h5>
-                        <p class="mb-2">
-                            <?= htmlspecialchars($row['description']) ?>
-                        </p>
-                        <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-2"></i>
-                            <?= htmlspecialchars($row['location']) ?>
-                        </p>
-                        <p class="mb-2"><i class="far fa-money-bill-alt text-primary me-2"></i>$
-                            <?= htmlspecialchars($row['salary']) ?>
-                        </p>
-                        <p class="mb-2"><i class="fa fa-building text-primary me-2"></i>
-                            <?= htmlspecialchars($row['company']) ?>
-                        </p>
-                        <a href="/main/job-detail.html" class="btn btn-primary">Apply Now</a>
-                    </div>
+            <div class="row g-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="mb-4">Get In Touch</h1>
+                    <p class="mb-4">Feel free to reach out to us for any inquiries or support. We are here to help you find the perfect job or hire the best talent.</p>
+                    <p><i class="fa fa-map-marker-alt text-primary me-3"></i>123 Street, New York, USA</p>
+                    <p><i class="fa fa-phone-alt text-primary me-3"></i>+012 345 67890</p>
+                    <p><i class="fa fa-envelope text-primary me-3"></i>info@example.com</p>
                 </div>
-                <?php endwhile; ?>
-                <?php else: ?>
-                <p class="text-center">No jobs available at the moment.</p>
-                <?php endif; ?>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <iframe class="w-100 rounded" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.835434509374!2d-122.4194154846818!3d37.77492977975971!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858064df9f8e3b%3A0x4c2c8e9e9e9e9e9e!2sSan%20Francisco%2C%20CA%2C%20USA!5e0!3m2!1sen!2sin!4v1616161616161!5m2!1sen!2sin" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
             </div>
         </div>
     </div>
-    <!-- Jobs End -->
+    <!-- Contact Section End -->
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">

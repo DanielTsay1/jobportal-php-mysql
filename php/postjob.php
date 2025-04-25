@@ -8,11 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Retrieve and sanitize form data
 $designation = trim($_POST['designation'] ?? '');
 $description = trim($_POST['description'] ?? '');
+$company = trim($_POST['company'] ?? '');
+$location = trim($_POST['location'] ?? '');
 $salary = $_POST['salary'] ?? '';
 $compid = $_POST['compid'] ?? '';
 
 // Validate required fields
-if (empty($designation) || empty($description) || empty($salary) || empty($compid)) {
+if (empty($designation) || empty($description) || empty($company) || empty($location) || empty($salary) || empty($compid)) {
     header('Location: ../main/recruiter-jobpost.html?error=Missing+required+fields');
     exit;
 }
@@ -45,13 +47,13 @@ if ($compidExists === 0) {
 }
 
 // Insert the job post
-$insertQuery = $conn->prepare("INSERT INTO `job-post` (designation, description, salary, compid) VALUES (?, ?, ?, ?)");
+$insertQuery = $conn->prepare("INSERT INTO `job-post` (designation, description, company, location, salary, compid) VALUES (?, ?, ?, ?, ?, ?)");
 if (!$insertQuery) {
     header('Location: ../main/recruiter-jobpost.html?error=Server+error');
     exit;
 }
 
-$insertQuery->bind_param('ssdi', $designation, $description, $salary, $compid);
+$insertQuery->bind_param('ssssdi', $designation, $description, $company, $location, $salary, $compid);
 
 if ($insertQuery->execute()) {
     header('Location: ../main/recruiter-jobpost.html?success=Job+post+successfully+added');

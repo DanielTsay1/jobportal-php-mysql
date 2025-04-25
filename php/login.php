@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Start output buffering
 session_start();
 require_once 'db.php';
 
@@ -56,6 +57,10 @@ if (!password_verify($password, $hash)) {
 // Success: Set session and redirect
 $_SESSION['username'] = $username;
 $_SESSION['user_type'] = $userType;
+
+// Debugging: Log redirection
+error_log("User type: $userType");
+error_log("Redirecting to: " . ($userType === 'A' ? '../recruiter.php' : '../main/job-list.php'));
 
 // Redirect based on user type
 if ($userType === 'A') {

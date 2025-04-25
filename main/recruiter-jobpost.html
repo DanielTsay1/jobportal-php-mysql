@@ -50,22 +50,30 @@
             <div class="updation">
                 <form method="POST" action="../php/postjob.php" class="p-4 border rounded bg-light" id="jobForm">
                     <div class="mb-3">
-                        <label for="designation" class="form-label">Job Title:</label>
-                        <input type="text" id="designation" name="designation" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description:</label>
-                        <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="salary" class="form-label">Salary:</label>
-                        <input type="number" id="salary" name="salary" class="form-control" step="0.01" required>
+                        <label for="company" class="form-label">Company Name:</label>
+                        <input type="text" id="company" name="company" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="compid" class="form-label">Company ID:</label>
                         <input type="number" id="compid" name="compid" class="form-control" required>
                         <div class="invalid-feedback">Company ID does not exist. Please register the company first.
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="designation" class="form-label">Job Title:</label>
+                        <input type="text" id="designation" name="designation" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="salary" class="form-label">Salary:</label>
+                        <input type="number" id="salary" name="salary" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location:</label>
+                        <input type="text" id="location" name="location" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Submit</button>
                 </form>
