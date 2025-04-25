@@ -51,7 +51,7 @@ if ($compidExists === 0) {
 }
 
 // Insert the job post
-$insertQuery = $conn->prepare("INSERT INTO `job-post` (title, description, salary, compid) VALUES (?, ?, ?, ?)");
+$insertQuery = $conn->prepare("INSERT INTO `job-post` (job_title, job_description, salary, compid) VALUES (?, ?, ?, ?)");
 if (!$insertQuery) {
     header('Location: ../main/recruiter-jobpost.html?error=Server+error');
     exit;
