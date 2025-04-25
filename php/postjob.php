@@ -16,16 +16,19 @@ echo "Received data: Title = $title, Description = $description, Salary = $salar
 
 // Validate required fields
 if (empty($title) || empty($description) || empty($salary) || empty($compid)) {
-    die("Error: Missing required fields. Please fill out all fields.");
+    header('Location: ../main/recruiter-jobpost.html?error=Missing+required+fields');
+    exit;
 }
 
 // Validate salary and compid
 if (!is_numeric($salary)) {
-    die("Error: Salary must be a numeric value.");
+    header('Location: ../main/recruiter-jobpost.html?error=Salary+must+be+numeric');
+    exit;
 }
 
 if (!ctype_digit($compid)) {
-    die("Error: CompID must be an integer.");
+    header('Location: ../main/recruiter-jobpost.html?error=CompID+must+be+an+integer');
+    exit;
 }
 
 // Convert compid to integer
@@ -43,21 +46,23 @@ $checkCompidQuery->fetch();
 $checkCompidQuery->close();
 
 if ($compidExists === 0) {
-    die("Error: The provided CompID does not exist in the company table.");
+    header('Location: ../main/recruiter-jobpost.html?error=Company+ID+not+registered');
+    exit;
 }
 
 // Insert the job post
 $insertQuery = $conn->prepare("INSERT INTO `job-post` (title, description, salary, compid) VALUES (?, ?, ?, ?)");
 if (!$insertQuery) {
-    die("Error: Prepare failed: " . $conn->error);
+    header('Location: ../main/recruiter-jobpost.html?error=Server+error');
+    exit;
 }
 
 $insertQuery->bind_param('ssdi', $title, $description, $salary, $compid);
 
 if ($insertQuery->execute()) {
-    echo "Job post successfully added.";
+    header('Location: ../main/recruiter-jobpost.html?success=Job+post+successfully+added');
 } else {
-    die("Error: " . $insertQuery->error);
+    header('Location: ../main/recruiter-jobpost.html?error=Failed+to+add+job+post');
 }
 
 $insertQuery->close();
