@@ -14,6 +14,6 @@ if (empty($_SESSION['username']) || ($_SESSION['user_type'] ?? '') !== 'U') {
 </head>
 <body>
   <h1>Welcome, <?= htmlspecialchars($_SESSION['username']) ?>!</h1>
-  <?php include 'main/job-list.html'; ?>
+  <?php include 'main/job-list.php'; ?>
 </body>
 </html>
