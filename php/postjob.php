@@ -6,16 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Retrieve and sanitize form data
-$title = trim($_POST['title'] ?? '');
+$designation = trim($_POST['designation'] ?? '');
 $description = trim($_POST['description'] ?? '');
 $salary = $_POST['salary'] ?? '';
 $compid = $_POST['compid'] ?? '';
 
-// Debug: Log the received data
-echo "Received data: Title = $title, Description = $description, Salary = $salary, CompID = $compid\n";
-
 // Validate required fields
-if (empty($title) || empty($description) || empty($salary) || empty($compid)) {
+if (empty($designation) || empty($description) || empty($salary) || empty($compid)) {
     header('Location: ../main/recruiter-jobpost.html?error=Missing+required+fields');
     exit;
 }
@@ -34,9 +31,6 @@ if (!ctype_digit($compid)) {
 // Convert compid to integer
 $compid = (int)$compid;
 
-// Debug: Log the validated data
-echo "Validated data: Title = $title, Description = $description, Salary = $salary, CompID = $compid\n";
-
 // Check if the compid exists in the company table
 $checkCompidQuery = $conn->prepare("SELECT COUNT(*) FROM company WHERE compid = ?");
 $checkCompidQuery->bind_param('i', $compid);
@@ -51,13 +45,13 @@ if ($compidExists === 0) {
 }
 
 // Insert the job post
-$insertQuery = $conn->prepare("INSERT INTO `job-post` (job_title, job_description, salary, compid) VALUES (?, ?, ?, ?)");
+$insertQuery = $conn->prepare("INSERT INTO `job-post` (designation, description, salary, compid) VALUES (?, ?, ?, ?)");
 if (!$insertQuery) {
     header('Location: ../main/recruiter-jobpost.html?error=Server+error');
     exit;
 }
 
-$insertQuery->bind_param('ssdi', $title, $description, $salary, $compid);
+$insertQuery->bind_param('ssdi', $designation, $description, $salary, $compid);
 
 if ($insertQuery->execute()) {
     header('Location: ../main/recruiter-jobpost.html?success=Job+post+successfully+added');
