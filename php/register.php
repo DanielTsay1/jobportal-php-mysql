@@ -7,14 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-// Collect & trim
+// collect & trim
 $username         = trim($_POST['username'] ?? '');
 $email            = trim($_POST['email']    ?? '');
-$password         = $_POST['password']       ?? '';
+$password         = $_POST['password']      ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
-$userType         = $_POST['user_type']      ?? '';
+$userType         = $_POST['user_type']     ?? '';  // 'A' or 'U'
 
-// Basic validation
+// basic validation
 if (!$username || !$email || !$password || !$confirm_password || !$userType) {
   header('Location: ../main/login.html?error=Missing+fields');
   exit;
@@ -28,10 +28,10 @@ if ($password !== $confirm_password) {
   exit;
 }
 
-// Hash the password
+// hash password
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
-// Decide table & its PK column
+// choose table & id column
 if ($userType === 'A') {
   $table    = 'recruiter';
   $idColumn = 'recid';
@@ -40,9 +40,8 @@ if ($userType === 'A') {
   $idColumn = 'userid';
 }
 
-// Check for existing username/email
-$sql = "SELECT `$idColumn` FROM `$table` WHERE `username` = ? OR `email` = ?";
-$stmt = $conn->prepare($sql);
+// check existing username/email
+$stmt = $conn->prepare("SELECT `$idColumn` FROM `$table` WHERE `username`=? OR `email`=?");
 $stmt->bind_param('ss', $username, $email);
 $stmt->execute();
 $stmt->store_result();
@@ -51,17 +50,16 @@ if ($stmt->num_rows > 0) {
   exit;
 }
 
-// Insert new user/recruiter
-$sql = "INSERT INTO `$table` (`username`,`password`,`email`) VALUES (?, ?, ?)";
-$stmt = $conn->prepare($sql);
+// insert new record
+$stmt = $conn->prepare("INSERT INTO `$table` (`username`,`password`,`email`) VALUES (?,?,?)");
 $stmt->bind_param('sss', $username, $hash, $email);
 if ($stmt->execute()) {
-  $_SESSION['username'] = $username;
-  $dest = ($userType === 'A') ? '../recruiter.php' : '../dashboard.php';
+  $_SESSION['username']  = $username;
+  $_SESSION['user_type'] = $userType;
+  $dest = $userType === 'A' ? '../recruiter.php' : '../dashboard.php';
   header("Location: $dest");
   exit;
 } else {
   header('Location: ../main/login.html?error=Registration+failed');
   exit;
 }
-?>
