@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/loginpage.css" />
+    <link rel="stylesheet" href="/css/loginpage.css" />
     <title>login/sign up</title>
     <link
       rel="stylesheet"
@@ -20,7 +20,7 @@
       <div class="row">
         <!-- SIGN UP -->
         <div class="col align-items-center flex-col sign-up">
-          <form action="php/register.php" method="post">
+          <form action="/php/register.php" method="post">
           <div class="form-wrapper align-items-center">
             <div class="form sign-up">
               <div class="input-group">
@@ -54,13 +54,13 @@
               </div>
               
               
-              <button>Sign up</button>
+              <button> <a href="index.html"  class="backbutton"> Sign up</a> </button>
             </form>
               <p>
                 <span> Already have an account? </span>
-                <b onclick="toggle()" class="pointer"> Sign in here </b>
+                <b onclick="toggle()" class="button"> Sign in here </b>
               </p>
-              <button onclick="homepage()"> Go to Home</button>
+              <button onclick="homepage()"> Go to Home </button>
             </div>
           </div>
           
@@ -68,7 +68,7 @@
         <!-- END SIGN UP -->
         <!-- SIGN IN -->
         <div class="col align-items-center flex-col sign-in">
-          <form action="php/login.php" method="post">
+          <form action="/php/login.php" method="post">
           <div class="form-wrapper align-items-center">
             <div class="form sign-in">
               <div class="input-group">
@@ -91,7 +91,7 @@
                   </div>
                 </div>
               </div>
-              <button >Sign in</button>
+                <button>Sign in</button>
             </form>
               <p>
                 <b> Forgot password? </b>
@@ -102,7 +102,9 @@
                 <span> Don't have an account? </span>
                 <b onclick="toggle()" class="pointer"> Sign up here </b>
               </p>
-              <button onclick="homepage()"> Go to Home</button>
+              <button>
+              <a href="recruiter-register.html"  class="pointer">Go to Home</a>
+            </button>
             </div>
           </div>
           <div class="form-wrapper"></div>
@@ -132,7 +134,8 @@
       <!-- END CONTENT SECTION -->
     </div>
 
-    <script src="js/login.js"></script>
+    <script src="/js/login.js"></script>
   </body>
 </html>
+
 

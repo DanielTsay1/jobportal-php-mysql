@@ -346,4 +346,8 @@ body {
         margin: .5rem;
         font-size: 2rem;
     }
+    .button {
+        text-decoration: none;
+        color: black;
+    }
 }
