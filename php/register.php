@@ -1,65 +1,47 @@
 <?php
-session_start();
-require_once 'db.php';
+include("db.php"); // Corrected include for db.php
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  header('Location: ../main/login.html');
-  exit;
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Sanitize the inputs
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $confirm_password = mysqli_real_escape_string($conn, $_POST['confirm_password']);
+    $user_type = mysqli_real_escape_string($conn, $_POST['user_type']);
+    
+    // Debugging the POST data
+    echo "[DEBUG] Username: $username, Email: $email, User Type: $user_type\n";
 
-// collect & trim
-$username         = trim($_POST['username'] ?? '');
-$email            = trim($_POST['email']    ?? '');
-$password         = $_POST['password']      ?? '';
-$confirm_password = $_POST['confirm_password'] ?? '';
-$userType         = $_POST['user_type']     ?? '';  // 'A' or 'U'
+    // Password hashing for storage
+    if ($password === $confirm_password) {
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Choose the table based on user type
+        $table = ($user_type == 'A') ? 'recruiter' : 'user';
 
-// basic validation
-if (!$username || !$email || !$password || !$confirm_password || !$userType) {
-  header('Location: ../main/login.html?error=Missing+fields');
-  exit;
-}
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-  header('Location: ../main/login.html?error=Invalid+email');
-  exit;
-}
-if ($password !== $confirm_password) {
-  header('Location: ../main/login.html?error=Passwords+do+not+match');
-  exit;
-}
+        // Debugging table choice
+        echo "[DEBUG] Using table: $table\n";
 
-// hash password
-$hash = password_hash($password, PASSWORD_DEFAULT);
-
-// choose table & id column
-if ($userType === 'A') {
-  $table    = 'recruiter';
-  $idColumn = 'recid';
-} else {
-  $table    = 'user';
-  $idColumn = 'userid';
+        // Prepare SQL query based on user type
+        $query = "INSERT INTO $table (username, email, password) VALUES (?, ?, ?)";
+        if ($stmt = $conn->prepare($query)) {
+            $stmt->bind_param("sss", $username, $email, $hashed_password);
+            
+            // Execute the query and check for success
+            if ($stmt->execute()) {
+                echo "[DEBUG] Registration successful\n";
+                header("Location: /main/login.html"); // Redirect to login page after success
+                exit();
+            } else {
+                echo "[DEBUG] Error executing query: " . $stmt->error . "\n";
+            }
+            $stmt->close();
+        } else {
+            echo "[DEBUG] Prepare statement failed: " . $conn->error . "\n";
+        }
+    } else {
+        echo "[DEBUG] Passwords do not match\n";
+    }
 }
+?>
 
-// check existing username/email
-$stmt = $conn->prepare("SELECT `$idColumn` FROM `$table` WHERE `username`=? OR `email`=?");
-$stmt->bind_param('ss', $username, $email);
-$stmt->execute();
-$stmt->store_result();
-if ($stmt->num_rows > 0) {
-  header('Location: ../main/login.html?error=User+or+email+exists');
-  exit;
-}
-
-// insert new record
-$stmt = $conn->prepare("INSERT INTO `$table` (`username`,`password`,`email`) VALUES (?,?,?)");
-$stmt->bind_param('sss', $username, $hash, $email);
-if ($stmt->execute()) {
-  $_SESSION['username']  = $username;
-  $_SESSION['user_type'] = $userType;
-  $dest = $userType === 'A' ? '../recruiter.php' : '../dashboard.php';
-  header("Location: $dest");
-  exit;
-} else {
-  header('Location: ../main/login.html?error=Registration+failed');
-  exit;
-}
