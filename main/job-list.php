@@ -3,9 +3,32 @@
 session_start();
 require_once '../php/db.php';
 
-// Fetch jobs from the database
-$query = "SELECT designation, description, salary, company, location FROM `job-post`";
-$result = $conn->query($query);
+// Fetch filter options from the query string
+$job_type = $_GET['job_type'] ?? 'All Types';
+$work_arrangement = $_GET['work_arrangement'] ?? 'All Arrangements';
+$min_pay = $_GET['min_pay'] ?? 0;
+$sort_by = $_GET['sort_by'] ?? 'Most Recent';
+
+// Build the query dynamically based on filters
+$query = "SELECT * FROM `job-post` WHERE salary >= ?";
+$params = [$min_pay];
+
+if ($job_type !== 'All Types') {
+    $query .= " AND designation LIKE ?";
+    $params[] = "%$job_type%";
+}
+
+if ($work_arrangement !== 'All Arrangements') {
+    $query .= " AND location LIKE ?";
+    $params[] = "%$work_arrangement%";
+}
+
+$query .= $sort_by === 'Most Recent' ? " ORDER BY jobid DESC" : " ORDER BY salary ASC";
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param(str_repeat('s', count($params)), ...$params);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Check if the user is logged in
 $username = $_SESSION['username'] ?? null;
@@ -36,32 +59,7 @@ if (!$result) {
 
 <body>
     <!-- Navbar Start -->
-    <!-- filepath: c:\Users\mandy\jobportal-php-mysql\main\index.php -->
-<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-    <a href="/main/index.php" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
-        <h1 class="m-0 text-primary">JobPortal</h1>
-    </a>
-    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="/main/index.php" class="nav-item nav-link active">Home</a>
-            <a href="/main/job-list.php" class="nav-item nav-link">Jobs</a>
-            <a href="/main/contact.php" class="nav-item nav-link">Contact</a>
-        </div>
-        <?php if ($username): ?>
-        <!-- Show username and Logout button if logged in -->
-        <div class="d-flex align-items-center">
-            <span class="navbar-text px-lg-3 d-none d-lg-block">Welcome, <?= htmlspecialchars($username) ?></span>
-            <a href="/php/login.php" class="btn btn-danger rounded-0 py-2 px-lg-4">Logout<i class="fa fa-sign-out-alt ms-2"></i></a>
-        </div>
-        <?php else: ?>
-        <!-- Show Login button if not logged in -->
-        <a href="/main/login.html" class="btn btn-primary rounded-0 py-2 px-lg-4 d-none d-lg-block">Login<i class="fa fa-arrow-right ms-2"></i></a>
-        <?php endif; ?>
-    </div>
-</nav>
+    <?php include 'header.php'; ?>
     <!-- Navbar End -->
 
     <!-- Header Start -->
@@ -79,6 +77,48 @@ if (!$result) {
     </div>
     <!-- Header End -->
 
+    <!-- Filter Section -->
+    <div class="container mb-5">
+        <form method="GET" class="filter-form">
+            <div class="row">
+                <div class="col-md-3">
+                    <select name="job_type" class="form-control">
+                        <option>All Types</option>
+                        <option>Internship</option>
+                        <option>Part-Time</option>
+                        <option>Full-Time</option>
+                        <option>Volunteer</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="work_arrangement" class="form-control">
+                        <option>All Arrangements</option>
+                        <option>Remote</option>
+                        <option>Hybrid</option>
+                        <option>In-Person</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="min_pay" class="form-control" placeholder="Min. Pay ($)" />
+                </div>
+                <div class="col-md-3">
+                    <select name="sort_by" class="form-control">
+                        <option>Most Recent</option>
+                        <option>Highest Pay</option>
+                        <option>Lowest Pay</option>
+                        <option>Most Applied</option>
+                        <option>A-Z</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Jobs Start -->
     <div class="container-xxl py-5">
         <div class="container">
@@ -86,24 +126,19 @@ if (!$result) {
             <div class="row">
                 <?php if ($result->num_rows > 0): ?>
                 <?php while ($row = $result->fetch_assoc()): ?>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="job-item p-4 border rounded">
-                        <h5 class="mb-3">
-                            <?= htmlspecialchars($row['designation']) ?>
-                        </h5>
-                        <p class="mb-2">
-                            <?= htmlspecialchars($row['description']) ?>
-                        </p>
-                        <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-2"></i>
-                            <?= htmlspecialchars($row['location']) ?>
-                        </p>
-                        <p class="mb-2"><i class="far fa-money-bill-alt text-primary me-2"></i>$
-                            <?= htmlspecialchars($row['salary']) ?>
-                        </p>
-                        <p class="mb-2"><i class="fa fa-building text-primary me-2"></i>
-                            <?= htmlspecialchars($row['company']) ?>
-                        </p>
-                        <a href="/main/job-detail.html" class="btn btn-primary">Apply Now</a>
+                <div class="col-lg-6 col-md-12 mb-4">
+                    <div class="job-item p-4 border rounded shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><?= htmlspecialchars($row['designation']) ?></h5>
+                            <span class="badge bg-primary"><?= htmlspecialchars($row['location']) ?></span>
+                        </div>
+                        <p class="mb-2"><?= htmlspecialchars($row['description']) ?></p>
+                        <div class="d-flex flex-wrap mb-3">
+                            <span class="badge bg-secondary me-2">Pay: $<?= htmlspecialchars($row['salary']) ?></span>
+                            <span class="badge bg-secondary me-2">Company: <?= htmlspecialchars($row['company']) ?></span>
+                            <span class="badge bg-secondary me-2"><?= htmlspecialchars($row['work_arrangement'] ?? 'N/A') ?></span>
+                        </div>
+                        <a href="/main/job-detail.php?jobid=<?= htmlspecialchars($row['jobid']) ?>" class="btn btn-primary">Apply Now</a>
                     </div>
                 </div>
                 <?php endwhile; ?>
@@ -116,40 +151,7 @@ if (!$result) {
     <!-- Jobs End -->
 
     <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-white mb-4">Company</h5>
-                    <a class="btn btn-link text-white-50" href="">About Us</a>
-                    <a class="btn btn-link text-white-50" href="">Contact Us</a>
-                    <a class="btn btn-link text-white-50" href="">Our Services</a>
-                    <a class="btn btn-link text-white-50" href="">Privacy Policy</a>
-                    <a class="btn btn-link text-white-50" href="">Terms & Condition</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-white mb-4">Quick Links</h5>
-                    <a class="btn btn-link text-white-50" href="">About Us</a>
-                    <a class="btn btn-link text-white-50" href="">Contact Us</a>
-                    <a class="btn btn-link text-white-50" href="">Our Services</a>
-                    <a class="btn btn-link text-white-50" href="">Privacy Policy</a>
-                    <a class="btn btn-link text-white-50" href="">Terms & Condition</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-white mb-4">Contact</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php include 'footer.php'; ?>
     <!-- Footer End -->
 
     <!-- Back to Top -->

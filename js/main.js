@@ -86,5 +86,5 @@ const login= ()=>{
 }
 
 const click = ()=>{
-    window.location.href="job-detail.php";
+    window.location.href="job-detail.html";
 }

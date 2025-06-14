@@ -9,7 +9,7 @@ $contact = $_POST["contact"];
 $sql = "INSERT INTO `applied`(`jobid`,`userid`, `name`, `email`, `contact`) VALUES ('4','4','$Name','$email','$contact')";
 if ($conn->query($sql) === TRUE) {
     $scipt = "<script>alert('Job Applied Successfully');
-    window.location.href='../job-detail.php';</script>";
+    window.location.href='../job-detail.html';</script>";
     echo $scipt;
     
 } else {
