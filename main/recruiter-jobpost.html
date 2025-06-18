@@ -65,6 +65,7 @@
             <div class="main-top">
                 <p>Explore the opportunites</p>
             </div>
+<<<<<<< Updated upstream
             </br>
             <h3 style="text-align: center;">Enter the details for the Job</h3>
                 <div class="updation">
@@ -103,10 +104,126 @@
                     <button class="btn btn-success">Post</button>
                    </form> 
                 </div>
+=======
+            <br />
+            <h3 class="text-center">Enter the details for the Job</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="updation">
+                        <form method="POST" action="../php/postjob.php" class="p-4 border rounded bg-light" id="jobForm">
+                            <div class="mb-3">
+                                <label for="company" class="form-label">Company Name:</label>
+                                <input type="text" id="company" name="company" class="form-control" required oninput="updatePreview()">
+                            </div>
+                            <div class="mb-3">
+                                <label for="companyLogo" class="form-label">Company Logo:</label>
+                                <div class="input-group">
+                                    <input type="file" id="companyLogo" name="companyLogo" class="form-control" accept="image/*" onchange="previewLogo(event)">
+                                    <button type="button" class="btn btn-outline-danger" onclick="removeLogo()" id="removeLogoBtn" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted">Recommended size: 200x200 pixels</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="compid" class="form-label">Company ID:</label>
+                                <input type="number" id="compid" name="compid" class="form-control" required>
+                                <div class="invalid-feedback">Company ID does not exist. Please register the company first.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="designation" class="form-label">Job Title:</label>
+                                <input type="text" id="designation" name="designation" class="form-control" required oninput="updatePreview()">
+                            </div>
+                            <div class="mb-3">
+                                <label for="salary" class="form-label">Salary:</label>
+                                <input type="number" id="salary" name="salary" class="form-control" step="0.01" required oninput="updatePreview()">
+                            </div>
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Location:</label>
+                                <input type="text" id="location" name="location" class="form-control" required oninput="updatePreview()">
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description:</label>
+                                <textarea id="description" name="description" class="form-control" rows="4" required oninput="updatePreview()"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="preview-section pt-5">
+                        <div class="bg-white p-4 border rounded shadow-sm">
+                            <div class="d-flex align-items-center mb-4">
+                                <img class="flex-shrink-0 img-fluid border rounded" id="preview-logo" src="/img/placeholder-logo.png" alt="Company Logo" style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="text-start ps-4">
+                                    <h3 class="mb-3" id="preview-title">Job Title</h3>
+                                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i><span id="preview-location">Location</span></span>
+                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                    <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>$<span id="preview-salary">0</span></span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h5 class="mb-3">Company</h5>
+                                <p id="preview-company">Company Name</p>
+                            </div>
+                            <div class="mb-4">
+                                <h5 class="mb-3">Job Description</h5>
+                                <p id="preview-description">Job description will appear here...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+>>>>>>> Stashed changes
         </section>
 
+<<<<<<< Updated upstream
 </div>
 
 
+=======
+    <script>
+        document.getElementById('jobForm').addEventListener('submit', function (e) {
+            const compid = document.getElementById('compid').value;
+            if (!compidExists(compid)) {
+                e.preventDefault();
+                document.getElementById('compid').classList.add('is-invalid');
+            }
+        });
+
+        function compidExists(compid) {
+            return compid !== '0';
+        }
+
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-logo').src = e.target.result;
+                    document.getElementById('removeLogoBtn').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeLogo() {
+            document.getElementById('companyLogo').value = '';
+            document.getElementById('preview-logo').src = '/img/placeholder-logo.png';
+            document.getElementById('removeLogoBtn').style.display = 'none';
+        }
+
+        function updatePreview() {
+            document.getElementById('preview-title').textContent = document.getElementById('designation').value || 'Job Title';
+            document.getElementById('preview-location').textContent = document.getElementById('location').value || 'Location';
+            document.getElementById('preview-salary').textContent = document.getElementById('salary').value || '0';
+            document.getElementById('preview-company').textContent = document.getElementById('company').value || 'Company Name';
+            document.getElementById('preview-description').textContent = document.getElementById('description').value || 'Job description will appear here...';
+        }
+
+        // Initial preview update
+        updatePreview();
+    </script>
+>>>>>>> Stashed changes
 </body>
 </html>

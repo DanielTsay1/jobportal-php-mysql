@@ -104,10 +104,129 @@
             <input type="text" class="form-control" id="location" name="location" placeholder="Bangalore,Pune etc">
           </div>
 
+<<<<<<< Updated upstream
           <button class="btn btn-success">Register</button>
         </form>
         </div>      
         </section>
     </div>
   </body>
+=======
+    <section class="main">
+      <div class="main-top">
+        <p>Explore the opportunities</p>
+      </div>
+      <br />
+      <h3 class="text-center">Enter Company Details</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="updation">
+            <form method="POST" action="../php/companyRegistration.php" class="p-4 border rounded bg-light" id="companyForm">
+              <div class="mb-3">
+                <label for="compid" class="form-label">Company ID:</label>
+                <input type="text" id="compid" name="compid" class="form-control" required oninput="updatePreview()">
+              </div>
+              <div class="mb-3">
+                <label for="compname" class="form-label">Company Name:</label>
+                <input type="text" id="compname" name="compname" class="form-control" required oninput="updatePreview()">
+              </div>
+              <div class="mb-3">
+                <label for="companyLogo" class="form-label">Company Logo:</label>
+                <div class="input-group">
+                  <input type="file" id="companyLogo" name="companyLogo" class="form-control" accept="image/*" onchange="previewLogo(event)">
+                  <button type="button" class="btn btn-outline-danger" onclick="removeLogo()" id="removeLogoBtn" style="display: none;">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <small class="text-muted">Recommended size: 200x200 pixels</small>
+              </div>
+              <div class="mb-3">
+                <label for="contact" class="form-label">Contact Number:</label>
+                <input type="text" id="contact" name="contact" class="form-control" required oninput="updatePreview()">
+              </div>
+              <div class="mb-3">
+                <label for="location" class="form-label">Location:</label>
+                <input type="text" id="location" name="location" class="form-control" required oninput="updatePreview()">
+              </div>
+              <div class="mb-3">
+                <label for="website" class="form-label">Website (Optional):</label>
+                <input type="url" id="website" name="website" class="form-control" oninput="updatePreview()">
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Company Description:</label>
+                <textarea id="description" name="description" class="form-control" rows="4" required oninput="updatePreview()"></textarea>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Register</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="preview-section pt-5">
+            <div class="bg-white p-4 border rounded shadow-sm">
+              <div class="text-center mb-4">
+                <img class="img-fluid border rounded mb-3" id="preview-logo" src="/img/placeholder-logo.png" alt="Company Logo" style="width: 120px; height: 120px; object-fit: cover;">
+                <h3 id="preview-name">Company Name</h3>
+                <p class="text-muted" id="preview-id">Company ID</p>
+              </div>
+              <div class="mb-4">
+                <h5 class="mb-3">Company Information</h5>
+                <div class="d-flex align-items-center mb-2">
+                  <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                  <span id="preview-location">Location</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <i class="fas fa-phone text-primary me-2"></i>
+                  <span id="preview-contact">Contact Number</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <i class="fas fa-globe text-primary me-2"></i>
+                  <a href="#" id="preview-website" class="text-decoration-none">Website</a>
+                </div>
+              </div>
+              <div class="mb-4">
+                <h5 class="mb-3">About Us</h5>
+                <p id="preview-description" class="text-muted">Company description will appear here...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function updatePreview() {
+      document.getElementById('preview-name').textContent = document.getElementById('compname').value || 'Company Name';
+      document.getElementById('preview-id').textContent = document.getElementById('compid').value || 'Company ID';
+      document.getElementById('preview-location').textContent = document.getElementById('location').value || 'Location';
+      document.getElementById('preview-contact').textContent = document.getElementById('contact').value || 'Contact Number';
+      document.getElementById('preview-website').textContent = document.getElementById('website').value || 'Website';
+      document.getElementById('preview-website').href = document.getElementById('website').value || '#';
+      document.getElementById('preview-description').textContent = document.getElementById('description').value || 'Company description will appear here...';
+    }
+
+    function previewLogo(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('preview-logo').src = e.target.result;
+          document.getElementById('removeLogoBtn').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeLogo() {
+      document.getElementById('companyLogo').value = '';
+      document.getElementById('preview-logo').src = '/img/placeholder-logo.png';
+      document.getElementById('removeLogoBtn').style.display = 'none';
+    }
+
+    // Initial preview update
+    updatePreview();
+  </script>
+</body>
+
+>>>>>>> Stashed changes
 </html>
