@@ -1,5 +1,5 @@
 <?php
-ob_start(); // Start output buffering
+ob_start();
 session_start();
 require_once 'db.php';
 
@@ -20,13 +20,19 @@ if (!$username || !$password || !$userType) {
 if ($userType === 'A') {
     $table = 'recruiter';
     $idColumn = 'recid';
+    $extraColumn = 'compid';
 } else {
     $table = 'user';
     $idColumn = 'userid';
+    $extraColumn = null;
 }
 
-// Fetch stored hash
-$stmt = $conn->prepare("SELECT `password` FROM `$table` WHERE `username`=?");
+// Fetch stored hash and id (and compid for recruiters)
+if ($userType === 'A') {
+    $stmt = $conn->prepare("SELECT `$idColumn`, `password`, `compid` FROM `$table` WHERE `username`=?");
+} else {
+    $stmt = $conn->prepare("SELECT `$idColumn`, `password` FROM `$table` WHERE `username`=?");
+}
 if (!$stmt) {
     header('Location: ../main/login.html?error=Server+error');
     exit;
@@ -41,7 +47,11 @@ if ($stmt->num_rows === 0) {
     exit;
 }
 
-$stmt->bind_result($hash);
+if ($userType === 'A') {
+    $stmt->bind_result($userId, $hash, $compid);
+} else {
+    $stmt->bind_result($userId, $hash);
+}
 $stmt->fetch();
 
 if (strlen($hash) < 60) {
@@ -58,16 +68,12 @@ if (!password_verify($password, $hash)) {
 $_SESSION['username'] = $username;
 $_SESSION['user_type'] = $userType;
 
-// Debugging: Log redirection
-error_log("User type: $userType");
-error_log("Redirecting to: " . ($userType === 'A' ? '../recruiter.php' : '../main/job-list.php'));
-
-// Redirect based on user type
 if ($userType === 'A') {
-    // Redirect recruiters to recruiter.php
-    header("Location: ../recruiter.php");
+    $_SESSION['recid'] = $userId;
+    $_SESSION['compid'] = $compid; // <-- This line sets the company ID in the session
+    header("Location: ../main/recruiter.php");
 } else {
-    // Redirect jobseekers to job-list.php
+    $_SESSION['userid'] = $userId;
     header("Location: ../main/job-list.php");
 }
 exit;

@@ -25,7 +25,7 @@ $user = $stmt->get_result()->fetch_assoc();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<?php include 'header.php'; ?>
+<?php include 'header-jobseeker.php'; ?>
 <div class="container py-5">
     <div class="row">
         <!-- Sidebar -->
