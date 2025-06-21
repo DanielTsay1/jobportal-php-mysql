@@ -1,5 +1,11 @@
 <?php
 session_start();
+// Add this block to check for a valid job seeker session
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'B' || !isset($_SESSION['userid'])) {
+    // Redirect them to the job details page with a message
+    header('Location: /main/job-details.php?jobid=' . ($_GET['jobid'] ?? 0) . '&error=not_logged_in');
+    exit;
+}
 require_once '../php/db.php';
 
 $jobid = isset($_GET['jobid']) ? intval($_GET['jobid']) : 0;

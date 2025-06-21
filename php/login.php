@@ -12,68 +12,56 @@ $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 $userType = $_POST['user_type'] ?? '';
 
-if (!$username || !$password || !$userType) {
-    header('Location: ../main/login.html?error=Missing+fields');
+if (empty($username) || empty($password) || empty($userType)) {
+    header('Location: ../main/login.html?error=missing_fields');
     exit;
 }
 
-if ($userType === 'A') {
-    $table = 'recruiter';
-    $idColumn = 'recid';
-    $extraColumn = 'compid';
-} else {
-    $table = 'user';
-    $idColumn = 'userid';
-    $extraColumn = null;
-}
+// Determine table and columns based on user type
+$table = ($userType === 'A') ? 'recruiter' : 'user';
+$idColumn = ($userType === 'A') ? 'recid' : 'userid';
+$columns = ($userType === 'A') ? "`$idColumn`, `password`, `compid`" : "`$idColumn`, `password`";
 
-// Fetch stored hash and id (and compid for recruiters)
-if ($userType === 'A') {
-    $stmt = $conn->prepare("SELECT `$idColumn`, `password`, `compid` FROM `$table` WHERE `username`=?");
-} else {
-    $stmt = $conn->prepare("SELECT `$idColumn`, `password` FROM `$table` WHERE `username`=?");
-}
+// Prepare and execute the query
+$stmt = $conn->prepare("SELECT $columns FROM `$table` WHERE `username` = ?");
 if (!$stmt) {
-    header('Location: ../main/login.html?error=Server+error');
+    // Log error: $conn->error
+    header('Location: ../main/login.html?error=server_error');
     exit;
 }
 
 $stmt->bind_param('s', $username);
 $stmt->execute();
-$stmt->store_result();
+$result = $stmt->get_result();
 
-if ($stmt->num_rows === 0) {
-    header('Location: ../main/login.html?error=No+such+user');
+if ($result->num_rows === 0) {
+    header('Location: ../main/login.html?error=no_user');
     exit;
 }
 
-if ($userType === 'A') {
-    $stmt->bind_result($userId, $hash, $compid);
-} else {
-    $stmt->bind_result($userId, $hash);
-}
-$stmt->fetch();
+$user = $result->fetch_assoc();
+$stmt->close();
 
-if (strlen($hash) < 60) {
-    header('Location: ../main/login.html?error=Server+error');
+// Verify the password
+if (!password_verify($password, $user['password'])) {
+    header('Location: ../main/login.html?error=bad_credentials');
     exit;
 }
 
-if (!password_verify($password, $hash)) {
-    header('Location: ../main/login.html?error=Bad+credentials');
-    exit;
-}
+// Regenerate session ID to prevent session fixation
+session_regenerate_id(true);
 
-// Success: Set session and redirect
+// Set session variables
 $_SESSION['username'] = $username;
 $_SESSION['user_type'] = $userType;
+$_SESSION['userid'] = $user[$idColumn]; // Use the dynamic ID column name
 
+// Redirect based on user type
 if ($userType === 'A') {
-    $_SESSION['recid'] = $userId;
-    $_SESSION['compid'] = $compid; // <-- This line sets the company ID in the session
+    $_SESSION['recid'] = $user[$idColumn];
+    $_SESSION['compid'] = $user['compid'];
     header("Location: ../main/recruiter.php");
 } else {
-    $_SESSION['userid'] = $userId;
     header("Location: ../main/job-list.php");
 }
 exit;

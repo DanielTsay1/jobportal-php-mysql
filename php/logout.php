@@ -1,7 +1,12 @@
 <?php
 session_start();
-session_unset();
-session_destroy();
-header("Location: /main/login.php");
-exit();
+
+// Destroy the session only if the user intended to log out
+if (isset($_SESSION['username'])) {
+    session_destroy();
+}
+
+// Redirect to the login page regardless
+header('Location: /main/login.html');
+exit;
 ?>

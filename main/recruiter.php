@@ -54,6 +54,13 @@ if ($company) {
     }
     $stmt->close();
 }
+
+// --- DASHBOARD METRICS ---
+$total_jobs_stmt = $conn->prepare("SELECT COUNT(*) as count FROM `job-post` WHERE compid = ? AND status = 'Active'");
+$total_jobs_stmt->bind_param("i", $compid);
+$total_jobs_stmt->execute();
+$total_jobs = $total_jobs_stmt->get_result()->fetch_assoc()['count'] ?? 0;
+$total_jobs_stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
