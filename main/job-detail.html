@@ -14,7 +14,7 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet">
@@ -24,144 +24,261 @@
 </head>
 
 <body>
-    <div class="container-xxl bg-white p-0">
-        <!-- Job Detail Start -->
-        <div class="job-detail-container">
+    <div class="page-wrapper">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-background"></div>
             <div class="container">
-                <div class="row gy-5 gx-4">
-                    <div class="col-lg-8">
-                        <div class="job-header">
-                            <div class="company-logo">
-                                <img src="/img/com-logo-2.jpg" alt="Company Logo">
-                            </div>
-                            <div class="job-info">
-                                <h1 class="job-title">Marketing Manager</h1>
-                                <div class="job-meta">
-                                    <span class="meta-item">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        New York, USA
-                                    </span>
-                                    <span class="meta-item">
-                                        <i class="fas fa-clock"></i>
-                                        Full Time
-                                    </span>
-                                    <span class="meta-item">
-                                        <i class="fas fa-dollar-sign"></i>
-                                        $123 - $456
-                                    </span>
-                                </div>
-                            </div>
+                <div class="hero-content">
+                    <div class="company-brand">
+                        <div class="logo-container">
+                            <img src="/img/com-logo-2.jpg" alt="Company Logo" class="company-logo">
+                            <div class="logo-glow"></div>
                         </div>
+                        <div class="brand-info">
+                            <h1 class="job-title">Marketing Manager</h1>
+                            <div class="company-name">International Hearts</div>
+                        </div>
+                    </div>
+                    
+                    <div class="job-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>New York, USA</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Full Time</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>$123 - $456</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-users"></i>
+                            <span>123 Positions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                        <div class="job-content">
-                            <div class="content-section">
-                                <h2 class="section-title">Job Description</h2>
-                                <p class="section-text">Marketing manager position. Responsible for Public relations, business relations and also social media.
+        <!-- Main Content -->
+        <section class="main-content">
+            <div class="container">
+                <div class="content-grid">
+                    <!-- Left Column -->
+                    <div class="content-main">
+                        <!-- Job Description -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-file-alt"></i>
+                                    Job Description
+                                </h2>
+                            </div>
+                            <div class="card-body">
+                                <p class="description-text">
+                                    Marketing manager position. Responsible for Public relations, business relations and also social media.
                                     As a company we strive to make our image transparent and the best. Your job will require a lot of creative thinking
                                     on how to sell our company and bring in new customers with a welcoming manner. We want the best for all and our team 
                                     is dedicated in doing that.
                                 </p>
                             </div>
+                        </div>
 
-                            <div class="content-section">
-                                <h2 class="section-title">Responsibilities</h2>
-                                <p class="section-text">Manage team, social media, public relations, business relations and also set up meetings with investors.</p>
-                                <ul class="feature-list">
-                                    <li><i class="fas fa-check"></i>Social Media Management</li>
-                                    <li><i class="fas fa-check"></i>Client Meetings</li>
-                                    <li><i class="fas fa-check"></i>Press Conferences</li>
-                                    <li><i class="fas fa-check"></i>Discussion Summaries</li>
-                                    <li><i class="fas fa-check"></i>Team Communication</li>
-                                </ul>
+                        <!-- Responsibilities -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-tasks"></i>
+                                    Responsibilities
+                                </h2>
                             </div>
-
-                            <div class="content-section">
-                                <h2 class="section-title">Qualifications</h2>
-                                <p class="section-text">We want anyone with experience in marketing and managing</p>
-                                <ul class="feature-list">
-                                    <li><i class="fas fa-check"></i>4 Years Bachelor's Degree</li>
-                                    <li><i class="fas fa-check"></i>2 Years of Experience</li>
-                                    <li><i class="fas fa-check"></i>Team Work Skills</li>
-                                    <li><i class="fas fa-check"></i>Excellent Communication</li>
-                                    <li><i class="fas fa-check"></i>Portfolio Required</li>
-                                </ul>
-                            </div>
-
-                            <div class="apply-section">
-                                <h2 class="section-title">Apply For The Job</h2>
-                                <form class="apply-form">
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" placeholder="Your Name" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="email" class="form-control" placeholder="Your Email" required>
-                                        </div>
+                            <div class="card-body">
+                                <p class="description-text">Manage team, social media, public relations, business relations and also set up meetings with investors.</p>
+                                <div class="skills-grid">
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Social Media Management</span>
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Portfolio Website">
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Client Meetings</span>
                                     </div>
-                                    <div class="form-group">
-                                        <textarea class="form-control" rows="5" placeholder="Cover Letter" required></textarea>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Press Conferences</span>
                                     </div>
-                                    <button class="btn-apply" type="submit">
-                                        <i class="fas fa-paper-plane"></i>
-                                        Apply Now
-                                    </button>
-                                </form>
-                                
-                                <div class="back-link">
-                                    <a href="/main/job-list.php" class="btn-back">
-                                        <i class="fas fa-arrow-left"></i>
-                                        Back to Jobs
-                                    </a>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Discussion Summaries</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Team Communication</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-4">
-                        <div class="sidebar">
-                            <div class="sidebar-card">
-                                <h3 class="card-title">Job Summary</h3>
-                                <div class="summary-item">
-                                    <i class="fas fa-calendar"></i>
-                                    <span>Published: 01 Jan, 2045</span>
-                                </div>
-                                <div class="summary-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>Vacancy: 123 Position</span>
-                                </div>
-                                <div class="summary-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Job Nature: Full Time</span>
-                                </div>
-                                <div class="summary-item">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <span>Salary: $123 - $456</span>
-                                </div>
-                                <div class="summary-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Location: New York, USA</span>
-                                </div>
-                                <div class="summary-item">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span>Deadline: 01 Jan, 2045</span>
+                        <!-- Qualifications -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    Qualifications
+                                </h2>
+                            </div>
+                            <div class="card-body">
+                                <p class="description-text">We want anyone with experience in marketing and managing</p>
+                                <div class="skills-grid">
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>4 Years Bachelor's Degree</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>2 Years of Experience</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Team Work Skills</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Excellent Communication</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <i class="fas fa-check"></i>
+                                        <span>Portfolio Required</span>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="sidebar-card">
-                                <h3 class="card-title">Company Details</h3>
+                        <!-- Company Info -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-building"></i>
+                                    About Company
+                                </h2>
+                            </div>
+                            <div class="card-body">
                                 <p class="company-description">
                                     International Hearts is an organization dedicated to reaching others by providing reduced and free healthcare while also reaching out to the tech world for help on more efficient and usable technology that medicine can use.
                                 </p>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Right Column -->
+                    <div class="content-sidebar">
+                        <!-- Apply Form -->
+                        <div class="content-card apply-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Apply Now
+                                </h2>
+                            </div>
+                            <div class="card-body">
+                                <form class="apply-form">
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-input" placeholder="Enter your full name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-input" placeholder="Enter your email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Portfolio Website</label>
+                                        <input type="url" class="form-input" placeholder="Your portfolio URL">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Cover Letter</label>
+                                        <textarea class="form-textarea" rows="5" placeholder="Tell us why you're perfect for this role" required></textarea>
+                                    </div>
+                                    <button type="submit" class="submit-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Submit Application
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Job Summary -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    Job Summary
+                                </h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="summary-list">
+                                    <div class="summary-item">
+                                        <div class="summary-icon">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                        <div class="summary-content">
+                                            <div class="summary-label">Published</div>
+                                            <div class="summary-value">01 Jan, 2045</div>
+                                        </div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="summary-content">
+                                            <div class="summary-label">Job Type</div>
+                                            <div class="summary-value">Full Time</div>
+                                        </div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-icon">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </div>
+                                        <div class="summary-content">
+                                            <div class="summary-label">Salary Range</div>
+                                            <div class="summary-value">$123 - $456</div>
+                                        </div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-icon">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </div>
+                                        <div class="summary-content">
+                                            <div class="summary-label">Location</div>
+                                            <div class="summary-value">New York, USA</div>
+                                        </div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <div class="summary-icon">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </div>
+                                        <div class="summary-content">
+                                            <div class="summary-label">Deadline</div>
+                                            <div class="summary-value">01 Jan, 2045</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Back Button -->
+                        <div class="back-section">
+                            <a href="/main/job-list.php" class="back-btn">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Jobs
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Job Detail End -->
+        </section>
     </div>
 
     <!-- JavaScript Libraries -->
