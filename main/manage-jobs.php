@@ -3,17 +3,23 @@ session_start();
 require_once '../php/db.php';
 
 $username = $_SESSION['username'] ?? '';
+$compid = $_SESSION['compid'] ?? null;
+
+// Get recruiter info
 $stmt = $conn->prepare("SELECT * FROM recruiter WHERE username = ?");
 $stmt->bind_param("s", $username);
 $stmt->execute();
 $recruiter = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
+// Get company info by compid
 $company = null;
-if ($recruiter) {
-    $stmt = $conn->prepare("SELECT * FROM company WHERE name = ?");
-    $stmt->bind_param("s", $username);
+if ($compid) {
+    $stmt = $conn->prepare("SELECT * FROM company WHERE compid = ?");
+    $stmt->bind_param("i", $compid);
     $stmt->execute();
     $company = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 }
 
 // Handle actions (delete, unpost, repost, edit)

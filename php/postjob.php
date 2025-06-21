@@ -1,65 +1,54 @@
 <?php
-require_once 'db.php';
+session_start();
+require_once '../php/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die("Error: Invalid request method.");
-}
-
-// Retrieve and sanitize form data
-$designation = trim($_POST['designation'] ?? '');
-$description = trim($_POST['description'] ?? '');
-$company = trim($_POST['company'] ?? '');
-$location = trim($_POST['location'] ?? '');
-$salary = $_POST['salary'] ?? '';
-$compid = $_POST['compid'] ?? '';
-
-// Validate required fields
-if (empty($designation) || empty($description) || empty($company) || empty($location) || empty($salary) || empty($compid)) {
-    header('Location: ../main/recruiter-jobpost.html?error=Missing+required+fields');
+// Ensure recruiter is logged in
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'A' || !isset($_SESSION['compid'])) {
+    header('Location: /main/login.html');
     exit;
 }
 
-// Validate salary and compid
-if (!is_numeric($salary)) {
-    header('Location: ../main/recruiter-jobpost.html?error=Salary+must+be+numeric');
-    exit;
-}
+$compid = $_SESSION['compid'];
 
-if (!ctype_digit($compid)) {
-    header('Location: ../main/recruiter-jobpost.html?error=CompID+must+be+an+integer');
-    exit;
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Sanitize and retrieve form data
+    $designation = trim($_POST['designation'] ?? '');
+    $location = trim($_POST['location'] ?? '');
+    $salary = filter_input(INPUT_POST, 'salary', FILTER_VALIDATE_FLOAT);
+    $description = trim($_POST['description'] ?? '');
+    $spots = filter_input(INPUT_POST, 'spots', FILTER_VALIDATE_INT);
+    $questions = $_POST['questions'] ?? [];
 
-// Convert compid to integer
-$compid = (int)$compid;
+    // Basic validation
+    if (empty($designation) || empty($location) || $salary === false || empty($description) || $spots === false || $spots < 1) {
+        die("Please fill all required fields correctly.");
+    }
+    
+    // Process questions: remove empty ones
+    $questions_filtered = array_filter($questions, function($q) {
+        return !empty(trim($q));
+    });
+    $questions_json = !empty($questions_filtered) ? json_encode(array_values($questions_filtered)) : null;
 
-// Check if the compid exists in the company table
-$checkCompidQuery = $conn->prepare("SELECT COUNT(*) FROM company WHERE compid = ?");
-$checkCompidQuery->bind_param('i', $compid);
-$checkCompidQuery->execute();
-$checkCompidQuery->bind_result($compidExists);
-$checkCompidQuery->fetch();
-$checkCompidQuery->close();
+    $recid = $_SESSION['recid']; // Get recid from session
 
-if ($compidExists === 0) {
-    header('Location: ../main/recruiter-jobpost.html?error=Company+ID+not+registered');
-    exit;
-}
-
-// Insert the job post
-$insertQuery = $conn->prepare("INSERT INTO `job-post` (designation, description, company, location, salary, compid) VALUES (?, ?, ?, ?, ?, ?)");
-if (!$insertQuery) {
-    header('Location: ../main/recruiter-jobpost.html?error=Server+error');
-    exit;
-}
-
-$insertQuery->bind_param('ssssdi', $designation, $description, $company, $location, $salary, $compid);
-
-if ($insertQuery->execute()) {
-    header('Location: ../main/recruiter-jobpost.html?success=Job+post+successfully+added');
+    // Prepare SQL to prevent SQL injection
+    $sql = "INSERT INTO `job-post` (recid, compid, designation, location, salary, description, spots, questions) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iissdsis", $recid, $compid, $designation, $location, $salary, $description, $spots, $questions_json);
+    
+    // Execute and redirect
+    if ($stmt->execute()) {
+        header("Location: /main/manage-jobs.php?status=success");
+        exit();
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+    $stmt->close();
+    $conn->close();
 } else {
-    header('Location: ../main/recruiter-jobpost.html?error=Failed+to+add+job+post');
+    // Redirect if not a POST request
+    header("Location: /main/post-job.php");
+    exit();
 }
-
-$insertQuery->close();
-$conn->close();
+?>

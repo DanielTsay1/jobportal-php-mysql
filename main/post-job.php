@@ -55,48 +55,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="alert alert-success">Job posted successfully!</div>
         <a href="recruiter-dashboard.php" class="btn btn-secondary">Back</a>
     <?php else: ?>
-        <form method="post" class="card p-4 shadow-sm">
-            <div class="mb-3">
-                <label class="form-label">Company</label>
-                <input type="text" class="form-control" value="<?= htmlspecialchars($company) ?>" readonly>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Company ID</label>
-                <input type="text" class="form-control" value="<?= htmlspecialchars($compid) ?>" readonly>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Designation</label>
-                <input type="text" name="designation" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <textarea name="description" class="form-control" rows="4" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Location</label>
-                <input type="text" name="location" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Salary</label>
-                <input type="text" name="salary" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Custom Questions for Applicants (optional)</label>
-                <div id="questions-list">
-                    <input type="text" name="questions[]" class="form-control mb-2" placeholder="e.g. Why do you want this job?">
+        <form action="/php/postjob.php" method="POST" id="postJobForm">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="designation" name="designation" placeholder="Job Title" required>
+                        <label for="designation">Job Title / Designation</label>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addQuestion()">Add Another Question</button>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="location" name="location" placeholder="Location" required>
+                        <label for="location">Location (e.g., City, State)</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="salary" name="salary" placeholder="Annual Salary" required>
+                        <label for="salary">Annual Salary (USD)</label>
+                    </div>
+                </div>
+                 <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="spots" name="spots" placeholder="Available Spots" value="1" min="1" required>
+                        <label for="spots">Number of Available Spots</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a message here" id="description" name="description" style="height: 150px" required></textarea>
+                        <label for="description">Job Description</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <h5>Screening Questions (Optional)</h5>
+                    <div id="questions-container">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="questions[]" placeholder="e.g., How many years of experience do you have?">
+                            <button class="btn btn-outline-danger" type="button" onclick="removeQuestion(this)">Remove</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addQuestion()">+ Add another question</button>
+                </div>
+                <div class="col-12 text-center">
+                    <button class="btn btn-primary py-3 px-5" type="submit">Post Job</button>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Post Job</button>
-            <a href="recruiter-dashboard.php" class="btn btn-secondary ms-2">Back</a>
         </form>
     <?php endif; ?>
 </div>
 <script>
 function addQuestion() {
     const div = document.createElement('div');
-    div.innerHTML = '<input type="text" name="questions[]" class="form-control mb-2" placeholder="Another question">';
-    document.getElementById('questions-list').appendChild(div);
+    div.innerHTML = '<div class="input-group mb-3"><input type="text" class="form-control" name="questions[]" placeholder="Another question"><button class="btn btn-outline-danger" type="button" onclick="removeQuestion(this)">Remove</button></div>';
+    document.getElementById('questions-container').appendChild(div);
+}
+
+function removeQuestion(button) {
+    const div = button.parentElement;
+    div.remove();
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
