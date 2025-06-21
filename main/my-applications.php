@@ -2,81 +2,95 @@
 session_start();
 require_once '../php/db.php';
 
-if (!isset($_SESSION['userid'])) {
-    header("Location: /main/login.html");
+$userid = $_SESSION['userid'] ?? null;
+if (!$userid) {
+    header('Location: /main/login.html');
     exit;
 }
-$userid = $_SESSION['userid'];
 
-// Fetch all applications for this user
-$stmt = $conn->prepare("
-    SELECT a.*, j.designation, j.company, j.location
-    FROM applied a
-    JOIN `job-post` j ON a.jobid = j.jobid
-    WHERE a.userid = ?
-    ORDER BY a.applied_at DESC
-");
+// Fetch user's applications
+$applications = [];
+$sql = "SELECT 
+            a.`S. No` as app_id,
+            a.applied_at,
+            a.status,
+            j.designation,
+            j.jobid,
+            c.name as company_name
+        FROM applied a
+        JOIN `job-post` j ON a.jobid = j.jobid
+        JOIN company c ON j.compid = c.compid
+        WHERE a.userid = ?
+        ORDER BY a.applied_at DESC";
+$stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
-$applications = [];
-while ($row = $result->fetch_assoc()) {
+while($row = $result->fetch_assoc()) {
     $applications[] = $row;
 }
 $stmt->close();
+$conn->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Applications</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<?php include 'header-jobseeker.php'; ?>
-<div class="container py-4">
-    <h2 class="mb-4">My Applications</h2>
-    <?php if (empty($applications)): ?>
-        <div class="alert alert-info">You have not applied to any jobs yet.</div>
-    <?php else: ?>
-        <div class="list-group">
-        <?php foreach ($applications as $app): ?>
-            <div class="list-group-item mb-3">
-                <h5><?= htmlspecialchars($app['designation']) ?> at <?= htmlspecialchars($app['company']) ?></h5>
-                <div class="mb-2 text-muted"><?= htmlspecialchars($app['location']) ?> | Applied: <?= htmlspecialchars($app['applied_at']) ?></div>
-                <div>
-                    <strong>Cover Letter:</strong>
-                    <?php if ($app['cover_letter_file']): ?>
-                        <a href="/<?= htmlspecialchars($app['cover_letter_file']) ?>" target="_blank">View</a>
-                    <?php else: ?>
-                        N/A
-                    <?php endif; ?>
-                </div>
-                <div>
-                    <strong>Resume:</strong>
-                    <?php if ($app['resume_file']): ?>
-                        <a href="/<?= htmlspecialchars($app['resume_file']) ?>" target="_blank">View</a>
-                    <?php else: ?>
-                        N/A
-                    <?php endif; ?>
-                </div>
-                <?php if (!empty($app['answers'])): ?>
-                    <div class="mt-2">
-                        <strong>Your Answers:</strong>
-                        <ul>
-                        <?php
-                        $answers = json_decode($app['answers'], true);
-                        foreach ($answers as $idx => $answer) {
-                            echo '<li>' . htmlspecialchars($answer) . '</li>';
-                        }
-                        ?>
-                        </ul>
+    <?php include 'header-jobseeker.php'; ?>
+
+    <div class="container py-5">
+        <h1 class="mb-4">My Applications</h1>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <?php if (empty($applications)): ?>
+                    <div class="alert alert-info m-4">You have not applied to any jobs yet.</div>
+                <?php else: ?>
+                    <div class="list-group list-group-flush">
+                        <?php foreach ($applications as $app): ?>
+                            <div class="list-group-item p-4" id="app<?= $app['app_id'] ?>">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">
+                                        <a href="/main/job-details.php?jobid=<?= $app['jobid'] ?>" class="text-decoration-none">
+                                            <?= htmlspecialchars($app['designation']) ?>
+                                        </a>
+                                    </h5>
+                                    <small>Applied on <?= date('M d, Y', strtotime($app['applied_at'])) ?></small>
+                                </div>
+                                <p class="mb-1">
+                                    At <?= htmlspecialchars($app['company_name']) ?>
+                                </p>
+                                <div class="d-flex align-items-center mt-2">
+                                    <strong class="me-2">Status:</strong>
+                                    <span class="badge 
+                                        <?php 
+                                        switch($app['status']) {
+                                            case 'Hired': echo 'bg-success'; break;
+                                            case 'Rejected': echo 'bg-danger'; break;
+                                            case 'Shortlisted': echo 'bg-info text-dark'; break;
+                                            case 'Viewed': echo 'bg-secondary'; break;
+                                            default: echo 'bg-primary';
+                                        }
+                                        ?>">
+                                        <?= htmlspecialchars($app['status']) ?>
+                                    </span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
-        <?php endforeach; ?>
         </div>
-    <?php endif; ?>
-</div>
+    </div>
+    <?php include 'footer.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

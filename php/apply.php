@@ -1,62 +1,83 @@
 <?php
 session_start();
-require_once 'db.php';
+require_once '../php/db.php';
 
-if (!isset($_SESSION['userid'])) {
-    header("Location: /main/login.html");
+// Ensure the user is a logged-in jobseeker
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'B' || !isset($_SESSION['userid'])) {
+    header('Location: /main/login.html?error=unauthorized');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: /main/index.php'); // Redirect if not a POST request
     exit;
 }
 
 $userid = $_SESSION['userid'];
 $jobid = isset($_POST['jobid']) ? intval($_POST['jobid']) : 0;
+$answers = $_POST['question_answers'] ?? [];
 
-// DEBUG: Log jobid for troubleshooting
-file_put_contents(__DIR__ . '/debug_jobid.txt', "jobid: $jobid\n", FILE_APPEND);
-
-// 1. Check that the job exists
-$stmt = $conn->prepare("SELECT jobid FROM `job-post` WHERE jobid = ?");
-$stmt->bind_param("i", $jobid);
-$stmt->execute();
-$stmt->store_result();
-if ($stmt->num_rows === 0) {
-    die("Invalid job. Please go back and try again.");
-}
-$stmt->close();
-
-// 2. Handle file uploads
-$coverLetterPath = '';
-$resumePath = '';
-$uploadDir = __DIR__ . '/../uploads/';
-
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+// Validate jobid
+if ($jobid <= 0) {
+    die("Invalid job ID.");
 }
 
-if (isset($_FILES['cover_letter_file']) && $_FILES['cover_letter_file']['error'] === UPLOAD_ERR_OK) {
-    $ext = pathinfo($_FILES['cover_letter_file']['name'], PATHINFO_EXTENSION);
-    $coverLetterPath = 'uploads/cover_' . uniqid() . '.' . $ext;
-    move_uploaded_file($_FILES['cover_letter_file']['tmp_name'], __DIR__ . '/../' . $coverLetterPath);
+// File upload configuration
+$upload_dir = realpath(dirname(__FILE__) . '/../uploads') . '/';
+if (!file_exists($upload_dir)) {
+    mkdir($upload_dir, 0777, true);
 }
 
-if (isset($_FILES['resume_file']) && $_FILES['resume_file']['error'] === UPLOAD_ERR_OK) {
-    $ext = pathinfo($_FILES['resume_file']['name'], PATHINFO_EXTENSION);
-    $resumePath = 'uploads/resume_' . uniqid() . '.' . $ext;
-    move_uploaded_file($_FILES['resume_file']['tmp_name'], __DIR__ . '/../' . $resumePath);
+// Function to handle file uploads
+function handle_upload($file_key, $user_id) {
+    global $upload_dir;
+    if (isset($_FILES[$file_key]) && $_FILES[$file_key]['error'] === UPLOAD_ERR_OK) {
+        $file_tmp_name = $_FILES[$file_key]['tmp_name'];
+        $file_name = $_FILES[$file_key]['name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        // Allowed extensions
+        $allowed_ext = ['pdf', 'doc', 'docx'];
+        if (!in_array($file_ext, $allowed_ext)) {
+            die("Error: Invalid file type for {$file_key}. Only PDF, DOC, and DOCX are allowed.");
+        }
+
+        // Create a unique filename
+        $unique_name = $file_key . '_' . uniqid() . '.' . $file_ext;
+        $destination = $upload_dir . $unique_name;
+
+        if (move_uploaded_file($file_tmp_name, $destination)) {
+            return $unique_name;
+        }
+    }
+    return null;
 }
 
-// 3. Handle recruiter questions
-$question_answers = $_POST['question_answers'] ?? [];
-$answers_json = json_encode($question_answers);
+$cover_letter_filename = handle_upload('cover_letter_file', $userid);
+$resume_filename = handle_upload('resume_file', $userid);
 
-// 4. Insert application
-$stmt = $conn->prepare("INSERT INTO applied (userid, jobid, applied_at, cover_letter_file, resume_file, answers) VALUES (?, ?, NOW(), ?, ?, ?)");
-$stmt->bind_param("iisss", $userid, $jobid, $coverLetterPath, $resumePath, $answers_json);
+if (!$resume_filename) {
+    die("Error: Resume is required.");
+}
+
+// Prepare to insert into the database
+$answers_json = !empty($answers) ? json_encode($answers) : null;
+
+$sql = "INSERT INTO applied (userid, jobid, cover_letter_file, resume_file, answers, applied_at) VALUES (?, ?, ?, ?, ?, NOW())";
+$stmt = $conn->prepare($sql);
+
+if (!$stmt) {
+    die("DB Prepare Error: " . $conn->error);
+}
+
+$stmt->bind_param("iisss", $userid, $jobid, $cover_letter_filename, $resume_filename, $answers_json);
 
 if ($stmt->execute()) {
-    header("Location: /main/job-details.php?jobid=$jobid&applied=1");
-    exit;
+    header("Location: /main/my-applications.php?success=1");
 } else {
-    echo "Error submitting application: " . $stmt->error;
+    die("DB Execute Error: " . $stmt->error);
 }
+
 $stmt->close();
+$conn->close();
 ?>
