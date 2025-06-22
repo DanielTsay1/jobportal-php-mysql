@@ -32,6 +32,13 @@ while($row = $result->fetch_assoc()) {
 $stmt->close();
 $conn->close();
 
+$hired_application = null;
+foreach ($applications as $app) {
+    if ($app['status'] === 'Hired') {
+        $hired_application = $app;
+        break;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,6 +55,18 @@ $conn->close();
 
     <div class="container py-5">
         <h1 class="mb-4">My Applications</h1>
+
+        <?php if ($hired_application): ?>
+        <div class="alert alert-success shadow-sm" role="alert">
+            <h4 class="alert-heading">Congratulations, <?= htmlspecialchars($_SESSION['username']) ?>!</h4>
+            <p>You've been hired for the position of <strong><?= htmlspecialchars($hired_application['designation']) ?></strong> at <strong><?= htmlspecialchars($hired_application['company_name']) ?></strong>. This is a fantastic achievement!</p>
+            <hr>
+            <p class="mb-0">To help keep the platform up-to-date for other employers, you can withdraw all of your other active applications with a single click.</p>
+            <button class="btn btn-primary mt-3" onclick="withdrawOtherApplications()">
+                <i class="fas fa-check-circle me-2"></i>Withdraw Other Active Applications
+            </button>
+        </div>
+        <?php endif; ?>
 
         <div class="card shadow-sm">
             <div class="card-body p-0">
@@ -92,5 +111,30 @@ $conn->close();
     </div>
     <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function withdrawOtherApplications() {
+        if (!confirm('Are you sure you want to withdraw all your other active applications? This action cannot be undone.')) {
+            return;
+        }
+        
+        fetch('/php/withdraw_other_applications.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Your other active applications have been successfully withdrawn.');
+                location.reload(); 
+            } else {
+                alert('An error occurred: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An unexpected error occurred. Please try again.');
+        });
+    }
+    </script>
 </body>
 </html>
