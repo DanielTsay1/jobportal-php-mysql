@@ -49,7 +49,71 @@ try {
     } else {
         echo "<p>✗ Error updating applications: " . $conn->error . "</p>";
     }
-    
+
+    // Add the resume column to the user table if it doesn't exist, for migration purposes
+    $sql = "ALTER TABLE `user` ADD COLUMN IF NOT EXISTS `resume` VARCHAR(255) DEFAULT NULL";
+    if ($conn->query($sql)) {
+        echo "<p>✓ Resume column prepared for migration.</p>";
+    } else {
+        echo "<p>✗ Error preparing resume column for migration: " . $conn->error . "</p>";
+    }
+
+    // Create user_resumes table for multiple resume support
+    $sql = "CREATE TABLE IF NOT EXISTS `user_resumes` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `filename` VARCHAR(255) NOT NULL,
+        `original_filename` VARCHAR(255) NOT NULL,
+        `uploaded_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (`user_id`) REFERENCES `user`(`userid`) ON DELETE CASCADE
+    )";
+    if ($conn->query($sql)) {
+        echo "<p>✓ `user_resumes` table created successfully (or already exists).</p>";
+    } else {
+        echo "<p>✗ Error creating `user_resumes` table: " . $conn->error . "</p>";
+    }
+
+    // Migrate existing resumes from user table to user_resumes
+    $sql = "SELECT userid, resume FROM user WHERE resume IS NOT NULL AND resume != ''";
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        echo "<p>Migrating existing resumes...</p>";
+        $checkStmt = $conn->prepare("SELECT COUNT(*) FROM user_resumes WHERE user_id = ? AND original_filename = ?");
+        $insertStmt = $conn->prepare("INSERT INTO user_resumes (user_id, filename, original_filename) VALUES (?, ?, ?)");
+
+        while ($row = $result->fetch_assoc()) {
+            $userId = $row['userid'];
+            $resumeFile = $row['resume'];
+
+            // Check if this resume has already been migrated
+            $checkStmt->bind_param("is", $userId, $resumeFile);
+            $checkStmt->execute();
+            $countResult = $checkStmt->get_result()->fetch_row();
+
+            if ($countResult[0] == 0) {
+                 // Insert into the new table
+                $insertStmt->bind_param("iss", $userId, $resumeFile, $resumeFile);
+                if ($insertStmt->execute()) {
+                    echo "<p>✓ Migrated resume '$resumeFile' for user ID: $userId</p>";
+                } else {
+                    echo "<p>✗ Failed to migrate resume for user ID: $userId</p>";
+                }
+            } else {
+                 echo "<p>✓ Resume '$resumeFile' for user ID: $userId already migrated.</p>";
+            }
+        }
+        $checkStmt->close();
+        $insertStmt->close();
+    }
+
+    // Drop the old resume column from the user table
+    $sql = "ALTER TABLE `user` DROP COLUMN IF EXISTS `resume`";
+    if ($conn->query($sql)) {
+        echo "<p>✓ Old 'resume' column removed from 'user' table.</p>";
+    } else {
+        echo "<p>✗ Error removing 'resume' column: " . $conn->error . "</p>";
+    }
+
     echo "<h3>Database update completed!</h3>";
     echo "<p><a href='/main/profile.php'>Go to Profile Page</a></p>";
     

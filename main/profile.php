@@ -168,28 +168,22 @@ $conn->close();
 
     <div class="container">
         <!-- Navigation Tabs -->
-        <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab">
-                    <i class="fas fa-user me-2"></i>Personal Info
-                </button>
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab">Profile</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="resume-tab" data-bs-toggle="tab" data-bs-target="#resume" type="button" role="tab">
-                    <i class="fas fa-file-alt me-2"></i>Resume
-                </button>
+            <li class="nav-item">
+                <a class="nav-link" id="resume-tab" data-bs-toggle="tab" href="#resume" role="tab">Resume</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
-                    <i class="fas fa-shield-alt me-2"></i>Security
-                </button>
+            <li class="nav-item">
+                <a class="nav-link" id="security-tab" data-bs-toggle="tab" href="#security" role="tab">Security</a>
             </li>
         </ul>
 
         <!-- Tab Content -->
         <div class="tab-content" id="profileTabsContent">
             <!-- Personal Info Tab -->
-            <div class="tab-pane fade show active" id="personal" role="tabpanel">
+            <div class="tab-pane fade show active" id="profile" role="tabpanel">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title mb-4">Personal Information</h5>
@@ -267,33 +261,45 @@ $conn->close();
             <!-- Resume Tab -->
             <div class="tab-pane fade" id="resume" role="tabpanel">
                 <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-file-alt me-2"></i>Resume</h5>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Resume Management</h5>
-                        
-                        <?php if ($has_resume): ?>
-                            <div class="resume-preview">
-                                <h6><i class="fas fa-file-pdf me-2 text-danger"></i>Current Resume</h6>
-                                <p class="mb-2"><?= htmlspecialchars($resume_result['resume']) ?></p>
-                                <a href="/uploads/<?= htmlspecialchars($resume_result['resume']) ?>" 
-                                   class="btn btn-outline-primary btn-sm me-2" target="_blank">
-                                    <i class="fas fa-eye me-1"></i>View
-                                </a>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteResume()">
-                                    <i class="fas fa-trash me-1"></i>Delete
-                                </button>
-                            </div>
-                        <?php endif; ?>
+                        <?php
+                        // Fetch and display resumes
+                        $resumes_sql = "SELECT id, original_filename, filename FROM user_resumes WHERE user_id = ?";
+                        $resumes_stmt = $conn->prepare($resumes_sql);
+                        $resumes_stmt->bind_param("i", $userid);
+                        $resumes_stmt->execute();
+                        $resumes_result = $resumes_stmt->get_result();
 
-                        <div class="upload-area" id="uploadArea">
-                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                            <h5>Upload Your Resume</h5>
-                            <p class="text-muted">Drag and drop your resume here or click to browse</p>
-                            <p class="text-muted small">Supported formats: PDF, DOC, DOCX (Max 5MB)</p>
-                            <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" style="display: none;" onchange="uploadResume(this)">
-                            <button class="btn btn-primary" onclick="document.getElementById('resumeInput').click()">
-                                <i class="fas fa-upload me-2"></i>Choose File
-                            </button>
-                        </div>
+                        if ($resumes_result->num_rows > 0) {
+                            echo '<ul class="list-group list-group-flush">';
+                            while ($resume = $resumes_result->fetch_assoc()) {
+                                $resume_path = '../uploads/' . $resume['filename'];
+                                echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                                echo htmlspecialchars($resume['original_filename']);
+                                echo '<div>';
+                                echo '<a href="' . $resume_path . '" target="_blank" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-eye"></i> View</a>';
+                                echo '<button class="btn btn-sm btn-outline-danger delete-resume-btn" data-resume-id="' . $resume['id'] . '"><i class="fas fa-trash"></i> Delete</button>';
+                                echo '</div>';
+                                echo '</li>';
+                            }
+                            echo '</ul>';
+                        } else {
+                            echo '<p class="text-muted">No resume uploaded yet.</p>';
+                        }
+                        $resumes_stmt->close();
+                        ?>
+                        <hr>
+                        <form id="resume-upload-form" class="mt-3" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="resume-file" class="form-label">Upload New Resume</label>
+                                <input type="file" class="form-control" id="resume-file" name="resume" required>
+                                <div class="form-text">Only PDF, DOC, and DOCX files are allowed (max 5MB).</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-2"></i>Upload</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -328,7 +334,10 @@ $conn->close();
 
     <?php include 'footer.php'; ?>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (before Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap Bundle JS (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Personal Info Form Submission
         document.getElementById('personalForm').addEventListener('submit', function(e) {
@@ -418,61 +427,58 @@ $conn->close();
         }
 
         // Resume Upload
-        function uploadResume(input) {
-            if (input.files && input.files[0]) {
-                const formData = new FormData();
-                formData.append('resume', input.files[0]);
-                formData.append('action', 'upload_resume');
-                
-                fetch('/php/update-profile.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert('Resume uploaded successfully!', 'success');
-                        setTimeout(() => location.reload(), 1000);
+        $('#resume-upload-form').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('action', 'upload_resume');
+
+            $.ajax({
+                url: '../php/update-profile.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        setTimeout(function() { location.reload(); }, 1000);
                     } else {
-                        showAlert(data.message || 'Failed to upload resume', 'danger');
+                        toastr.error(response.message);
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showAlert('An error occurred. Please try again.', 'danger');
+                },
+                error: function() {
+                    toastr.error('An error occurred. Please try again.');
+                }
+            });
+        });
+
+        // Handle resume deletion
+        $('.delete-resume-btn').click(function() {
+            var resumeId = $(this).data('resume-id');
+            if (confirm('Are you sure you want to delete this resume?')) {
+                $.ajax({
+                    url: '../php/update-profile.php',
+                    type: 'POST',
+                    data: {
+                        action: 'delete_resume',
+                        resume_id: resumeId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function() { location.reload(); }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred. Please try again.');
+                    }
                 });
             }
-        }
-
-        // Delete Resume
-        function deleteResume() {
-            if (!confirm('Are you sure you want to delete your resume?')) {
-                return;
-            }
-            
-            fetch('/php/update-profile.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'delete_resume'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('Resume deleted successfully!', 'success');
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showAlert(data.message || 'Failed to delete resume', 'danger');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('An error occurred. Please try again.', 'danger');
-            });
-        }
+        });
 
         // Show Alert Function
         function showAlert(message, type) {
@@ -491,33 +497,6 @@ $conn->close();
                 }
             }, 5000);
         }
-
-        // Drag and drop for resume upload
-        const uploadArea = document.getElementById('uploadArea');
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#667eea';
-            uploadArea.style.backgroundColor = '#f8f9ff';
-        });
-        
-        uploadArea.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#dee2e6';
-            uploadArea.style.backgroundColor = 'transparent';
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#dee2e6';
-            uploadArea.style.backgroundColor = 'transparent';
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                document.getElementById('resumeInput').files = files;
-                uploadResume(document.getElementById('resumeInput'));
-            }
-        });
     </script>
 </body>
 </html>

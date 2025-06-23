@@ -61,34 +61,43 @@ try {
     }
     $stmt->close();
 
-    // 2. If status changes to 'Hired', decrement spots and potentially close the job
-    if ($newStatus === 'Hired') {
-        $update_job_sql = "UPDATE `job-post` SET spots = GREATEST(0, spots - 1) WHERE jobid = ?";
-        $job_stmt = $conn->prepare($update_job_sql);
+    // 2. Adjust spots based on status changes to/from 'Hired'
+    $spot_adjustment_sql = null;
+    if ($newStatus === 'Hired' && $oldStatus !== 'Hired') {
+        // Decrement spots when hiring
+        $spot_adjustment_sql = "UPDATE `job-post` SET spots = GREATEST(0, spots - 1) WHERE jobid = ?";
+    } elseif ($newStatus !== 'Hired' && $oldStatus === 'Hired') {
+        // Increment spots when un-hiring
+        $spot_adjustment_sql = "UPDATE `job-post` SET spots = spots + 1 WHERE jobid = ?";
+    }
+
+    if ($spot_adjustment_sql) {
+        $job_stmt = $conn->prepare($spot_adjustment_sql);
         $job_stmt->bind_param("i", $jobid);
         $job_stmt->execute();
         $job_stmt->close();
+    }
 
-        // Check if spots are now zero to close the job
-        $spots_stmt = $conn->prepare("SELECT spots FROM `job-post` WHERE jobid = ?");
-        $spots_stmt->bind_param("i", $jobid);
-        $spots_stmt->execute();
-        $spots_result = $spots_stmt->get_result()->fetch_assoc();
-        $spots_stmt->close();
+    // 3. Check if spots are now zero to close the job, or reopen if spots are available
+    $spots_stmt = $conn->prepare("SELECT spots FROM `job-post` WHERE jobid = ?");
+    $spots_stmt->bind_param("i", $jobid);
+    $spots_stmt->execute();
+    $spots_result = $spots_stmt->get_result()->fetch_assoc();
+    $spots_stmt->close();
 
-        if ($spots_result && $spots_result['spots'] <= 0) {
-            $close_job_sql = "UPDATE `job-post` SET status = 'Inactive' WHERE jobid = ?";
-            $close_stmt = $conn->prepare($close_job_sql);
-            $close_stmt->bind_param("i", $jobid);
-            $close_stmt->execute();
-            $close_stmt->close();
+    if ($spots_result) {
+        if ($spots_result['spots'] <= 0) {
+            $status_update_sql = "UPDATE `job-post` SET status = 'Inactive' WHERE jobid = ?";
+        } else {
+            $status_update_sql = "UPDATE `job-post` SET status = 'Active' WHERE jobid = ?";
         }
+        $status_stmt = $conn->prepare($status_update_sql);
+        $status_stmt->bind_param("i", $jobid);
+        $status_stmt->execute();
+        $status_stmt->close();
     }
     
-    // Note: This logic does not handle "un-hiring" an applicant to return a spot.
-    // This can be added later if needed.
-
-    // 3. Create a notification for the job seeker
+    // 4. Create a notification for the job seeker
     $job_title_stmt = $conn->prepare("SELECT designation FROM `job-post` WHERE jobid = ?");
     $job_title_stmt->bind_param("i", $jobid);
     $job_title_stmt->execute();

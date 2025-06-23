@@ -30,7 +30,8 @@ switch ($action) {
         uploadResume($conn, $userid);
         break;
     case 'delete_resume':
-        deleteResume($conn, $userid);
+        $resumeId = $_POST['resume_id'] ?? 0;
+        deleteResume($conn, $userid, $resumeId);
         break;
     default:
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
@@ -164,6 +165,7 @@ function uploadResume($conn, $userid) {
     }
     
     $file = $_FILES['resume'];
+    $originalFilename = $file['name'];
     $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     $maxSize = 5 * 1024 * 1024; // 5MB
     
@@ -193,8 +195,8 @@ function uploadResume($conn, $userid) {
     // Move uploaded file
     if (move_uploaded_file($file['tmp_name'], $filepath)) {
         // Update database
-        $stmt = $conn->prepare("UPDATE user SET resume = ? WHERE userid = ?");
-        $stmt->bind_param("si", $filename, $userid);
+        $stmt = $conn->prepare("INSERT INTO user_resumes (user_id, filename, original_filename) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $userid, $filename, $originalFilename);
         
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Resume uploaded successfully']);
@@ -207,24 +209,29 @@ function uploadResume($conn, $userid) {
     }
 }
 
-function deleteResume($conn, $userid) {
-    // Get current resume filename
-    $stmt = $conn->prepare("SELECT resume FROM user WHERE userid = ?");
-    $stmt->bind_param("i", $userid);
+function deleteResume($conn, $userid, $resumeId) {
+    if ($resumeId <= 0) {
+        echo json_encode(['success' => false, 'message' => 'Invalid resume ID']);
+        return;
+    }
+
+    // Get current resume filename to delete the file
+    $stmt = $conn->prepare("SELECT filename FROM user_resumes WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $resumeId, $userid);
     $stmt->execute();
     $result = $stmt->get_result()->fetch_assoc();
     $stmt->close();
     
-    if ($result && $result['resume']) {
+    if ($result && $result['filename']) {
         // Delete file from server
-        $filepath = '../uploads/' . $result['resume'];
+        $filepath = '../uploads/' . $result['filename'];
         if (file_exists($filepath)) {
             unlink($filepath);
         }
         
-        // Update database
-        $stmt = $conn->prepare("UPDATE user SET resume = NULL WHERE userid = ?");
-        $stmt->bind_param("i", $userid);
+        // Delete from database
+        $stmt = $conn->prepare("DELETE FROM user_resumes WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $resumeId, $userid);
         
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Resume deleted successfully']);

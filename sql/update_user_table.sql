@@ -22,3 +22,6 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 
 -- Update existing applications to have 'Applied' status if they don't have one
 UPDATE `applied` SET `status` = 'Applied' WHERE `status` IS NULL; 
+
+-- Add resume column to user table
+ALTER TABLE `user` ADD COLUMN IF NOT EXISTS `resume` VARCHAR(255) DEFAULT NULL; 

@@ -29,18 +29,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             // Execute the query and check for success
             if ($stmt->execute()) {
-                echo "[DEBUG] Registration successful\n";
-                header("Location: /main/login.html"); // Redirect to login page after success
+                // On successful registration, log the user in automatically
+                session_start();
+                $_SESSION['username'] = $username;
+                $_SESSION['user_type'] = $user_type;
+
+                if ($user_type == 'A') { // Recruiter
+                    // We need to get the new recruiter's ID and compid
+                    $recid = $stmt->insert_id;
+                    $_SESSION['userid'] = $recid;
+                    // Note: This registration flow doesn't create a company. 
+                    // This needs to be handled separately. For now, we'll redirect to a settings page.
+                    header("Location: /main/edit-company.php");
+                } else { // Job Seeker
+                    $_SESSION['userid'] = $stmt->insert_id;
+                    header("Location: /main/job-list.php");
+                }
                 exit();
             } else {
-                echo "[DEBUG] Error executing query: " . $stmt->error . "\n";
+                // Redirect back to login with an error
+                header("Location: /main/login.php?error=registration_failed");
+                exit();
             }
             $stmt->close();
         } else {
-            echo "[DEBUG] Prepare statement failed: " . $conn->error . "\n";
+            header("Location: /main/login.php?error=server_error");
+            exit();
         }
     } else {
-        echo "[DEBUG] Passwords do not match\n";
+        header("Location: /main/login.php?error=password_mismatch");
+        exit();
     }
 }
 ?>

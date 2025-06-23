@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container">
     <a class="navbar-brand" href="job-list.php">
@@ -25,7 +24,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="logout.php">
+          <a class="nav-link" href="/php/logout.php">
             <i class="fa fa-sign-out-alt"></i> Logout
           </a>
         </li>
