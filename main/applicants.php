@@ -24,7 +24,6 @@ $company_name_result = $stmt->get_result()->fetch_assoc();
 $company_name = $company_name_result ? $company_name_result['name'] : 'Your Company';
 $stmt->close();
 
-
 // Fetch all applicants for the company's jobs
 $applicants = [];
 $sql = "SELECT 
@@ -63,26 +62,207 @@ $conn->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        .page-header {
+            background: linear-gradient(90deg, #1E90FF 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 0 0.5rem 0;
+            margin-bottom: 1.5rem;
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 2px 10px rgba(30, 144, 255, 0.08);
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: fadeSlideDown 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
+        }
+        .page-header h1 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 0;
+            letter-spacing: -0.5px;
+        }
+        .page-header .back-btn {
+            font-size: 0.95rem;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            background: #fff;
+            color: #1E90FF;
+            border: none;
+            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.07);
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+        .page-header .back-btn:hover {
+            background: #e9ecef;
+            color: #764ba2;
+        }
+        .page-header .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .page-header .header-row p {
+            margin-bottom: 0;
+            font-size: 0.98rem;
+            opacity: 0.7;
+        }
+        .card {
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(30, 144, 255, 0.08);
+            border: none;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.3s forwards;
+        }
+        .card-header {
+            border-radius: 18px 18px 0 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table {
+            font-size: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .table thead th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .table-hover tbody tr:hover {
+            background: #e3f0ff;
+            transition: background 0.2s;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background: #f6fafd;
+        }
+        .badge {
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 500;
+            padding: 0.5em 1em;
+            letter-spacing: 0.01em;
+        }
+        .btn, .dropdown-item {
+            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1E90FF 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-secondary {
+            background: #e9ecef;
+            color: #2B3940;
+            border: none;
+        }
+        .btn-outline-secondary {
+            border-radius: 10px;
+        }
+        .dropdown-menu {
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.08);
+        }
+        .search-bar {
+            max-width: 400px;
+            margin-bottom: 1.5rem;
+        }
+        .search-bar input {
+            border-radius: 20px;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e9ecef;
+            font-size: 1rem;
+        }
+        .search-bar input:focus {
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 0.15rem rgba(30, 144, 255, 0.10);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.95rem;
+            }
+            .page-header {
+                padding: 0.5rem 0 0.3rem 0;
+            }
+            .page-header h1 {
+                font-size: 1rem;
+            }
+            .page-header .header-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+        tbody tr {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        tbody tr.animated {
+            animation: fadeRowIn 0.6s cubic-bezier(.4,1.4,.6,1) forwards;
+        }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeRowIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
     <?php include 'header-recruiter.php'; ?>
+    <div class="page-header mb-4">
+        <div class="container">
+            <div class="header-row">
+                <h1><i class="fas fa-users me-2"></i>Manage Applicants</h1>
+                <a href="/main/recruiter.php" class="back-btn"><i class="fas fa-arrow-left me-1"></i>Back</a>
+            </div>
+            <p>All applications for <b><?= htmlspecialchars($company_name) ?></b></p>
+        </div>
+    </div>
 
-    <div class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h2">Manage Applicants</h1>
-            <a href="/main/recruiter.php" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+    <div class="container">
+        <div class="d-flex justify-content-end">
+            <form class="search-bar w-100 w-md-auto" onsubmit="return false;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search applicants, job title, or status...">
+            </form>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-header bg-light py-3">
-                <h5 class="mb-0"><i class="fas fa-users me-2"></i>All Applications for <?= htmlspecialchars($company_name) ?></h5>
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>All Applications</h5>
             </div>
             <div class="card-body p-0">
                 <?php if (empty($applicants)): ?>
-                    <div class="alert alert-info m-4">No applicants found yet.</div>
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <h4>No applicants found yet.</h4>
+                        <p>Once candidates apply to your jobs, they will appear here.</p>
+                    </div>
                 <?php else: ?>
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover table-striped align-middle mb-0" id="applicantsTable">
                             <thead class="table-light">
                                 <tr>
                                     <th class="py-3 px-4">Applicant</th>
@@ -95,7 +275,7 @@ $conn->close();
                             </thead>
                             <tbody>
                                 <?php foreach ($applicants as $app): ?>
-                                    <tr id="app-row-<?= $app['app_id'] ?>">
+                                    <tr id="app-row-<?= $app['app_id'] ?>" class="animated">
                                         <td class="px-4">
                                             <strong><?= htmlspecialchars($app['applicant_name']) ?></strong>
                                             <div class="text-muted small"><?= htmlspecialchars($app['applicant_email']) ?></div>
@@ -107,10 +287,10 @@ $conn->close();
                                         </td>
                                         <td class="px-4">
                                             <?php if ($app['resume_file']): ?>
-                                                <a href="/uploads/<?= htmlspecialchars($app['resume_file']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary me-1"><i class="fas fa-file-alt me-1"></i>Resume</a>
+                                                <a href="/uploads/<?= htmlspecialchars($app['resume_file']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip" title="View Resume"><i class="fas fa-file-alt me-1"></i>Resume</a>
                                             <?php endif; ?>
                                             <?php if ($app['cover_letter_file']): ?>
-                                                <a href="/uploads/<?= htmlspecialchars($app['cover_letter_file']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fas fa-envelope-open-text me-1"></i>Cover</a>
+                                                <a href="/uploads/<?= htmlspecialchars($app['cover_letter_file']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="View Cover Letter"><i class="fas fa-envelope-open-text me-1"></i>Cover</a>
                                             <?php endif; ?>
                                         </td>
                                         <td class="px-4">
@@ -157,6 +337,8 @@ $conn->close();
     }
 
     function updateStatus(appId, newStatus) {
+        // Show loading spinner on badge
+        setBadge(appId, '...');
         fetch('/php/update_application_status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -168,11 +350,13 @@ $conn->close();
                 setBadge(appId, newStatus);
             } else {
                 alert('Error updating status: ' + data.message);
+                setBadge(appId, applicantsData[appId]);
             }
         })
         .catch(error => {
             console.error('Error:', error);
             alert('An unexpected error occurred.');
+            setBadge(appId, applicantsData[appId]);
         });
     }
     
@@ -180,6 +364,32 @@ $conn->close();
         for (const appId in applicantsData) {
             setBadge(appId, applicantsData[appId]);
         }
+        // Enable Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Search/filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('applicantsTable');
+        if (searchInput && table) {
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(filter) ? '' : 'none';
+                });
+            });
+        }
+        // Animate table rows in a staggered fashion
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, idx) => {
+            setTimeout(() => {
+                row.classList.add('animated');
+            }, 80 * idx);
+        });
     });
     </script>
 </body>

@@ -69,13 +69,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
+            background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%);
+            min-height: 100vh;
+        }
+        .edit-company-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .edit-company-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(30, 144, 255, 0.10);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
+        }
+        .edit-company-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+        .edit-company-card h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1976d2;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2B3940;
+            margin-bottom: 0.25rem;
+        }
+        .form-control {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus {
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 0.15rem rgba(30, 144, 255, 0.10);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2 0%, #1E90FF 100%);
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.12);
+        }
+        .btn-secondary {
+            border-radius: 20px;
+            font-weight: 500;
+            padding: 0.6rem 1.5rem;
+        }
+        .divider {
+            border-top: 1.5px solid #e9ecef;
+            margin: 2rem 0 1.5rem 0;
+        }
+        .alert {
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 992px) {
+            .edit-company-card {
+                max-width: 98vw;
+                padding: 2rem 1rem 1.5rem 1rem;
+            }
+        }
+        @media (max-width: 576px) {
+            .edit-company-card {
+                padding: 1.5rem 0.5rem 1rem 0.5rem;
+            }
+        }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
 <?php include 'header-recruiter.php'; ?>
-<div class="container py-4">
-    <h2 class="mb-4"><i class="fa fa-edit"></i> Edit Company & Contact Info</h2>
-    <?= $message ?>
-    <form method="post" class="card p-4 shadow-sm">
+<div class="edit-company-container">
+    <form method="post" class="edit-company-card">
+        <h2><i class="fa fa-edit me-2"></i>Edit Company & Contact Info</h2>
+        <?= $message ?>
         <div class="mb-3">
             <label class="form-label">Company Name</label>
             <input type="text" name="company_name" class="form-control" value="<?= htmlspecialchars($company['name'] ?? '') ?>" required>
@@ -96,14 +202,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
             <label class="form-label">About Company</label>
             <textarea name="about" class="form-control" rows="4"><?= htmlspecialchars($company['about'] ?? '') ?></textarea>
         </div>
-        <hr>
+        <div class="divider"></div>
         <h5>Recruiter Contact Info</h5>
         <div class="mb-3">
             <label class="form-label">Recruiter Email</label>
             <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($recruiter['email'] ?? '') ?>" required>
         </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a href="recruiter.php" class="btn btn-secondary ms-2">Go Back</a>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="recruiter.php" class="btn btn-secondary ms-2">Go Back</a>
+        </div>
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

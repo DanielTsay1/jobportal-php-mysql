@@ -43,19 +43,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <title>Post a Job</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif !important;
+            background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%);
+            min-height: 100vh;
+        }
+        .post-job-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .post-job-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(30, 144, 255, 0.10);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
+        }
+        .post-job-card h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+        .divider {
+            border-top: 1.5px solid #e9ecef;
+            margin: 2rem 0 1.5rem 0;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2B3940;
+            margin-bottom: 0.25rem;
+        }
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 0.15rem rgba(30, 144, 255, 0.10);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2 0%, #1E90FF 100%);
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.12);
+        }
+        .btn-outline-secondary, .btn-outline-danger {
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .alert {
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 992px) {
+            .post-job-card {
+                max-width: 98vw;
+                padding: 2rem 1rem 1.5rem 1rem;
+            }
+        }
+        @media (max-width: 576px) {
+            .post-job-card {
+                padding: 1.5rem 0.5rem 1rem 0.5rem;
+            }
+        }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container py-4">
-    <h2 class="mb-4">Post a Job</h2>
-    <?php if (!empty($error)): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+<?php include 'header-recruiter.php'; ?>
+<div class="post-job-container">
+    <div class="post-job-card">
+        <h2><i class="fa fa-briefcase me-2"></i>Post a Job</h2>
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
-    <?php if ($jobPosted): ?>
-        <div class="alert alert-success">Job posted successfully!</div>
-        <a href="recruiter-dashboard.php" class="btn btn-secondary">Back</a>
-    <?php else: ?>
-        <form action="/php/postjob.php" method="POST" id="postJobForm">
+        <?php if ($jobPosted): ?>
+            <div class="alert alert-success">Job posted successfully!</div>
+            <a href="recruiter-dashboard.php" class="btn btn-secondary">Back</a>
+        <?php else: ?>
+        <form action="/php/postjob.php" method="POST" id="postJobForm" enctype="multipart/form-data">
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="form-floating">
@@ -75,18 +175,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="salary">Annual Salary (USD)</label>
                     </div>
                 </div>
-                 <div class="col-md-6">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <input type="number" class="form-control" id="spots" name="spots" placeholder="Available Spots" value="1" min="1" required>
                         <label for="spots">Number of Available Spots</label>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="employment_type" name="employment_type" required>
+                            <option value="" selected disabled>Select Employment Type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Temporary">Temporary</option>
+                        </select>
+                        <label for="employment_type">Employment Type</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="work_mode" name="work_mode" required>
+                            <option value="" selected disabled>Select Work Mode</option>
+                            <option value="On-site">On-site</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                        <label for="work_mode">Work Mode</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="experience_level" name="experience_level" required>
+                            <option value="" selected disabled>Select Experience Level</option>
+                            <option value="Entry">Entry</option>
+                            <option value="Mid">Mid</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Director">Director</option>
+                        </select>
+                        <label for="experience_level">Experience Level</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="deadline" name="deadline">
+                        <label for="deadline">Application Deadline</label>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Leave a message here" id="description" name="description" style="height: 150px" required></textarea>
+                        <textarea class="form-control" placeholder="Job Description" id="description" name="description" style="height: 150px" required></textarea>
                         <label for="description">Job Description</label>
                     </div>
                 </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Benefits" id="benefits" name="benefits" style="height: 80px"></textarea>
+                        <label for="benefits">Benefits (optional)</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="skills" name="skills" placeholder="Required Skills">
+                        <label for="skills">Required Skills (comma-separated)</label>
+                    </div>
+                </div>
+                <div class="divider"></div>
                 <div class="col-12">
                     <h5>Screening Questions (Optional)</h5>
                     <div id="questions-container">
@@ -97,12 +252,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addQuestion()">+ Add another question</button>
                 </div>
-                <div class="col-12 text-center">
+                <div class="col-12 text-center mt-3">
                     <button class="btn btn-primary py-3 px-5" type="submit">Post Job</button>
                 </div>
             </div>
         </form>
-    <?php endif; ?>
+        <?php endif; ?>
+    </div>
 </div>
 <script>
 function addQuestion() {
