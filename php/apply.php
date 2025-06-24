@@ -75,28 +75,85 @@ function handle_upload($file_key, $prefix, $upload_dir) {
     return null;
 }
 
-// Determine which resume to use
-if (!empty($_POST['existing_resume'])) {
-    // Use the existing resume saved on the profile
-    $resume_filename = basename($_POST['existing_resume']);
+// Determine which resume to use based on user selection
+$resume_type = $_POST['resume_type'] ?? '';
+
+if ($resume_type === 'existing') {
+    // User selected an existing resume from their profile
+    $selected_resume_id = $_POST['selected_resume_id'] ?? null;
+    
+    if (!$selected_resume_id) {
+        // Try to get the first resume if none specifically selected
+        $stmt = $conn->prepare("SELECT filename FROM user_resumes WHERE user_id = ? ORDER BY id ASC LIMIT 1");
+        $stmt->bind_param("i", $userid);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        
+        if ($result) {
+            $resume_filename = $result['filename'];
+        } else {
+            die("No resume found in your profile. Please upload a resume first.");
+        }
+    } else {
+        // Get the specific selected resume
+        $stmt = $conn->prepare("SELECT filename FROM user_resumes WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $selected_resume_id, $userid);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        
+        if ($result) {
+            $resume_filename = $result['filename'];
+        } else {
+            die("Selected resume not found. Please try again.");
+        }
+    }
+    
     // Security check: ensure the file actually exists
     if (!file_exists($upload_dir . $resume_filename)) {
-        error_log("Saved resume file not found at path: " . $upload_dir . $resume_filename);
-        die("Error: Your saved resume file could not be found. Please re-upload it on your profile.");
+        error_log("Selected resume file not found at path: " . $upload_dir . $resume_filename);
+        die("Error: Your selected resume file could not be found. Please re-upload it on your profile.");
     }
-} else {
-    // Handle a new resume upload
+    
+} elseif ($resume_type === 'new') {
+    // User is uploading a new resume
     $resume_filename = handle_upload('resume_file', 'resume', $upload_dir);
     if (!$resume_filename) {
         die("A resume is required to apply. Please upload one.");
     }
 
     // Check if the user wants to save this resume to their profile
-    if (isset($_POST['save_resume_to_profile'])) {
-        $update_user_stmt = $conn->prepare("UPDATE user SET resume = ? WHERE userid = ?");
-        $update_user_stmt->bind_param("si", $resume_filename, $userid);
-        $update_user_stmt->execute();
-        $update_user_stmt->close();
+    if (isset($_POST['save_resume_to_profile']) && $_POST['save_resume_to_profile'] === 'on') {
+        $original_filename = $_FILES['resume_file']['name'];
+        $stmt = $conn->prepare("INSERT INTO user_resumes (user_id, filename, original_filename) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $userid, $resume_filename, $original_filename);
+        $stmt->execute();
+        $stmt->close();
+    }
+} else {
+    // Fallback: check if user has any resumes and use the first one
+    $stmt = $conn->prepare("SELECT filename FROM user_resumes WHERE user_id = ? ORDER BY id ASC LIMIT 1");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    
+    if ($result) {
+        $resume_filename = $result['filename'];
+    } else {
+        // No resumes found, try to handle a new upload
+        $resume_filename = handle_upload('resume_file', 'resume', $upload_dir);
+        if (!$resume_filename) {
+            die("A resume is required to apply. Please upload one.");
+        }
+        
+        // Save to profile by default
+        $original_filename = $_FILES['resume_file']['name'];
+        $stmt = $conn->prepare("INSERT INTO user_resumes (user_id, filename, original_filename) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $userid, $resume_filename, $original_filename);
+        $stmt->execute();
+        $stmt->close();
     }
 }
 

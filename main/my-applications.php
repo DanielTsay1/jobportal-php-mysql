@@ -2,9 +2,14 @@
 session_start();
 require_once '../php/db.php';
 
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'B' || !isset($_SESSION['userid'])) {
+    header('Location: /main/login.php');
+    exit;
+}
+
 $userid = $_SESSION['userid'] ?? null;
 if (!$userid) {
-    header('Location: /main/login.html');
+    header('Location: /main/login.php');
     exit;
 }
 

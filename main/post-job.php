@@ -3,7 +3,7 @@ session_start();
 require_once '../php/db.php';
 
 if (!isset($_SESSION['recid']) || !isset($_SESSION['compid'])) {
-    header("Location: ../main/login.html");
+    header("Location: ../main/login.php");
     exit;
 }
 

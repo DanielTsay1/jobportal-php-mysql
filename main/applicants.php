@@ -4,7 +4,7 @@ require_once '../php/db.php';
 
 // Ensure user is a recruiter and logged in
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'A') {
-    header('Location: /main/login.html');
+    header('Location: /main/login.php');
     exit;
 }
 

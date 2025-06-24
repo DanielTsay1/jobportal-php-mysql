@@ -4,7 +4,7 @@ require_once '../php/db.php';
 
 // Check if user is a recruiter
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'A' || !isset($_SESSION['compid'])) {
-    header('Location: /main/login.html');
+    header('Location: /main/login.php');
     exit;
 }
 

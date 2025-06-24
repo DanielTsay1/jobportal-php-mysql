@@ -4,7 +4,7 @@ require_once '../php/db.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'B' || !isset($_SESSION['userid'])) {
-    header('Location: login.html?error=unauthorized');
+    header('Location: login.php?error=unauthorized');
     exit;
 }
 
@@ -39,7 +39,7 @@ $hired_result = $hired_stmt->get_result()->fetch_assoc();
 $is_hired = !empty($hired_result);
 $hired_stmt->close();
 
-$conn->close();
+// Don't close connection here - it's needed for resume section
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,6 +111,34 @@ $conn->close();
             border-radius: 10px;
             padding: 1rem;
             margin-top: 1rem;
+        }
+        .resume-name-container {
+            flex: 1;
+            min-width: 0;
+        }
+        .resume-name-display {
+            font-weight: 500;
+            color: #495057;
+        }
+        .resume-name-edit {
+            max-width: 300px;
+        }
+        .resume-name-input {
+            border: 2px solid #667eea;
+            border-radius: 6px;
+        }
+        .resume-name-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-outline-info {
+            border-color: #17a2b8;
+            color: #17a2b8;
+        }
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
         }
     </style>
 </head>
@@ -276,10 +304,20 @@ $conn->close();
                         if ($resumes_result->num_rows > 0) {
                             echo '<ul class="list-group list-group-flush">';
                             while ($resume = $resumes_result->fetch_assoc()) {
-                                $resume_path = '../uploads/' . $resume['filename'];
+                                $resume_path = '/uploads/' . $resume['filename'];
                                 echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
-                                echo htmlspecialchars($resume['original_filename']);
+                                echo '<div class="resume-name-container" data-resume-id="' . $resume['id'] . '">';
+                                echo '<span class="resume-name-display">' . htmlspecialchars($resume['original_filename']) . '</span>';
+                                echo '<div class="resume-name-edit" style="display: none;">';
+                                echo '<input type="text" class="form-control form-control-sm resume-name-input" value="' . htmlspecialchars($resume['original_filename']) . '" maxlength="100">';
+                                echo '<div class="mt-1">';
+                                echo '<button class="btn btn-sm btn-success save-resume-name-btn me-1"><i class="fas fa-check"></i> Save</button>';
+                                echo '<button class="btn btn-sm btn-secondary cancel-resume-name-btn"><i class="fas fa-times"></i> Cancel</button>';
+                                echo '</div>';
+                                echo '</div>';
+                                echo '</div>';
                                 echo '<div>';
+                                echo '<button class="btn btn-sm btn-outline-info me-2 rename-resume-btn" data-resume-id="' . $resume['id'] . '"><i class="fas fa-edit"></i> Rename</button>';
                                 echo '<a href="' . $resume_path . '" target="_blank" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-eye"></i> View</a>';
                                 echo '<button class="btn btn-sm btn-outline-danger delete-resume-btn" data-resume-id="' . $resume['id'] . '"><i class="fas fa-trash"></i> Delete</button>';
                                 echo '</div>';
@@ -295,7 +333,7 @@ $conn->close();
                         <form id="resume-upload-form" class="mt-3" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="resume-file" class="form-label">Upload New Resume</label>
-                                <input type="file" class="form-control" id="resume-file" name="resume" required>
+                                <input type="file" class="form-control" id="resume-file" name="resume" accept=".pdf,.doc,.docx" required>
                                 <div class="form-text">Only PDF, DOC, and DOCX files are allowed (max 5MB).</div>
                             </div>
                             <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-2"></i>Upload</button>
@@ -339,6 +377,40 @@ $conn->close();
     <!-- Bootstrap Bundle JS (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Initialize Bootstrap tabs and handle URL hash
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap tabs
+            var triggerTabList = [].slice.call(document.querySelectorAll('#profileTabs a'));
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl);
+                
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    tabTrigger.show();
+                });
+            });
+            
+            // Handle URL hash for tab switching
+            if (window.location.hash) {
+                var hash = window.location.hash.substring(1);
+                var targetTab = document.querySelector('#profileTabs a[href="#' + hash + '"]');
+                if (targetTab) {
+                    var tab = new bootstrap.Tab(targetTab);
+                    tab.show();
+                }
+            }
+            
+            // Update URL hash when tabs are clicked
+            triggerTabList.forEach(function(triggerEl) {
+                triggerEl.addEventListener('shown.bs.tab', function (event) {
+                    var hash = event.target.getAttribute('href');
+                    if (hash) {
+                        window.location.hash = hash;
+                    }
+                });
+            });
+        });
+
         // Personal Info Form Submission
         document.getElementById('personalForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -346,23 +418,68 @@ $conn->close();
             const formData = new FormData(this);
             formData.append('action', 'update_personal');
             
-            fetch('/php/update-profile.php', {
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            submitBtn.disabled = true;
+            
+            fetch('../php/update-profile.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('Profile updated successfully!', 'success');
-                } else {
-                    showAlert(data.message || 'Failed to update profile', 'danger');
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Response text:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showAlert('Profile updated successfully!', 'success');
+                        // Update the displayed information without page reload
+                        updateDisplayedInfo();
+                    } else {
+                        showAlert(data.message || 'Failed to update profile', 'danger');
+                    }
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Raw response:', text);
+                    showAlert('Server returned invalid response. Please try again.', 'danger');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fetch error:', error);
                 showAlert('An error occurred. Please try again.', 'danger');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             });
         });
+
+        // Function to update displayed information after successful update
+        function updateDisplayedInfo() {
+            // Update the header information
+            const email = document.getElementById('email').value;
+            const location = document.getElementById('location').value;
+            
+            // Update the profile header
+            const headerEmail = document.querySelector('.profile-header p:first-of-type');
+            const headerLocation = document.querySelector('.profile-header p:last-of-type');
+            
+            if (headerEmail) {
+                headerEmail.innerHTML = '<i class="fas fa-envelope me-2"></i>' + (email || 'No email set');
+            }
+            if (headerLocation) {
+                headerLocation.innerHTML = '<i class="fas fa-map-marker-alt me-2"></i>' + (location || 'No location set');
+            }
+        }
 
         // Password Form Submission
         document.getElementById('passwordForm').addEventListener('submit', function(e) {
@@ -379,22 +496,47 @@ $conn->close();
             const formData = new FormData(this);
             formData.append('action', 'change_password');
             
-            fetch('/php/update-profile.php', {
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Changing...';
+            submitBtn.disabled = true;
+            
+            fetch('../php/update-profile.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('Password changed successfully!', 'success');
-                    this.reset();
-                } else {
-                    showAlert(data.message || 'Failed to change password', 'danger');
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Response text:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showAlert('Password changed successfully!', 'success');
+                        this.reset();
+                    } else {
+                        showAlert(data.message || 'Failed to change password', 'danger');
+                    }
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Raw response:', text);
+                    showAlert('Server returned invalid response. Please try again.', 'danger');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fetch error:', error);
                 showAlert('An error occurred. Please try again.', 'danger');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             });
         });
 
@@ -405,23 +547,48 @@ $conn->close();
                 formData.append('profile_picture', input.files[0]);
                 formData.append('action', 'upload_picture');
                 
-                fetch('/php/update-profile.php', {
+                // Show loading state
+                const uploadBtn = input.parentElement.querySelector('button');
+                const originalText = uploadBtn.innerHTML;
+                uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+                uploadBtn.disabled = true;
+                
+                fetch('../php/update-profile.php', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert('Profile picture updated successfully!', 'success');
-                        // Refresh the page to show new picture
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        showAlert(data.message || 'Failed to upload picture', 'danger');
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Response text:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            showAlert('Profile picture updated successfully!', 'success');
+                            // Refresh the page to show new picture
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            showAlert(data.message || 'Failed to upload picture', 'danger');
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        console.error('Raw response:', text);
+                        showAlert('Server returned invalid response. Please try again.', 'danger');
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Fetch error:', error);
                     showAlert('An error occurred. Please try again.', 'danger');
+                })
+                .finally(() => {
+                    // Restore button state
+                    uploadBtn.innerHTML = originalText;
+                    uploadBtn.disabled = false;
                 });
             }
         }
@@ -432,24 +599,47 @@ $conn->close();
             var formData = new FormData(this);
             formData.append('action', 'upload_resume');
 
-            $.ajax({
-                url: '../php/update-profile.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
+            // Show loading state
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.html();
+            submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Uploading...');
+            submitBtn.prop('disabled', true);
+
+            fetch('../php/update-profile.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Response text:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showAlert(data.message, 'success');
                         setTimeout(function() { location.reload(); }, 1000);
                     } else {
-                        toastr.error(response.message);
+                        showAlert(data.message, 'danger');
                     }
-                },
-                error: function() {
-                    toastr.error('An error occurred. Please try again.');
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Raw response:', text);
+                    showAlert('Server returned invalid response. Please try again.', 'danger');
                 }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                showAlert('An error occurred. Please try again.', 'danger');
+            })
+            .finally(() => {
+                // Restore button state
+                submitBtn.html(originalText);
+                submitBtn.prop('disabled', false);
             });
         });
 
@@ -457,26 +647,175 @@ $conn->close();
         $('.delete-resume-btn').click(function() {
             var resumeId = $(this).data('resume-id');
             if (confirm('Are you sure you want to delete this resume?')) {
-                $.ajax({
-                    url: '../php/update-profile.php',
-                    type: 'POST',
-                    data: {
-                        action: 'delete_resume',
-                        resume_id: resumeId
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
+                var deleteBtn = $(this);
+                var originalText = deleteBtn.html();
+                deleteBtn.html('<i class="fas fa-spinner fa-spin"></i>');
+                deleteBtn.prop('disabled', true);
+                
+                const formData = new FormData();
+                formData.append('action', 'delete_resume');
+                formData.append('resume_id', resumeId);
+                
+                fetch('../php/update-profile.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Response text:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            showAlert(data.message, 'success');
                             setTimeout(function() { location.reload(); }, 1000);
                         } else {
-                            toastr.error(response.message);
+                            showAlert(data.message, 'danger');
                         }
-                    },
-                    error: function() {
-                        toastr.error('An error occurred. Please try again.');
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        console.error('Raw response:', text);
+                        showAlert('Server returned invalid response. Please try again.', 'danger');
                     }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    showAlert('An error occurred. Please try again.', 'danger');
+                })
+                .finally(() => {
+                    // Restore button state
+                    deleteBtn.html(originalText);
+                    deleteBtn.prop('disabled', false);
                 });
+            }
+        });
+
+        // Handle resume rename functionality
+        $(document).on('click', '.rename-resume-btn', function() {
+            var resumeId = $(this).data('resume-id');
+            var container = $('.resume-name-container[data-resume-id="' + resumeId + '"]');
+            var display = container.find('.resume-name-display');
+            var edit = container.find('.resume-name-edit');
+            var input = container.find('.resume-name-input');
+            
+            // Store original name for cancel
+            input.data('original-name', input.val());
+            
+            // Show edit mode
+            display.hide();
+            edit.show();
+            input.focus();
+        });
+
+        // Handle save resume name
+        $(document).on('click', '.save-resume-name-btn', function() {
+            var container = $(this).closest('.resume-name-container');
+            var resumeId = container.data('resume-id');
+            var input = container.find('.resume-name-input');
+            var newName = input.val().trim();
+            var originalName = input.data('original-name');
+            
+            if (!newName) {
+                showAlert('Resume name cannot be empty', 'danger');
+                return;
+            }
+            
+            if (newName === originalName) {
+                // No change, just cancel edit mode
+                cancelResumeNameEdit(container);
+                return;
+            }
+            
+            // Show loading state
+            var saveBtn = $(this);
+            var originalText = saveBtn.html();
+            saveBtn.html('<i class="fas fa-spinner fa-spin"></i>');
+            saveBtn.prop('disabled', true);
+            
+            const formData = new FormData();
+            formData.append('action', 'rename_resume');
+            formData.append('resume_id', resumeId);
+            formData.append('new_name', newName);
+            
+            fetch('../php/update-profile.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Response text:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        // Update the display name
+                        container.find('.resume-name-display').text(newName);
+                        cancelResumeNameEdit(container);
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Raw response:', text);
+                    showAlert('Server returned invalid response. Please try again.', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                showAlert('An error occurred. Please try again.', 'danger');
+            })
+            .finally(() => {
+                // Restore button state
+                saveBtn.html(originalText);
+                saveBtn.prop('disabled', false);
+            });
+        });
+
+        // Handle cancel resume name edit
+        $(document).on('click', '.cancel-resume-name-btn', function() {
+            var container = $(this).closest('.resume-name-container');
+            cancelResumeNameEdit(container);
+        });
+
+        // Function to cancel resume name editing
+        function cancelResumeNameEdit(container) {
+            var display = container.find('.resume-name-display');
+            var edit = container.find('.resume-name-edit');
+            var input = container.find('.resume-name-input');
+            var originalName = input.data('original-name');
+            
+            // Restore original name
+            input.val(originalName);
+            
+            // Hide edit mode
+            display.show();
+            edit.hide();
+        }
+
+        // Handle Enter key in resume name input
+        $(document).on('keypress', '.resume-name-input', function(e) {
+            if (e.which === 13) { // Enter key
+                e.preventDefault();
+                $(this).closest('.resume-name-edit').find('.save-resume-name-btn').click();
+            }
+        });
+
+        // Handle Escape key in resume name input
+        $(document).on('keydown', '.resume-name-input', function(e) {
+            if (e.which === 27) { // Escape key
+                e.preventDefault();
+                $(this).closest('.resume-name-edit').find('.cancel-resume-name-btn').click();
             }
         });
 
@@ -500,3 +839,7 @@ $conn->close();
     </script>
 </body>
 </html>
+<?php
+// Close database connection at the end
+$conn->close();
+?>

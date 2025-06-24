@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Sign In Form -->
         <div class="col sign-in">
-          <form action="login.php" method="post">
+          <form action="/php/login.php" method="post">
             <div class="form-wrapper">
               <div class="form sign-in">
                 <div class="form-header">
