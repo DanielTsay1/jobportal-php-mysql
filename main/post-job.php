@@ -45,10 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            height: 100%;
+        }
         body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             font-family: 'Poppins', Arial, sans-serif !important;
             background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%);
-            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1 0 auto;
         }
         .post-job-container {
             min-height: 100vh;
@@ -140,11 +148,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 transform: translateY(0);
             }
         }
+        footer {
+            flex-shrink: 0;
+            width: 100vw;
+        }
     </style>
 </head>
 <body>
 <?php include 'header-recruiter.php'; ?>
-<div class="post-job-container">
+<div class="post-job-container main-content">
     <div class="post-job-card">
         <h2><i class="fa fa-briefcase me-2"></i>Post a Job</h2>
         <?php if (!empty($error)): ?>
@@ -272,6 +284,17 @@ function removeQuestion(button) {
     div.remove();
 }
 </script>
+    <footer style="width:100vw; background: linear-gradient(90deg, #e3f0ff 0%, #ede7f6 100%); border-top: 1.5px solid #e3f0ff; margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#1976d2;">
+      <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
+        <i class="fas fa-envelope me-2" style="color:#7b1fa2;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#1976d2; text-decoration:underline;">support@jobportal.com</a>
+      </div>
+      <div style="margin-top:0.5rem; color:#7b1fa2; font-size:1rem;">
+        <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
+      </div>
+      <div style="margin-top:0.5rem; color:#1976d2; font-size:0.98rem;">
+        &copy; <?= date('Y') ?> <span style="color:#1976d2;">Job</span><span style="color:#7b1fa2;">Portal</span> &mdash; Your gateway to new opportunities
+      </div>
+    </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

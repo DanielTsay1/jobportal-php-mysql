@@ -64,10 +64,18 @@ $conn->close();
     <link href="/css/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            height: 100%;
+        }
         body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
             background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
-            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1 0 auto;
         }
         .page-header {
             background: linear-gradient(90deg, #1E90FF 0%, #764ba2 100%);
@@ -228,6 +236,10 @@ $conn->close();
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        footer {
+            flex-shrink: 0;
+            width: 100vw;
+        }
     </style>
 </head>
 <body>
@@ -242,7 +254,7 @@ $conn->close();
         </div>
     </div>
 
-    <div class="container">
+    <div class="container main-content">
         <div class="d-flex justify-content-end">
             <form class="search-bar w-100 w-md-auto" onsubmit="return false;">
                 <input type="text" id="searchInput" class="form-control" placeholder="Search applicants, job title, or status...">
@@ -317,6 +329,17 @@ $conn->close();
         </div>
     </div>
     
+    <footer style="width:100vw; background: linear-gradient(90deg, #e3f0ff 0%, #ede7f6 100%); border-top: 1.5px solid #e3f0ff; margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#1976d2;">
+      <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
+        <i class="fas fa-envelope me-2" style="color:#7b1fa2;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#1976d2; text-decoration:underline;">support@jobportal.com</a>
+      </div>
+      <div style="margin-top:0.5rem; color:#7b1fa2; font-size:1rem;">
+        <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
+      </div>
+      <div style="margin-top:0.5rem; color:#1976d2; font-size:0.98rem;">
+        &copy; <?= date('Y') ?> <span style="color:#1976d2;">Job</span><span style="color:#7b1fa2;">Portal</span> &mdash; Your gateway to new opportunities
+      </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     const applicantsData = <?= json_encode(array_column($applicants, 'status', 'app_id')) ?>;
