@@ -1,20 +1,29 @@
 <?php
 session_start();
+echo '<pre style="background:#fff;color:#000;z-index:9999;position:relative;">'; print_r($_SESSION); echo '</pre>';
 require_once '../php/db.php';
 
-// Ensure user is a recruiter and logged in
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'A') {
+// Allow admin or recruiter
+$user_type = $_SESSION['user_type'] ?? '';
+$compid = $_SESSION['compid'] ?? null;
+$jobid = isset($_GET['jobid']) ? intval($_GET['jobid']) : null;
+
+if ($user_type === 'A') {
+    // Recruiter: require compid
+    if (!$compid) {
+        die("Error: Recruiter is not associated with any company. Please contact support.");
+    }
+} else if ($user_type === 'admin') {
+    // Admin: require jobid
+    if (!$jobid) {
+        die("Error: Admin must specify a job to view applicants.");
+    }
+} else {
     header('Location: /main/login.php');
     exit;
 }
 
 $recruiter_username = $_SESSION['username'] ?? '';
-$compid = $_SESSION['compid'] ?? null;
-
-if (!$compid) {
-    // Redirect or show error if no company is associated with recruiter
-    die("Error: Recruiter is not associated with any company. Please contact support.");
-}
 
 // Fetch company name
 $stmt = $conn->prepare("SELECT name FROM company WHERE compid = ?");
@@ -24,25 +33,49 @@ $company_name_result = $stmt->get_result()->fetch_assoc();
 $company_name = $company_name_result ? $company_name_result['name'] : 'Your Company';
 $stmt->close();
 
-// Fetch all applicants for the company's jobs
+// Fetch applicants
 $applicants = [];
-$sql = "SELECT 
-            a.`S. No` as app_id, 
-            a.applied_at, 
-            a.status,
-            a.cover_letter_file,
-            a.resume_file,
-            u.username AS applicant_name, 
-            u.email AS applicant_email,
-            j.designation AS job_title
-        FROM applied a
-        JOIN user u ON a.userid = u.userid
-        JOIN `job-post` j ON a.jobid = j.jobid
-        WHERE j.compid = ?
-        ORDER BY a.applied_at DESC";
-
-$stmt = $conn->prepare($sql);
-if ($stmt) {
+if ($jobid) {
+    // Only applicants for this job
+    $sql = "SELECT 
+                a.`S. No` as app_id, 
+                a.applied_at, 
+                a.status,
+                a.cover_letter_file,
+                a.resume_file,
+                u.username AS applicant_name, 
+                u.email AS applicant_email,
+                j.designation AS job_title
+            FROM applied a
+            JOIN user u ON a.userid = u.userid
+            JOIN `job-post` j ON a.jobid = j.jobid
+            WHERE j.jobid = ?
+            ORDER BY a.applied_at DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $jobid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $applicants[] = $row;
+    }
+    $stmt->close();
+} else {
+    // All applicants for the company (recruiter view)
+    $sql = "SELECT 
+                a.`S. No` as app_id, 
+                a.applied_at, 
+                a.status,
+                a.cover_letter_file,
+                a.resume_file,
+                u.username AS applicant_name, 
+                u.email AS applicant_email,
+                j.designation AS job_title
+            FROM applied a
+            JOIN user u ON a.userid = u.userid
+            JOIN `job-post` j ON a.jobid = j.jobid
+            WHERE j.compid = ?
+            ORDER BY a.applied_at DESC";
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $compid);
     $stmt->execute();
     $result = $stmt->get_result();

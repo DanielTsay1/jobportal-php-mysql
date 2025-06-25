@@ -320,12 +320,12 @@ $total_count = $conn->query("SELECT COUNT(*) as count FROM `job-post`")->fetch_a
                                     <strong>Posted:</strong> <?= date('M j, Y', strtotime($job['created_at'])) ?>
                                 </p>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 d-flex align-items-center">
                                 <span class="status-badge status-<?= strtolower($job['status']) ?>">
                                     <?= htmlspecialchars($job['status']) ?>
                                 </span>
                             </div>
-                            <div class="col-md-3 text-md-end">
+                            <div class="col-md-3 text-md-end d-flex flex-column align-items-end gap-2">
                                 <?php if ($job['status'] === 'Pending'): ?>
                                     <form method="post" action="/php/approve-job.php" style="display: inline;">
                                         <input type="hidden" name="jobid" value="<?= $job['jobid'] ?>">
@@ -336,10 +336,16 @@ $total_count = $conn->query("SELECT COUNT(*) as count FROM `job-post`")->fetch_a
                                             <i class="fas fa-times me-1"></i>Reject
                                         </button>
                                     </form>
+                                    <a href="applicants.php?jobid=<?= $job['jobid'] ?>" class="btn btn-info btn-sm mt-2"><i class="fas fa-users me-1"></i>View Applicants</a>
                                 <?php else: ?>
-                                    <small class="text-muted">
+                                    <div class="mb-1 small text-muted">
                                         <?= $job['status'] === 'Active' ? 'Approved' : 'Rejected' ?>
-                                    </small>
+                                    </div>
+                                    <form method="post" action="/php/remove-job.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to move this job to Pending?');">
+                                        <input type="hidden" name="jobid" value="<?= $job['jobid'] ?>">
+                                        <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-undo me-1"></i>Move to Pending</button>
+                                    </form>
+                                    <a href="applicants.php?jobid=<?= $job['jobid'] ?>" class="btn btn-info btn-sm mt-2"><i class="fas fa-users me-1"></i>View Applicants</a>
                                 <?php endif; ?>
                             </div>
                         </div>

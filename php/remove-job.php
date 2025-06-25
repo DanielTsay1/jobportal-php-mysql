@@ -17,15 +17,15 @@ if ($jobid <= 0) {
     exit;
 }
 
-$stmt = $conn->prepare("DELETE FROM `job-post` WHERE `jobid` = ?");
+// Set job status to Pending instead of deleting
+$stmt = $conn->prepare("UPDATE `job-post` SET status = 'Pending' WHERE `jobid` = ?");
 $stmt->bind_param("i", $jobid);
 
 if ($stmt->execute()) {
-    // Optionally, redirect back to dashboard
-    header("Location: ../main/admin-dashboard.php?msg=job_removed");
+    header("Location: ../main/admin-dashboard.php?msg=job_requeued");
     exit;
 } else {
-    echo "Error removing job: " . $conn->error;
+    echo "Error updating job status: " . $conn->error;
 }
 $stmt->close();
 $conn->close();
