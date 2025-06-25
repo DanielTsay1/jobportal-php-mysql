@@ -4,49 +4,24 @@ require_once '../php/db.php';
 
 $error_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? null;
-    $password = $_POST['password'] ?? null;
-    $user_type = $_POST['user_type'] ?? null;
-
-    if (empty($username) || empty($password) || empty($user_type)) {
-        $error_message = 'All fields are required.';
-    } else {
-        if ($user_type === 'A') { // Recruiter
-            $sql = "SELECT recid, username, password, compid FROM recruiter WHERE username = ?";
-            $redirect_path = 'recruiter.php';
-            $id_field = 'recid';
-        } else { // Job Seeker
-            $sql = "SELECT userid, username, password FROM user WHERE username = ?";
-            $redirect_path = 'job-list.php';
-            $id_field = 'userid';
-        }
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
-            if (password_verify($password, $user['password'])) {
-                $_SESSION['user_type'] = $user_type;
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['userid'] = $user[$id_field];
-                if ($user_type === 'A') {
-                    $_SESSION['compid'] = $user['compid'];
-                }
-                header("Location: $redirect_path");
-                exit;
-            } else {
-                $error_message = 'Invalid password.';
-            }
-        } else {
+// Handle error messages from URL parameters
+if (isset($_GET['error'])) {
+    switch ($_GET['error']) {
+        case 'missing_fields':
+            $error_message = 'All fields are required.';
+            break;
+        case 'bad_credentials':
+            $error_message = 'Invalid username or password.';
+            break;
+        case 'no_user':
             $error_message = 'No user found with that username.';
-        }
-        $stmt->close();
+            break;
+        case 'server_error':
+            $error_message = 'Server error. Please try again.';
+            break;
+        default:
+            $error_message = 'An error occurred. Please try again.';
     }
-    $conn->close();
 }
 ?>
 <!DOCTYPE html>
@@ -136,22 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         font-size: 1rem;
         left: 2.2rem;
       }
-      .radio-group {
-        display: flex;
-        gap: 1.5rem;
-        margin-bottom: 1.2rem;
-      }
-      .radio-group label {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        font-size: 1rem;
-        color: #1976d2;
-        font-weight: 500;
-      }
-      .radio-group input[type="radio"] {
-        accent-color: #1976d2 !important;
-      }
       .auth-btn {
         background: linear-gradient(90deg, #1976d2 0%, #7b1fa2 100%);
         color: #fff;
@@ -225,10 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="fa fa-lock"></i>
             <input type="password" class="form-control" id="login-password" name="password" placeholder="Password" required>
             <label for="login-password">Password</label>
-          </div>
-          <div class="radio-group mb-3">
-            <label><input type="radio" name="user_type" value="A" required> <span>Recruiter</span></label>
-            <label><input type="radio" name="user_type" value="B" required> <span>Job Seeker</span></label>
           </div>
           <button type="submit" class="auth-btn">Sign In</button>
         </form>

@@ -4,64 +4,82 @@ session_start();
 require_once 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../main/login.html');
+    header('Location: ../main/login.php');
     exit;
 }
 
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
-$userType = $_POST['user_type'] ?? '';
 
-if (empty($username) || empty($password) || empty($userType)) {
-    header('Location: ../main/login.html?error=missing_fields');
+if (empty($username) || empty($password)) {
+    header('Location: ../main/login.php?error=missing_fields');
     exit;
 }
 
-// Determine table and columns based on user type
-$table = ($userType === 'A') ? 'recruiter' : 'user';
-$idColumn = ($userType === 'A') ? 'recid' : 'userid';
-$columns = ($userType === 'A') ? "`$idColumn`, `password`, `compid`" : "`$idColumn`, `password`";
+// First, check if user exists in recruiter table
+$recruiterStmt = $conn->prepare("SELECT recid, password, compid FROM recruiter WHERE username = ?");
+$recruiterStmt->bind_param('s', $username);
+$recruiterStmt->execute();
+$recruiterResult = $recruiterStmt->get_result();
 
-// Prepare and execute the query
-$stmt = $conn->prepare("SELECT $columns FROM `$table` WHERE `username` = ?");
-if (!$stmt) {
-    // Log error: $conn->error
-    header('Location: ../main/login.html?error=server_error');
-    exit;
+if ($recruiterResult->num_rows > 0) {
+    // User found in recruiter table
+    $user = $recruiterResult->fetch_assoc();
+    $recruiterStmt->close();
+    
+    // Verify the password
+    if (password_verify($password, $user['password'])) {
+        // Regenerate session ID to prevent session fixation
+        session_regenerate_id(true);
+        
+        // Set session variables for recruiter
+        $_SESSION['username'] = $username;
+        $_SESSION['user_type'] = 'A';
+        $_SESSION['userid'] = $user['recid'];
+        $_SESSION['recid'] = $user['recid'];
+        $_SESSION['compid'] = $user['compid'];
+        
+        header("Location: ../main/recruiter.php");
+        exit;
+    } else {
+        header('Location: ../main/login.php?error=bad_credentials');
+        exit;
+    }
 }
 
-$stmt->bind_param('s', $username);
-$stmt->execute();
-$result = $stmt->get_result();
+$recruiterStmt->close();
 
-if ($result->num_rows === 0) {
-    header('Location: ../main/login.html?error=no_user');
-    exit;
+// If not found in recruiter table, check user table
+$userStmt = $conn->prepare("SELECT userid, password FROM user WHERE username = ?");
+$userStmt->bind_param('s', $username);
+$userStmt->execute();
+$userResult = $userStmt->get_result();
+
+if ($userResult->num_rows > 0) {
+    // User found in user table
+    $user = $userResult->fetch_assoc();
+    $userStmt->close();
+    
+    // Verify the password
+    if (password_verify($password, $user['password'])) {
+        // Regenerate session ID to prevent session fixation
+        session_regenerate_id(true);
+        
+        // Set session variables for job seeker
+        $_SESSION['username'] = $username;
+        $_SESSION['user_type'] = 'B';
+        $_SESSION['userid'] = $user['userid'];
+        
+        header("Location: ../main/job-list.php");
+        exit;
+    } else {
+        header('Location: ../main/login.php?error=bad_credentials');
+        exit;
+    }
 }
 
-$user = $result->fetch_assoc();
-$stmt->close();
+$userStmt->close();
 
-// Verify the password
-if (!password_verify($password, $user['password'])) {
-    header('Location: ../main/login.html?error=bad_credentials');
-    exit;
-}
-
-// Regenerate session ID to prevent session fixation
-session_regenerate_id(true);
-
-// Set session variables
-$_SESSION['username'] = $username;
-$_SESSION['user_type'] = $userType;
-$_SESSION['userid'] = $user[$idColumn]; // Use the dynamic ID column name
-
-// Redirect based on user type
-if ($userType === 'A') {
-    $_SESSION['recid'] = $user[$idColumn];
-    $_SESSION['compid'] = $user['compid'];
-    header("Location: ../main/recruiter.php");
-} else {
-    header("Location: ../main/job-list.php");
-}
+// If we get here, no user was found
+header('Location: ../main/login.php?error=no_user');
 exit;
