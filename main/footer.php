@@ -30,6 +30,14 @@
                     <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-white mb-4">Support</h5>
+                <a class="btn btn-link text-white-50" href="">Help Center</a>
+                <a class="btn btn-link text-white-50" href="">FAQ</a>
+                <a class="btn btn-link text-white-50" href="">Report Issue</a>
+                <a class="btn btn-link text-white-50" href="">System Status</a>
+                <a class="btn btn-link text-white-50" href="/main/admin-login.php" style="font-size: 0.8rem; opacity: 0.6;">Admin Panel</a>
+            </div>
         </div>
     </div>
 </div>

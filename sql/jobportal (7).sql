@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 24, 2025 at 07:23 AM
+-- Generation Time: Jun 25, 2025 at 07:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,27 @@ SET time_zone = "+00:00";
 --
 -- Database: `jobportal`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `adminid` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`adminid`, `username`, `password`, `email`, `created_at`) VALUES
+(2, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@jobportal.com', '2025-06-24 22:15:51');
 
 -- --------------------------------------------------------
 
@@ -44,7 +65,7 @@ CREATE TABLE `applied` (
 
 INSERT INTO `applied` (`S. No`, `userid`, `jobid`, `status`, `applied_at`, `cover_letter_file`, `resume_file`, `answers`) VALUES
 (1, 5, 11, 'Pending', '2025-06-17 04:24:54', NULL, NULL, NULL),
-(12, 8, 11, 'Pending', '2025-06-22 23:10:07', 'cover_6858efbfa633d.pdf', 'resume_6858efbfa563a.pdf', NULL);
+(13, 8, 11, 'Pending', '2025-06-24 15:31:54', 'cover_685b275aa2eb0.pdf', 'resume_8_1750742913.pdf', NULL);
 
 -- --------------------------------------------------------
 
@@ -86,7 +107,7 @@ CREATE TABLE `job-post` (
   `location` varchar(255) NOT NULL,
   `salary` int(11) NOT NULL,
   `description` longtext NOT NULL,
-  `status` varchar(20) NOT NULL DEFAULT 'Active',
+  `status` varchar(20) NOT NULL DEFAULT 'Pending',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `spots` int(11) NOT NULL DEFAULT 1,
   `questions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`questions`))
@@ -162,7 +183,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`userid`, `username`, `password`, `email`, `profile_picture`, `about`, `education`, `experience`, `website`, `phone`, `location`, `resume`) VALUES
 (5, 'goodbyeworld', '$2y$12$3KexXSQYhmrr4URIH4.Ocu4fRQ1OERys3diyB5NmcTAzukn7Y8Rni', 'goodbyeworld@gmail.com', '../uploads/profile_pictures/chart.png', 'hello we are seeking jobs', 'union high school', NULL, NULL, NULL, NULL, NULL),
-(8, 'seeyouagain', '$2y$12$7YzokUtZAD6kZTnw9Pp9AO5xchkHPGbRAM50apt8EznN5KPxzaUpm', 'xoxomct@gmail.com', NULL, '', '', '', '', '', 'Vancouver, Washington, United States of America', 'resume_8_1750660641.pdf');
+(8, 'seeyouagain', '$2y$12$7YzokUtZAD6kZTnw9Pp9AO5xchkHPGbRAM50apt8EznN5KPxzaUpm', 'xoxomct@gmail.com', NULL, '', '', '', '', '1234567890', 'Vancouver, Washington, USA', 'resume_8_1750660641.pdf');
 
 -- --------------------------------------------------------
 
@@ -179,8 +200,23 @@ CREATE TABLE `user_resumes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `user_resumes`
+--
+
+INSERT INTO `user_resumes` (`id`, `user_id`, `filename`, `original_filename`, `uploaded_at`) VALUES
+(2, 8, 'resume_8_1750742913.pdf', 'resume 1', '2025-06-24 05:28:33'),
+(3, 8, 'resume_8_1750742924.pdf', 'oeeieeoeeiee', '2025-06-24 05:28:44');
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`adminid`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `applied`
@@ -236,10 +272,16 @@ ALTER TABLE `user_resumes`
 --
 
 --
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `adminid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `applied`
 --
 ALTER TABLE `applied`
-  MODIFY `S. No` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `S. No` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `company`
@@ -275,7 +317,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_resumes`
 --
 ALTER TABLE `user_resumes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

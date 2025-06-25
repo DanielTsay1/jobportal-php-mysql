@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recid = $_SESSION['recid']; // Get recid from session
 
     // Prepare SQL to prevent SQL injection
-    $sql = "INSERT INTO `job-post` (recid, compid, designation, location, salary, description, spots, questions) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO `job-post` (recid, compid, designation, location, salary, description, spots, questions, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iissdsis", $recid, $compid, $designation, $location, $salary, $description, $spots, $questions_json);
     
