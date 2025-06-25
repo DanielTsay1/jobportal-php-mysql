@@ -276,6 +276,76 @@
             background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
             color: #fff;
         }
+        .hero-animated-icons {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .floating-icon {
+            position: absolute;
+            font-size: 2.2rem;
+            opacity: 0.18;
+            filter: blur(0.5px) drop-shadow(0 2px 8px #7b3fe4aa);
+            animation: floatIcon 7s ease-in-out infinite alternate;
+            transition: opacity 0.2s;
+        }
+        .icon1 { left: 8vw; top: 12vh; color: #00e0d6; animation-delay: 0s; }
+        .icon2 { right: 10vw; top: 18vh; color: #7b1fa2; animation-delay: 1.2s; }
+        .icon3 { left: 18vw; bottom: 10vh; color: #fff; animation-delay: 2.1s; }
+        .icon4 { right: 16vw; bottom: 14vh; color: #00e0d6; animation-delay: 2.8s; }
+        .icon5 { left: 50vw; top: 8vh; color: #7b1fa2; animation-delay: 3.5s; }
+        @keyframes floatIcon {
+            0% { transform: translateY(0) scale(1) rotate(-8deg); }
+            100% { transform: translateY(-32px) scale(1.12) rotate(8deg); }
+        }
+        .animated-text .line1, .animated-text .line2, .animated-text .line3 {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUpText 0.8s cubic-bezier(.4,1.4,.6,1) forwards;
+        }
+        .animated-text .line1 { animation-delay: 0.1s; }
+        .animated-text .line2 { animation-delay: 0.4s; }
+        .animated-text .line3 { animation-delay: 0.7s; }
+        @keyframes fadeInUpText {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animated-subtext span {
+            opacity: 0;
+            transform: translateY(24px);
+            display: inline-block;
+            animation: fadeInUpText 0.7s cubic-bezier(.4,1.4,.6,1) forwards;
+        }
+        .animated-subtext .sub1 { animation-delay: 1.0s; }
+        .animated-subtext .sub2 { animation-delay: 1.2s; }
+        .animated-subtext .sub3 { animation-delay: 1.4s; }
+        .animated-subtext .sub4 { animation-delay: 1.6s; }
+        .animated-subtext .sub5 { animation-delay: 1.8s; }
+        .typewriter-container {
+            display: inline-block;
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            color: #fff;
+            line-height: 1.08;
+            min-height: 4.5em;
+            text-align: center;
+            white-space: pre-line;
+        }
+        .typewriter-cursor {
+            display: inline-block;
+            color: #00e0d6;
+            font-weight: 700;
+            font-size: 1em;
+            margin-left: 2px;
+            animation: blinkCursor 0.8s steps(1) infinite;
+            vertical-align: bottom;
+        }
+        @keyframes blinkCursor {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
     </style>
 </head>
 
@@ -295,9 +365,21 @@
     </header>
     <div class="hero">
         <div class="hero-bg"></div>
+        <div class="hero-animated-icons">
+            <i class="fas fa-rocket floating-icon icon1"></i>
+            <i class="fas fa-bolt floating-icon icon2"></i>
+            <i class="fas fa-briefcase floating-icon icon3"></i>
+            <i class="fas fa-user-shield floating-icon icon4"></i>
+            <i class="fas fa-chart-line floating-icon icon5"></i>
+        </div>
         <div class="container position-relative" style="z-index:2;">
-            <div class="hero-title">Your Next<br>Career Move<br><span style="color:#00e0d6; font-weight:700;">Starts Here.</span></div>
-            <div class="hero-subtitle">A new era of job search. Effortless. Curated. Beautiful.<br>Discover top jobs, apply in one click, and get hired faster.</div>
+            <div class="hero-title typewriter-container">
+                <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
+            </div>
+            <div class="hero-subtitle animated-subtext">
+                <span class="sub1">A new era of job search.</span> <span class="sub2">Effortless.</span> <span class="sub3">Curated.</span> <span class="sub4">Beautiful.</span><br>
+                <span class="sub5">Discover top jobs, apply in one click, and get hired faster.</span>
+            </div>
         </div>
     </div>
     <div class="glass-panel">
@@ -367,6 +449,46 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Typewriter animation for hero headline
+    document.addEventListener('DOMContentLoaded', function() {
+        const lines = [
+            'Your Next',
+            'Career Move',
+            'Starts Here.'
+        ];
+        const colors = [null, null, '#00e0d6'];
+        const typewriter = document.getElementById('typewriter-text');
+        const cursor = document.querySelector('.typewriter-cursor');
+        let lineIdx = 0, charIdx = 0;
+        let typing = true;
+        function typeLine() {
+            if (lineIdx >= lines.length) {
+                cursor.style.color = '#00e0d6';
+                return;
+            }
+            const line = lines[lineIdx];
+            const color = colors[lineIdx];
+            if (charIdx <= line.length) {
+                let html = '';
+                for (let i = 0; i < lineIdx; ++i) {
+                    if (colors[i]) html += `<span style='color:${colors[i]};font-weight:700;'>${lines[i]}</span><br>`;
+                    else html += lines[i] + '<br>';
+                }
+                if (color) html += `<span style='color:${color};font-weight:700;'>${line.slice(0, charIdx)}</span>`;
+                else html += line.slice(0, charIdx);
+                typewriter.innerHTML = html;
+                setTimeout(typeLine, 55 + Math.random()*40);
+                charIdx++;
+            } else {
+                charIdx = 0;
+                lineIdx++;
+                setTimeout(typeLine, 500);
+            }
+        }
+        typeLine();
+    });
+    </script>
 </body>
 
 </html>
