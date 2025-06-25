@@ -51,6 +51,8 @@ if (isset($_GET['error'])) {
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
       }
       .auth-card {
         background: #fff;
@@ -63,6 +65,8 @@ if (isset($_GET['error'])) {
         animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
         opacity: 0;
         transform: translateY(40px);
+        position: relative;
+        z-index: 2;
       }
       @keyframes fadeSlideIn {
         from { opacity: 0; transform: translateY(40px); }
@@ -155,9 +159,131 @@ if (isset($_GET['error'])) {
           max-width: 98vw;
         }
       }
+      .google-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+        background: #181828;
+        color: #fff;
+        border: 1.5px solid #44445a;
+        border-radius: 20px;
+        font-size: 1.08rem;
+        font-weight: 600;
+        padding: 0.7rem 1.5rem;
+        margin-bottom: 1.2rem;
+        margin-top: 0.2rem;
+        box-shadow: 0 2px 8px rgba(30, 20, 60, 0.10);
+        transition: background 0.18s, border 0.18s;
+        cursor: pointer;
+      }
+      .google-btn:hover {
+        background: #23233a;
+        border-color: #7b1fa2;
+      }
+      .google-btn img {
+        margin-right: 0.5rem;
+        background: #fff;
+        border-radius: 50%;
+        padding: 2px;
+      }
+      .divider-or {
+        width: 100%;
+        text-align: center;
+        margin: 1.1rem 0 1.2rem 0;
+        position: relative;
+      }
+      .divider-or span {
+        background: #fff;
+        color: #888;
+        padding: 0 1.1em;
+        font-size: 1rem;
+        position: relative;
+        z-index: 2;
+      }
+      .divider-or:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: #e3e3ef;
+        z-index: 1;
+      }
+      .google-btn-white {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+        background: #fff;
+        color: #222;
+        border: 1.5px solid #dadce0;
+        border-radius: 20px;
+        font-size: 1.08rem;
+        font-weight: 600;
+        padding: 0.7rem 1.5rem;
+        margin-top: 2.2rem;
+        margin-bottom: 0.2rem;
+        box-shadow: 0 2px 8px rgba(30, 20, 60, 0.08);
+        transition: background 0.18s, border 0.18s;
+        cursor: pointer;
+      }
+      .google-btn-white:hover {
+        background: #f7f7f7;
+        border-color: #7b1fa2;
+      }
+      .google-btn-white img {
+        margin-right: 0.5rem;
+        background: transparent;
+        border-radius: 50%;
+        padding: 2px;
+      }
+      .login-bg-animated {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+        background: radial-gradient(ellipse at 60% 20%, #7b1fa2 0%, transparent 60%),
+                    radial-gradient(ellipse at 20% 80%, #1976d2 0%, transparent 70%),
+                    linear-gradient(135deg, #181828 0%, #23233a 100%);
+        animation: bgMove 12s ease-in-out infinite alternate;
+      }
+      @keyframes bgMove {
+        0% { background-position: 60% 20%, 20% 80%, 0 0; }
+        100% { background-position: 65% 25%, 15% 75%, 100% 100%; }
+      }
+      .login-bg-animated::before, .login-bg-animated::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.18;
+        filter: blur(2px);
+        animation: floatShape 10s ease-in-out infinite alternate;
+      }
+      .login-bg-animated::before {
+        width: 420px; height: 420px;
+        left: -120px; top: 10vh;
+        background: linear-gradient(135deg, #7b1fa2 0%, #1976d2 100%);
+        animation-delay: 0s;
+      }
+      .login-bg-animated::after {
+        width: 320px; height: 320px;
+        right: -100px; bottom: 8vh;
+        background: linear-gradient(135deg, #1976d2 0%, #7b1fa2 100%);
+        animation-delay: 2s;
+      }
+      @keyframes floatShape {
+        0% { transform: translateY(0) scale(1); }
+        100% { transform: translateY(-40px) scale(1.08); }
+      }
     </style>
   </head>
   <body>
+    <div class="login-bg-animated"></div>
     <div class="auth-card">
       <div style="text-align:center; margin-bottom: 1.2rem;">
         <span style="font-size:2rem; font-weight:700; color:#1976d2; letter-spacing:-1px;">
@@ -219,6 +345,10 @@ if (isset($_GET['error'])) {
         </form>
         <span class="auth-toggle" onclick="showTab('login')">Already have an account? <b>Sign in here</b></span>
       </div>
+      <button type="button" class="google-btn-white" onclick="alert('Google OAuth integration coming soon!')">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width:22px; height:22px; vertical-align:middle; margin-right:10px;">
+        <span>Continue with Google</span>
+      </button>
     </div>
     <script>
       function showTab(tab) {
@@ -238,10 +368,10 @@ if (isset($_GET['error'])) {
           registerForm.style.display = '';
         }
       }
-      // Optional: Animate card in
       document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.auth-card').style.opacity = '1';
         document.querySelector('.auth-card').style.transform = 'translateY(0)';
+        document.querySelector('.login-bg-animated').style.opacity = '1';
       });
     </script>
   </body>
