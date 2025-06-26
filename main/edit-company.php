@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
     $website = $_POST['website'] ?? '';
     $about = $_POST['about'] ?? '';
     $email = $_POST['email'] ?? '';
+    $industry = $_POST['industry'] ?? '';
 
     // Update recruiter email by recid
     $stmt = $conn->prepare("UPDATE recruiter SET email = ? WHERE recid = ?");
@@ -40,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
     $stmt->close();
 
     // Update company by compid
-    $stmt = $conn->prepare("UPDATE company SET name = ?, location = ?, contact = ?, website = ?, about = ? WHERE compid = ?");
-    $stmt->bind_param("ssissi", $company_name, $location, $contact, $website, $about, $compid);
+    $stmt = $conn->prepare("UPDATE company SET name = ?, location = ?, contact = ?, website = ?, about = ?, industry = ? WHERE compid = ?");
+    $stmt->bind_param("ssssssi", $company_name, $location, $contact, $website, $about, $industry, $compid);
     $stmt->execute();
     $stmt->close();
 
@@ -182,6 +183,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
     <form method="post" class="edit-company-card">
         <h2><i class="fa fa-edit me-2"></i>Edit Company & Contact Info</h2>
         <?= $message ?>
+        <?php if (!empty($company['suspended']) && $company['suspended'] == 1): ?>
+            <div class="alert alert-danger" style="font-size:1.1rem; font-weight:600;">
+                <i class="fas fa-ban me-2"></i>
+                Your company is currently <b>suspended</b>.<br>
+                <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span>
+            </div>
+        <?php endif; ?>
         <div class="mb-3">
             <label class="form-label">Company Name</label>
             <input type="text" name="company_name" class="form-control" value="<?= htmlspecialchars($company['name'] ?? '') ?>" required>
@@ -201,6 +209,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
         <div class="mb-3">
             <label class="form-label">About Company</label>
             <textarea name="about" class="form-control" rows="4"><?= htmlspecialchars($company['about'] ?? '') ?></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Industry</label>
+            <input type="text" name="industry" class="form-control" value="<?= htmlspecialchars($company['industry'] ?? '') ?>" placeholder="e.g. Technology, Healthcare, Education">
         </div>
         <div class="divider"></div>
         <h5>Recruiter Contact Info</h5>

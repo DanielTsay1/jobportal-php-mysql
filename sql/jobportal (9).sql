@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 25, 2025 at 07:22 AM
+-- Generation Time: Jun 26, 2025 at 07:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`adminid`, `username`, `password`, `email`, `created_at`) VALUES
-(2, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@jobportal.com', '2025-06-24 22:15:51');
+(2, 'admin', '$2y$12$CqIt.Df974fDqXXNnUgIl.rGFjA/qU1hW3nQXkoVCFf8eiCAtXquu', 'admin@jobportal.com', '2025-06-24 22:15:51');
 
 -- --------------------------------------------------------
 
@@ -80,18 +80,21 @@ CREATE TABLE `company` (
   `contact` bigint(10) NOT NULL,
   `about` text DEFAULT NULL,
   `logo` varchar(255) DEFAULT NULL,
-  `website` varchar(255) DEFAULT NULL
+  `website` varchar(255) DEFAULT NULL,
+  `suspended` tinyint(1) DEFAULT 0,
+  `industry` varchar(100) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `company`
 --
 
-INSERT INTO `company` (`compid`, `name`, `location`, `contact`, `about`, `logo`, `website`) VALUES
-(1, 'hello', 'Vancouver, Washington, United States of America', 5644440700, 'ssss', NULL, 'www.example.com'),
-(101, 'Newton School', 'Bangalore', 7004395760, NULL, NULL, NULL),
-(102, 'Union FBLA Team', 'Hello, World', 5644440700, 'www', NULL, 'www.example.com'),
-(103, 'Union FBla Team', 'Vancouver, Washington, United States of America', 5644440700, 'ge', NULL, 'www.example.com');
+INSERT INTO `company` (`compid`, `name`, `location`, `contact`, `about`, `logo`, `website`, `suspended`, `industry`, `phone`) VALUES
+(1, 'hello', 'Vancouver, Washington, United States of America', 5644440700, 'ssss', NULL, 'www.example.com', 0, NULL, NULL),
+(101, 'Newton School', 'Bangalore', 7004395760, NULL, NULL, NULL, 0, NULL, NULL),
+(102, 'Union FBLA Team', 'Hello, World', 5644440700, 'www', NULL, 'www.example.com', 0, NULL, NULL),
+(103, 'Union FBla Team', 'Vancouver, Washington, United States of America', 5644440700, 'ge', NULL, 'www.example.com', 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -118,7 +121,9 @@ CREATE TABLE `job-post` (
 --
 
 INSERT INTO `job-post` (`jobid`, `recid`, `compid`, `designation`, `location`, `salary`, `description`, `status`, `created_at`, `spots`, `questions`) VALUES
-(11, 9, 102, 'Software Engineer', 'union', 2, '2', 'Active', '2025-06-15 22:44:51', 1, NULL);
+(11, 9, 102, 'Software Engineer', 'union', 2, '2', 'Active', '2025-06-15 22:44:51', 1, NULL),
+(13, 9, 102, 'Software Engineer', 'union', 50000, 'Develop and maintain software.', 'Rejected', '2025-06-24 22:43:47', 1, NULL),
+(14, 9, 102, 'Software Engineer', 'union', 50000, 'Develop and maintain software.', 'Pending', '2025-06-24 22:43:54', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -159,6 +164,18 @@ INSERT INTO `recruiter` (`recid`, `username`, `password`, `email`, `compid`) VAL
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `system_settings`
+--
+
+CREATE TABLE `system_settings` (
+  `setting_key` varchar(50) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -174,16 +191,19 @@ CREATE TABLE `user` (
   `website` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `resume` varchar(255) DEFAULT NULL
+  `resume` varchar(255) DEFAULT NULL,
+  `user_type` varchar(10) NOT NULL DEFAULT 'J',
+  `suspended` tinyint(1) DEFAULT 0,
+  `last_login` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userid`, `username`, `password`, `email`, `profile_picture`, `about`, `education`, `experience`, `website`, `phone`, `location`, `resume`) VALUES
-(5, 'goodbyeworld', '$2y$12$3KexXSQYhmrr4URIH4.Ocu4fRQ1OERys3diyB5NmcTAzukn7Y8Rni', 'goodbyeworld@gmail.com', '../uploads/profile_pictures/chart.png', 'hello we are seeking jobs', 'union high school', NULL, NULL, NULL, NULL, NULL),
-(8, 'seeyouagain', '$2y$12$7YzokUtZAD6kZTnw9Pp9AO5xchkHPGbRAM50apt8EznN5KPxzaUpm', 'xoxomct@gmail.com', NULL, '', '', '', '', '1234567890', 'Vancouver, Washington, USA', 'resume_8_1750660641.pdf');
+INSERT INTO `user` (`userid`, `username`, `password`, `email`, `profile_picture`, `about`, `education`, `experience`, `website`, `phone`, `location`, `resume`, `user_type`, `suspended`, `last_login`) VALUES
+(5, 'goodbyeworld', '$2y$12$3KexXSQYhmrr4URIH4.Ocu4fRQ1OERys3diyB5NmcTAzukn7Y8Rni', 'goodbyeworld@gmail.com', '../uploads/profile_pictures/chart.png', 'hello we are seeking jobs', 'union high school', NULL, NULL, NULL, NULL, NULL, 'J', 0, NULL),
+(8, 'seeyouagain', '$2y$12$7YzokUtZAD6kZTnw9Pp9AO5xchkHPGbRAM50apt8EznN5KPxzaUpm', 'xoxomct@gmail.com', NULL, '', '', '', '', '1234567890', 'Vancouver, Washington, USA', 'resume_8_1750660641.pdf', 'J', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -255,6 +275,12 @@ ALTER TABLE `recruiter`
   ADD KEY `fk_recruiter_company` (`compid`);
 
 --
+-- Indexes for table `system_settings`
+--
+ALTER TABLE `system_settings`
+  ADD PRIMARY KEY (`setting_key`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -293,7 +319,7 @@ ALTER TABLE `company`
 -- AUTO_INCREMENT for table `job-post`
 --
 ALTER TABLE `job-post`
-  MODIFY `jobid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `jobid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `notifications`

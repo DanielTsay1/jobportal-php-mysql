@@ -11,7 +11,7 @@ $recid = $_SESSION['recid'];
 $compid = $_SESSION['compid'];
 
 // Fetch company information
-$company_stmt = $conn->prepare("SELECT name, location, about FROM company WHERE compid = ?");
+$company_stmt = $conn->prepare("SELECT name, location, about, suspended, suspension_reason FROM company WHERE compid = ?");
 $company_stmt->bind_param("i", $compid);
 $company_stmt->execute();
 $company = $company_stmt->get_result()->fetch_assoc();
@@ -210,6 +210,14 @@ $conn->close();
 </head>
 <body>
     <?php include 'header-recruiter.php'; ?>
+
+    <?php if (!empty($company['suspended']) && $company['suspended'] == 1): ?>
+        <div class="alert alert-danger text-center" style="font-size:1.1rem; font-weight:600; margin-bottom: 2rem;">
+            <i class="fas fa-ban me-2"></i>
+            Your company is currently <b>suspended</b>.<br>
+            <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span>
+        </div>
+    <?php endif; ?>
 
     <!-- Dashboard Header -->
     <div class="dashboard-header">

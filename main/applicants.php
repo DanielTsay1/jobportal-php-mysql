@@ -1,6 +1,5 @@
 <?php
 session_start();
-echo '<pre style="background:#fff;color:#000;z-index:9999;position:relative;">'; print_r($_SESSION); echo '</pre>';
 require_once '../php/db.php';
 
 // Allow admin or recruiter
@@ -281,7 +280,10 @@ $conn->close();
         <div class="container">
             <div class="header-row">
                 <h1><i class="fas fa-users me-2"></i>Manage Applicants</h1>
-                <a href="/main/recruiter.php" class="back-btn"><i class="fas fa-arrow-left me-1"></i>Back</a>
+                <?php
+                $back_url = ($user_type === 'admin') ? '/main/admin-dashboard.php' : '/main/recruiter.php';
+                ?>
+                <a href="<?= $back_url ?>" class="back-btn"><i class="fas fa-arrow-left me-1"></i>Back</a>
             </div>
             <p>All applications for <b><?= htmlspecialchars($company_name) ?></b></p>
         </div>
