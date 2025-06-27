@@ -7,7 +7,7 @@ A sophisticated, full-featured job portal system built with PHP, MySQL, and mode
 ## ✨ Key Features
 
 ### 🎯 Core Functionality
-- **Dual User System**: Separate interfaces for job seekers (Type B) and recruiters (Type A)
+- **Dual User System**: Separate interfaces for job seekers (Type B) and recruiters (Type A) + Admin Panel
 - **Job Posting & Management**: Complete job lifecycle management with approval workflows
 - **Application System**: Multi-resume support with cover letter uploads
 - **Real-time Search**: Advanced filtering with AJAX-powered instant results
