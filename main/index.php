@@ -58,10 +58,14 @@
             letter-spacing: -2px;
             color: #fff;
             margin-bottom: 1.2rem;
-            text-shadow: 0 4px 32px rgba(123,63,228,0.10);
+            text-shadow: 0 4px 32px rgba(123,63,228,0.10), 0 0 16px #00e0d644;
             z-index: 2;
             line-height: 1.08;
-            animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1);
+            animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1), heroGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow {
+            0% { text-shadow: 0 4px 32px rgba(123,63,228,0.10), 0 0 8px #00e0d644; }
+            100% { text-shadow: 0 4px 32px rgba(123,63,228,0.18), 0 0 32px #00e0d6cc; }
         }
         .hero-subtitle {
             font-size: 1.5rem;
@@ -85,15 +89,23 @@
             border-radius: 30px;
             padding: 1.1rem 3.2rem;
             box-shadow: 0 8px 32px rgba(123,63,228,0.18);
-            transition: background 0.2s, box-shadow 0.2s;
+            transition: background 0.2s, box-shadow 0.2s, outline 0.2s;
             z-index: 100;
             outline: none;
             animation: fadeInUp 1.5s cubic-bezier(.4,1.4,.6,1);
+            border: 2px solid transparent;
         }
-        .cta-btn-sticky:hover {
+        .cta-btn-sticky:focus {
+            outline: 2px solid #00e0d6;
+            outline-offset: 2px;
+            border-color: #00e0d6;
+            box-shadow: 0 0 0 4px #00e0d633, 0 8px 32px rgba(123,63,228,0.18);
+        }
+        .cta-btn-sticky:hover, .cta-btn-sticky:active {
             background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
             color: #fff;
-            box-shadow: 0 12px 48px rgba(0,224,214,0.18);
+            box-shadow: 0 12px 48px rgba(0,224,214,0.18), 0 0 0 6px #00e0d655;
+            border-color: #00e0d6;
         }
         .glass-panel {
             background: rgba(255,255,255,0.10);
@@ -133,14 +145,18 @@
             flex: 1 1 260px;
             text-align: center;
             color: #f3f3fa;
-            transition: transform 0.18s, box-shadow 0.18s;
+            transition: transform 0.18s, box-shadow 0.18s, outline 0.18s;
             border: 1.5px solid rgba(255,255,255,0.10);
             backdrop-filter: blur(8px) saturate(1.1);
             animation: fadeInUp 1.3s cubic-bezier(.4,1.4,.6,1);
         }
-        .feature-item:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 8px 32px rgba(123,63,228,0.13);
+        .feature-item:focus-within, .feature-item:focus {
+            outline: 2px solid #00e0d6;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px #00e0d633;
+        }
+        .feature-item:active {
+            transform: scale(0.98);
         }
         .feature-icon {
             font-size: 2.7rem;
@@ -198,6 +214,15 @@
             border: 1.5px solid rgba(255,255,255,0.10);
             backdrop-filter: blur(8px) saturate(1.1);
             margin-bottom: 1rem;
+            transition: transform 0.18s, box-shadow 0.18s, outline 0.18s;
+        }
+        .testimonial-item:focus-within, .testimonial-item:focus {
+            outline: 2px solid #00e0d6;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px #00e0d633;
+        }
+        .testimonial-item:active {
+            transform: scale(0.98);
         }
         .testimonial-quote {
             font-size: 1.5rem;
@@ -228,6 +253,7 @@
             .features-section { border-radius: 18px; }
             .feature-item, .testimonial-item { min-width: 90vw; max-width: 98vw; }
             .cta-btn-sticky { font-size: 1rem; padding: 0.8rem 1.5rem; }
+            .trusted-logos img { height: 28px; }
         }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -247,6 +273,10 @@
             transition: background 0.18s;
             animation: fadeInUp 0.8s cubic-bezier(.4,1.4,.6,1);
         }
+        .main-header-glass:focus-within, .main-header-glass:focus {
+            outline: 2px solid #00e0d6;
+            outline-offset: 2px;
+        }
         .nav-link-glass {
             color: #f3f3fa;
             font-weight: 500;
@@ -261,6 +291,11 @@
             background: rgba(0,224,214,0.10);
             color: #00e0d6;
             text-decoration: none;
+        }
+        .nav-link-glass:focus, .nav-link-cta:focus {
+            outline: 2px solid #00e0d6;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px #00e0d6;
         }
         .nav-link-cta {
             background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
@@ -346,20 +381,52 @@
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
         }
+        /* Trusted by section */
+        .trusted-section {
+            max-width: 1100px;
+            margin: 2.5rem auto 0 auto;
+            padding: 2rem 1rem 1.5rem 1rem;
+            text-align: center;
+            animation: fadeInUp 1.3s cubic-bezier(.4,1.4,.6,1);
+        }
+        .trusted-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #b3b3c6;
+            margin-bottom: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+        .trusted-logos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .trusted-logos img {
+            height: 38px;
+            opacity: 0.85;
+            filter: grayscale(1) brightness(1.2) drop-shadow(0 2px 8px #7b3fe444);
+            transition: opacity 0.2s, filter 0.2s;
+        }
+        .trusted-logos img:hover, .trusted-logos img:focus {
+            opacity: 1;
+            filter: none;
+        }
     </style>
 </head>
 
 <body>
-    <header class="main-header-glass">
+    <header class="main-header-glass" tabindex="0">
         <div class="container-fluid d-flex align-items-center justify-content-between px-4" style="height:68px;">
             <div class="brand" style="font-size:1.7rem; font-weight:800; letter-spacing:-1.5px; color:#fff;">
                 <i class="fas fa-rocket me-2" style="color:#00e0d6;"></i>Job<span style="color:#00e0d6;">Portal</span>
             </div>
-            <nav class="d-flex align-items-center gap-3">
-                <a href="/main/job-list.php" class="nav-link-glass">Jobs</a>
-                <a href="#" class="nav-link-glass">About</a>
-                <a href="#" class="nav-link-glass">Contact</a>
-                <a href="/main/login.php" class="nav-link-glass nav-link-cta">Login / Sign Up</a>
+            <nav class="d-flex align-items-center gap-3" aria-label="Main Navigation">
+                <a href="#jobs" class="nav-link-glass" aria-label="Browse Jobs">Jobs</a>
+                <a href="#about" class="nav-link-glass" aria-label="About">About</a>
+                <a href="#contact" class="nav-link-glass" aria-label="Contact">Contact</a>
+                <a href="/main/login.php" class="nav-link-glass nav-link-cta" aria-label="Login or Sign Up">Login / Sign Up</a>
             </nav>
         </div>
     </header>
@@ -375,68 +442,63 @@
         <div class="container position-relative" style="z-index:2;">
             <div class="hero-title typewriter-container">
                 <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
-    </div>
+            </div>
             <div class="hero-subtitle animated-subtext">
                 <span class="sub1">A new era of job search.</span> <span class="sub2">Effortless.</span> <span class="sub3">Curated.</span> <span class="sub4">Beautiful.</span><br>
                 <span class="sub5">Discover top jobs, apply in one click, and get hired faster.</span>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+        </div>
+    </div>
     <div class="glass-panel">
         <div class="features-title">Why JobPortal?</div>
         <div class="features-list">
-            <div class="feature-item">
+            <div class="feature-item" tabindex="0">
                 <div class="feature-icon"><i class="fas fa-bolt"></i></div>
                 <div class="feature-title">1-Click Apply</div>
                 <div class="feature-desc">Apply to jobs instantly with your profile. No more tedious forms.</div>
             </div>
-            <div class="feature-item">
+            <div class="feature-item" tabindex="0">
                 <div class="feature-icon"><i class="fas fa-briefcase"></i></div>
                 <div class="feature-title">Curated Opportunities</div>
                 <div class="feature-desc">Handpicked jobs from top companies, updated daily.</div>
-                    </div>
-            <div class="feature-item">
+            </div>
+            <div class="feature-item" tabindex="0">
                 <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
-                <div class="feature-title">Verified Employers</div>
-                <div class="feature-desc">We screen every employer for authenticity and quality.</div>
-                </div>
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="feature-title">Career Growth</div>
-                <div class="feature-desc">Resources, tips, and personalized recommendations to boost your career.</div>
+                <div class="feature-title">Secure & Private</div>
+                <div class="feature-desc">Your data is protected with industry-leading security.</div>
             </div>
         </div>
-                    </div>
+    </div>
+    <div class="trusted-section">
+        <div class="trusted-title">Trusted by leading companies</div>
+        <div class="trusted-logos">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft logo" tabindex="0">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Apple-logo.png" alt="Apple logo" tabindex="0">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM logo" tabindex="0">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google logo" tabindex="0">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix logo" tabindex="0">
+        </div>
+    </div>
     <div class="testimonials-section">
-        <div class="testimonials-title">What Our Users Say</div>
+        <div class="testimonials-title">What our users say</div>
         <div class="testimonial-carousel">
-            <div class="testimonial-item">
-                <div class="testimonial-quote"><i class="fas fa-quote-left"></i></div>
-                "I landed my dream job in just two weeks! The process was so easy and the jobs were top-notch."
+            <div class="testimonial-item" tabindex="0">
+                <div class="testimonial-quote">“I landed my dream job in just two weeks! The process was seamless and the jobs were top quality.”</div>
                 <div class="testimonial-user">
-                    <img src="/img/testimonial-1.jpg" alt="User 1">
-                    <span>Priya S., Product Designer</span>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Testimonial user photo">
+                    <span>Sarah Lee, Product Designer at Google</span>
                 </div>
             </div>
-            <div class="testimonial-item">
-                <div class="testimonial-quote"><i class="fas fa-quote-left"></i></div>
-                "As a recruiter, I found the best talent faster than ever. The platform is intuitive and powerful."
+            <div class="testimonial-item" tabindex="0">
+                <div class="testimonial-quote">“The 1-click apply feature saved me so much time. I highly recommend JobPortal to all job seekers.”</div>
                 <div class="testimonial-user">
-                    <img src="/img/testimonial-2.jpg" alt="User 2">
-                    <span>Rahul M., Recruiter</span>
-                            </div>
-                        </div>
-            <div class="testimonial-item">
-                <div class="testimonial-quote"><i class="fas fa-quote-left"></i></div>
-                "The 1-click apply feature is a game changer. Highly recommend to all job seekers!"
-                <div class="testimonial-user">
-                    <img src="/img/testimonial-3.jpg" alt="User 3">
-                    <span>Emily T., Software Engineer</span>
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Testimonial user photo">
+                    <span>Michael Chen, Software Engineer at Microsoft</span>
                 </div>
             </div>
         </div>
     </div>
-    <a href="/main/login.php" class="cta-btn-sticky">Get Started Free</a>
+    <button class="cta-btn-sticky" aria-label="Find your dream job now">Find Your Dream Job</button>
     <footer style="width:100vw; background: linear-gradient(90deg, #23233a 0%, #181828 100%); border-top: 1.5px solid #23233a; margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#b3b3c6;">
         <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
             <i class="fas fa-envelope me-2" style="color:#7b1fa2;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#00e0d6; text-decoration:underline;">support@jobportal.com</a>
@@ -487,6 +549,16 @@
             }
         }
         typeLine();
+    });
+    // Smooth scroll for nav links
+    document.querySelectorAll('a.nav-link-glass[href^="#"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
     });
     </script>
 </body>
