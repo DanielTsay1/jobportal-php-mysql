@@ -499,17 +499,7 @@
         </div>
     </div>
     <button class="cta-btn-sticky" aria-label="Find your dream job now">Find Your Dream Job</button>
-    <footer style="width:100vw; background: linear-gradient(90deg, #23233a 0%, #181828 100%); border-top: 1.5px solid #23233a; margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#b3b3c6;">
-        <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
-            <i class="fas fa-envelope me-2" style="color:#7b1fa2;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#00e0d6; text-decoration:underline;">support@jobportal.com</a>
-        </div>
-        <div style="margin-top:0.5rem; color:#7b1fa2; font-size:1rem;">
-            <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
-        </div>
-        <div style="margin-top:0.5rem; color:#b3b3c6; font-size:0.98rem;">
-            &copy; <?= date('Y') ?> <span style="color:#00e0d6;">Job</span><span style="color:#7b1fa2;">Portal</span> &mdash; Your gateway to new opportunities
-        </div>
-    </footer>
+    <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     // Typewriter animation for hero headline

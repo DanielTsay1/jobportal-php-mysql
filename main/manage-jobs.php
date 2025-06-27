@@ -643,6 +643,27 @@ $stmt->close();
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .card-body input.form-control,
+        .card-body textarea.form-control,
+        .card-body select.form-control {
+            background: #39395a !important;
+            color: #f3f3fa !important;
+            border: 2px solid #7b3fe4 !important;
+            border-radius: 12px !important;
+            box-shadow: none !important;
+            font-size: 1.08rem !important;
+            font-weight: 500 !important;
+            outline: none !important;
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .card-body input.form-control:focus,
+        .card-body textarea.form-control:focus,
+        .card-body select.form-control:focus {
+            border: 2px solid #00e0d6 !important;
+            background: #44446a !important;
+            color: #fff !important;
+        }
     </style>
 </head>
 <body>
@@ -662,7 +683,7 @@ $stmt->close();
     </div>
     </div>
 
-<div class="container main-content">
+<div class="container main-content glass-panel">
     <?php if ($company_suspended): ?>
         <div class="suspension-notice">
             <i class="fas fa-ban"></i>
@@ -838,18 +859,7 @@ $stmt->close();
     <?php endif; ?>
 </div>
 
-<footer style="width:100vw; background: linear-gradient(90deg, #e3f0ff 0%, #ede7f6 100%); border-top: 1.5px solid #e3f0ff; margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#1976d2;">
-  <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
-    <i class="fas fa-envelope me-2" style="color:#7b1fa2;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#1976d2; text-decoration:underline;">support@jobportal.com</a>
-  </div>
-  <div style="margin-top:0.5rem; color:#7b1fa2; font-size:1rem;">
-    <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
-  </div>
-  <div style="margin-top:0.5rem; color:#1976d2; font-size:0.98rem;">
-    &copy; <?= date('Y') ?> <span style="color:#1976d2;">Job</span><span style="color:#7b1fa2;">Portal</span> &mdash; Your gateway to new opportunities
-  </div>
-</footer>
-
+<?php include 'footer.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Notification Container -->

@@ -10,9 +10,12 @@
 }
 
 body {
-    font-family: 'Heebo', sans-serif;
-    background-color: var(--light);
-    color: var(--dark);
+    background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+    color: #f3f3fa;
+    font-family: 'Inter', Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 .profile-sidebar {
@@ -62,4 +65,72 @@ body {
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
+}
+
+.glass-panel, .card, .app-card, .job-details-container, .apply-glass-panel {
+    background: rgba(255,255,255,0.10);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+    backdrop-filter: blur(18px) saturate(1.2);
+    border: 1.5px solid rgba(255,255,255,0.13);
+    margin: 2rem auto;
+    max-width: 1100px;
+    padding: 2.5rem 2rem 2rem 2rem;
+    z-index: 2;
+    position: relative;
+}
+
+.btn-apply, .btn-primary, .btn-outline-primary, .btn-gradient {
+    background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover, .btn-gradient:hover {
+    background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0,224,214,0.3);
+}
+
+input[type="text"], input[type="email"], input[type="number"], input[type="file"], textarea, select {
+    background: rgba(255,255,255,0.13) !important;
+    border: 1.5px solid rgba(255,255,255,0.18) !important;
+    border-radius: 16px !important;
+    color: #f3f3fa !important;
+    font-size: 1.08rem;
+    font-weight: 500;
+    box-shadow: 0 2px 12px rgba(123,63,228,0.08);
+    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    backdrop-filter: blur(8px) saturate(1.1);
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="file"]:focus, textarea:focus, select:focus {
+    border: 1.5px solid #00e0d6 !important;
+    background: rgba(255,255,255,0.18) !important;
+    box-shadow: 0 4px 24px rgba(0,224,214,0.13);
+    color: #fff !important;
+}
+
+::placeholder {
+    color: #b3b3c6 !important;
+    font-weight: 400;
+    opacity: 1;
+    letter-spacing: 0.01em;
+}
+
+footer {
+    width: 100vw;
+    background: rgba(30, 30, 50, 0.38);
+    backdrop-filter: blur(18px) saturate(1.2);
+    border-top: 1.5px solid rgba(255,255,255,0.10);
+    margin-top:2rem;
+    padding: 1.5rem 0 1rem 0;
+    text-align:center;
+    font-size:1rem;
+    color:#f3f3fa;
 }

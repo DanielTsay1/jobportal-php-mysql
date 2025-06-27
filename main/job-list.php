@@ -335,19 +335,7 @@ $conn->close();
     </style>
 </head>
 <body>
-    <header class="main-header-glass">
-        <div class="container-fluid d-flex align-items-center justify-content-between px-4" style="height:68px;">
-            <div class="brand" style="font-size:1.7rem; font-weight:800; letter-spacing:-1.5px; color:#fff;">
-                <i class="fas fa-rocket me-2" style="color:#00e0d6;"></i>Job<span style="color:#00e0d6;">Portal</span>
-            </div>
-            <nav class="d-flex align-items-center gap-3">
-                <a href="/main/job-list.php" class="nav-link-glass">Jobs</a>
-                <a href="#" class="nav-link-glass">About</a>
-                <a href="#" class="nav-link-glass">Contact</a>
-                <a href="/main/login.php" class="nav-link-glass nav-link-cta">Login / Sign Up</a>
-            </nav>
-        </div>
-    </header>
+<?php include 'header-jobseeker.php'; ?>
 
     <!-- Search Container -->
     <div class="search-container">
@@ -487,18 +475,7 @@ $conn->close();
         </div>
     </div>
 
-    <footer style="width:100vw; background: rgba(30, 30, 50, 0.38); backdrop-filter: blur(18px) saturate(1.2); border-top: 1.5px solid rgba(255,255,255,0.10); margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#f3f3fa;">
-      <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
-        <i class="fas fa-envelope me-2" style="color:#00e0d6;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#00e0d6; text-decoration:underline;">support@jobportal.com</a>
-      </div>
-      <div style="margin-top:0.5rem; color:#b3b3c6; font-size:1rem;">
-        <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
-      </div>
-      <div style="margin-top:0.5rem; color:#f3f3fa; font-size:0.98rem;">
-        &copy; <?= date('Y') ?> <span style="color:#f3f3fa;">Job</span><span style="color:#00e0d6;">Portal</span> &mdash; Your gateway to new opportunities
-      </div>
-    </footer>
-
+    <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Simple form submission - no need for complex AJAX since we're using GET

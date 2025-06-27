@@ -60,11 +60,12 @@ foreach ($applications as $app) {
     <style>
       html, body { height: 100%; }
       body {
+        background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+        color: #f3f3fa;
+        font-family: 'Inter', Arial, sans-serif;
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        font-family: 'Poppins', Arial, sans-serif !important;
-        background: #f8fafc;
+        margin: 0;
+        overflow-x: hidden;
       }
       .main-content { flex: 1 0 auto; }
       .applications-header {
@@ -87,15 +88,46 @@ foreach ($applications as $app) {
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 1.2rem;
       }
-      .application-card {
-        background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 2px 8px rgba(30, 144, 255, 0.06);
-        padding: 1.2rem 1rem 1rem 1rem;
-        display: flex;
-        flex-direction: column;
-        border: 1px solid #f0f0f0;
-        min-height: 140px;
+      .glass-panel {
+        background: rgba(255,255,255,0.10);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+        backdrop-filter: blur(18px) saturate(1.2);
+        border: 1.5px solid rgba(255,255,255,0.13);
+        margin: 2rem auto;
+        max-width: 1100px;
+        padding: 2.5rem 2rem 2rem 2rem;
+        z-index: 2;
+        position: relative;
+      }
+      .app-card {
+        background: rgba(255,255,255,0.13);
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(123,63,228,0.08);
+        border: 1.5px solid rgba(255,255,255,0.10);
+        backdrop-filter: blur(8px) saturate(1.1);
+        color: #f3f3fa;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        transition: box-shadow 0.2s, border 0.2s;
+      }
+      .app-card:hover {
+        box-shadow: 0 8px 25px rgba(123,63,228,0.13);
+        border-color: #00e0d6;
+      }
+      .btn-apply, .btn-primary, .btn-outline-primary {
+        background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: #fff;
+        transition: all 0.3s ease;
+      }
+      .btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+        color: #fff;
+        box-shadow: 0 8px 25px rgba(0,224,214,0.3);
       }
       .application-title {
         font-size: 1.08rem;
@@ -156,8 +188,8 @@ foreach ($applications as $app) {
       }
     </style>
 </head>
-<body>
-    <?php include 'header-jobseeker.php'; ?>
+<body style="padding-top:68px;">
+<?php include 'header-jobseeker.php'; ?>
 
     <div class="container main-content py-5">
         <div class="applications-header">
@@ -200,17 +232,7 @@ foreach ($applications as $app) {
             <?php endif; ?>
         </div>
     </div>
-    <footer style="width:100vw; background: linear-gradient(90deg, #e3f0ff 0%, #ede7f6 100%); border-top: 1.5px solid #e3f0ff; margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#1976d2;">
-      <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
-        <i class="fas fa-envelope me-2" style="color:#7b1fa2;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#1976d2; text-decoration:underline;">support@jobportal.com</a>
-      </div>
-      <div style="margin-top:0.5rem; color:#7b1fa2; font-size:1rem;">
-        <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
-      </div>
-      <div style="margin-top:0.5rem; color:#1976d2; font-size:0.98rem;">
-        &copy; <?= date('Y') ?> <span style="color:#1976d2;">Job</span><span style="color:#7b1fa2;">Portal</span> &mdash; Your gateway to new opportunities
-      </div>
-    </footer>
+    <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     function withdrawOtherApplications() {

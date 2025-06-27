@@ -65,19 +65,15 @@ if ($application) {
         
         .job-details-container {
             background: rgba(255,255,255,0.10);
-            backdrop-filter: blur(18px) saturate(1.2);
-            border: 1.5px solid rgba(255,255,255,0.13);
             border-radius: 24px;
             box-shadow: 0 8px 32px rgba(30,20,60,0.13);
-            padding: 3rem 2rem;
+            backdrop-filter: blur(18px) saturate(1.2);
+            border: 1.5px solid rgba(255,255,255,0.13);
             margin: 2rem auto;
             max-width: 900px;
-            animation: fadeInUp 0.6s cubic-bezier(.4,1.4,.6,1);
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+            padding: 3rem 2rem;
+            z-index: 2;
+            position: relative;
         }
         
         .job-title {
@@ -136,22 +132,20 @@ if ($application) {
             margin-bottom: 1rem;
         }
         
-        .btn-apply {
+        .btn-apply, .btn-primary, .btn-outline-primary {
             background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
             border: none;
             border-radius: 25px;
             padding: 1rem 2.5rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
             color: #fff;
+            transition: all 0.3s ease;
         }
         
-        .btn-apply:hover {
+        .btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover {
             background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,224,214,0.3);
             color: #fff;
+            box-shadow: 0 8px 25px rgba(0,224,214,0.3);
         }
         
         .btn-secondary-custom {
@@ -324,20 +318,9 @@ if ($application) {
         }
     </style>
 </head>
-<body>
-    <header class="main-header-glass">
-        <div class="container-fluid d-flex align-items-center justify-content-between px-4" style="height:68px;">
-            <div class="brand" style="font-size:1.7rem; font-weight:800; letter-spacing:-1.5px; color:#fff;">
-                <i class="fas fa-rocket me-2" style="color:#00e0d6;"></i>Job<span style="color:#00e0d6;">Portal</span>
-            </div>
-            <nav class="d-flex align-items-center gap-3">
-                <a href="/main/job-list.php" class="nav-link-glass">Jobs</a>
-                <a href="#" class="nav-link-glass">About</a>
-                <a href="#" class="nav-link-glass">Contact</a>
-                <a href="/main/login.php" class="nav-link-glass nav-link-cta">Login / Sign Up</a>
-            </nav>
-        </div>
-    </header>
+<body style="padding-top:68px;">
+<?php include 'header-jobseeker.php'; ?>
+
 <div class="container py-5">
     <?php if (!$job): ?>
         <div class="alert alert-warning-custom text-center">

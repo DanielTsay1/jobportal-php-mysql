@@ -53,6 +53,64 @@ $has_resumes = count($user_resumes) > 0;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
+        body {
+            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+            color: #f3f3fa;
+            font-family: 'Inter', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .apply-glass-panel {
+            background: rgba(255,255,255,0.10);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+            backdrop-filter: blur(18px) saturate(1.2);
+            border: 1.5px solid rgba(255,255,255,0.13);
+            margin: 2rem auto;
+            max-width: 700px;
+            padding: 2.5rem 2rem 2rem 2rem;
+            z-index: 2;
+            position: relative;
+        }
+        .btn-apply, .btn-primary, .btn-outline-primary {
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(0,224,214,0.3);
+        }
+        input[type="text"], input[type="email"], input[type="number"], input[type="file"], textarea, select {
+            background: rgba(255,255,255,0.13) !important;
+            border: 1.5px solid rgba(255,255,255,0.18) !important;
+            border-radius: 16px !important;
+            color: #f3f3fa !important;
+            font-size: 1.08rem;
+            font-weight: 500;
+            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            backdrop-filter: blur(8px) saturate(1.1);
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="file"]:focus, textarea:focus, select:focus {
+            border: 1.5px solid #00e0d6 !important;
+            background: rgba(255,255,255,0.18) !important;
+            box-shadow: 0 4px 24px rgba(0,224,214,0.13);
+            color: #fff !important;
+        }
+        ::placeholder {
+            color: #b3b3c6 !important;
+            font-weight: 400;
+            opacity: 1;
+            letter-spacing: 0.01em;
+        }
         .resume-option {
             border: 2px solid #dee2e6;
             border-radius: 8px;
@@ -90,7 +148,9 @@ $has_resumes = count($user_resumes) > 0;
         }
     </style>
 </head>
-<body>
+<body style="padding-top:68px;">
+<?php include 'header-jobseeker.php'; ?>
+
 <div class="container py-4">
     <h2 class="mb-4">Apply for <?= htmlspecialchars($job['designation'] ?? 'Job') ?> at <?= htmlspecialchars($job['company_name'] ?? '') ?></h2>
     <?php if (!$job): ?>

@@ -75,6 +75,8 @@
 }
 
 .form-control {
+    background: #39395a !important;
+    color: #f3f3fa;
     border: 2px solid #e9ecef;
     border-radius: 10px;
     padding: 0.75rem 1rem;
@@ -83,9 +85,8 @@
 }
 
 .form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-    background-color: #fff;
+    background: #44446a !important;
+    color: #fff;
 }
 
 .form-label {
