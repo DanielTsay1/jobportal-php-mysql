@@ -10,7 +10,7 @@ $salary_max = $_GET['salary_max'] ?? '';
 $category = $_GET['category'] ?? '';
 
 // Build query with filters
-$where_conditions = ["j.status = 'Active'"];
+$where_conditions = ["j.status = 'Active'", "c.suspended IS NULL OR c.suspended = 0"];
 $params = [];
 $types = '';
 

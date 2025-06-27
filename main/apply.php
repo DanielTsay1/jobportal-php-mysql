@@ -11,11 +11,20 @@ require_once '../php/db.php';
 $jobid = isset($_GET['jobid']) ? intval($_GET['jobid']) : 0;
 $userid = $_SESSION['userid'];
 
-$stmt = $conn->prepare("SELECT jp.*, c.name AS company_name FROM `job-post` jp JOIN company c ON jp.compid = c.compid WHERE jp.jobid = ?");
+$stmt = $conn->prepare("SELECT jp.*, c.name AS company_name, c.suspended, c.suspension_reason FROM `job-post` jp JOIN company c ON jp.compid = c.compid WHERE jp.jobid = ?");
 $stmt->bind_param("i", $jobid);
 $stmt->execute();
 $job = $stmt->get_result()->fetch_assoc();
 $stmt->close();
+
+// Check if company is suspended
+$company_suspended = !empty($job['suspended']) && $job['suspended'] == 1;
+
+// Redirect if company is suspended
+if ($company_suspended) {
+    header('Location: /main/job-details.php?jobid=' . $jobid . '&error=suspended&reason=' . urlencode($job['suspension_reason'] ?? 'No reason provided.'));
+    exit;
+}
 
 $questions = [];
 if ($job && !empty($job['questions'])) {

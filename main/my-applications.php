@@ -21,7 +21,9 @@ $sql = "SELECT
             a.status,
             j.designation,
             j.jobid,
-            c.name as company_name
+            c.name as company_name,
+            c.suspended,
+            c.suspension_reason
         FROM applied a
         JOIN `job-post` j ON a.jobid = j.jobid
         JOIN company c ON j.compid = c.compid
@@ -181,6 +183,15 @@ foreach ($applications as $app) {
                         <span class="status-badge status-<?= strtolower($app['status']) ?>">
                             <?= htmlspecialchars($app['status']) ?>
                         </span>
+                        
+                        <?php if (!empty($app['suspended']) && $app['suspended'] == 1): ?>
+                            <div class="alert alert-warning mt-2 mb-2" style="font-size: 0.85rem; padding: 0.5rem;">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>Company Suspended</strong><br>
+                                <small>Reason: <?= htmlspecialchars($app['suspension_reason'] ?? 'No reason provided.') ?></small>
+                            </div>
+                        <?php endif; ?>
+                        
                         <div class="application-actions">
                             <a href="/main/job-details.php?jobid=<?= $app['jobid'] ?>" class="btn btn-modern">View Job</a>
                         </div>

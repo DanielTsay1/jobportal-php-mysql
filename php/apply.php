@@ -2,28 +2,50 @@
 session_start();
 require_once 'db.php';
 
-// 1. Authentication and Authorization
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'B' || !isset($_SESSION['userid'])) {
-    header('Location: /main/login.php?error=unauthorized');
+// Check if user is logged in
+if (!isset($_SESSION['userid']) || !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'B') {
+    header('Location: /main/login.php');
     exit;
 }
-$userid = $_SESSION['userid'];
 
-// 2. Validate Input
-$jobid = filter_input(INPUT_POST, 'jobid', FILTER_VALIDATE_INT);
-if (!$jobid) {
-    die("Invalid Job ID provided.");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: /main/job-list.php');
+    exit;
+}
+
+$userid = $_SESSION['userid'];
+$jobid = intval($_POST['jobid'] ?? 0);
+
+if ($jobid <= 0) {
+    header('Location: /main/job-list.php');
+    exit;
+}
+
+// Check if company is suspended
+$suspension_check = $conn->prepare("SELECT c.suspended, c.suspension_reason FROM `job-post` j JOIN company c ON j.compid = c.compid WHERE j.jobid = ?");
+$suspension_check->bind_param("i", $jobid);
+$suspension_check->execute();
+$suspension_result = $suspension_check->get_result();
+$company_status = $suspension_result->fetch_assoc();
+$suspension_check->close();
+
+if (!empty($company_status['suspended']) && $company_status['suspended'] == 1) {
+    // Company is suspended, redirect with error
+    header("Location: /main/job-details.php?jobid=" . $jobid . "&error=suspended&reason=" . urlencode($company_status['suspension_reason'] ?? 'No reason provided.'));
+    exit();
 }
 
 // Check if user has already applied
-$stmt_check = $conn->prepare("SELECT `S. No` FROM applied WHERE userid = ? AND jobid = ?");
-$stmt_check->bind_param("ii", $userid, $jobid);
-$stmt_check->execute();
-if ($stmt_check->get_result()->num_rows > 0) {
-    header('Location: /main/job-details.php?jobid=' . $jobid . '&error=alreadyapplied');
+$check_stmt = $conn->prepare("SELECT COUNT(*) as count FROM applied WHERE userid = ? AND jobid = ?");
+$check_stmt->bind_param("ii", $userid, $jobid);
+$check_stmt->execute();
+$check_result = $check_stmt->get_result()->fetch_assoc();
+$check_stmt->close();
+
+if ($check_result['count'] > 0) {
+    header('Location: /main/job-details.php?jobid=' . $jobid . '&error=already_applied');
     exit;
 }
-$stmt_check->close();
 
 // 3. Handle File Uploads and Resume Logic
 $resume_filename = null;

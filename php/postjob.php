@@ -10,6 +10,20 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'A' || !isset($
 
 $compid = $_SESSION['compid'];
 
+// Check if company is suspended
+$suspension_check = $conn->prepare("SELECT suspended, suspension_reason FROM company WHERE compid = ?");
+$suspension_check->bind_param("i", $compid);
+$suspension_check->execute();
+$suspension_result = $suspension_check->get_result();
+$company_status = $suspension_result->fetch_assoc();
+$suspension_check->close();
+
+if (!empty($company_status['suspended']) && $company_status['suspended'] == 1) {
+    // Company is suspended, redirect with error
+    header("Location: /main/post-job.php?error=suspended&reason=" . urlencode($company_status['suspension_reason'] ?? 'No reason provided.'));
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize and retrieve form data
     $designation = trim($_POST['designation'] ?? '');

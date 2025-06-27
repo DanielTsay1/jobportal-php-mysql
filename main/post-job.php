@@ -9,17 +9,22 @@ if (!isset($_SESSION['recid']) || !isset($_SESSION['compid'])) {
 
 $compid = $_SESSION['compid'];
 
+// Fetch company information including suspension status
+$company_stmt = $conn->prepare("SELECT name, suspended, suspension_reason FROM company WHERE compid = ?");
+$company_stmt->bind_param("i", $compid);
+$company_stmt->execute();
+$company_result = $company_stmt->get_result();
+$company = $company_result->fetch_assoc();
+$company_stmt->close();
+
+// Check if company is suspended
+$is_suspended = !empty($company['suspended']) && $company['suspended'] == 1;
+
 // Fetch company name for display and saving
-$company = '';
-$stmt = $conn->prepare("SELECT name FROM company WHERE compid = ?");
-$stmt->bind_param("i", $compid);
-$stmt->execute();
-$stmt->bind_result($company);
-$stmt->fetch();
-$stmt->close();
+$company_name = $company['name'] ?? '';
 
 $jobPosted = false;
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
     $designation = trim($_POST['designation'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $location = trim($_POST['location'] ?? '');
@@ -29,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $questions_json = json_encode(array_filter(array_map('trim', $questions)));
 
     $stmt = $conn->prepare("INSERT INTO `job-post` (company, compid, designation, description, location, salary, status, created_at, questions) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
-    $stmt->bind_param("sisssiss", $company, $compid, $designation, $description, $location, $salary, $status, $questions_json);
+    $stmt->bind_param("sisssiss", $company_name, $compid, $designation, $description, $location, $salary, $status, $questions_json);
     if ($stmt->execute()) {
         $jobPosted = true;
     } else {
@@ -156,6 +161,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <?php include 'header-recruiter.php'; ?>
+
+<?php if ($is_suspended): ?>
+    <div class="alert alert-danger text-center" style="font-size:1.1rem; font-weight:600; margin: 2rem auto; max-width: 800px;">
+        <i class="fas fa-ban me-2"></i>
+        <strong>Job Posting Disabled</strong><br>
+        Your company is currently <b>suspended</b> and cannot post new jobs.<br>
+        <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span><br>
+        <small class="mt-2 d-block">Please contact the administrator to resolve this issue.</small>
+    </div>
+<?php endif; ?>
+
 <div class="post-job-container main-content">
     <div class="post-job-card">
         <h2><i class="fa fa-briefcase me-2"></i>Post a Job</h2>
@@ -163,9 +179,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
+        <?php if (isset($_GET['error']) && $_GET['error'] === 'suspended'): ?>
+            <div class="alert alert-danger">
+                <i class="fas fa-ban me-2"></i>
+                <strong>Job Posting Blocked</strong><br>
+                Your company is currently suspended and cannot post new jobs.<br>
+                <span>Reason: <?= htmlspecialchars($_GET['reason'] ?? 'No reason provided.') ?></span>
+            </div>
+        <?php endif; ?>
+
         <?php if ($jobPosted): ?>
             <div class="alert alert-success">Job posted successfully!</div>
             <a href="recruiter-dashboard.php" class="btn btn-secondary">Back</a>
+        <?php elseif ($is_suspended): ?>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Job posting is currently disabled due to company suspension.
+            </div>
+            <a href="recruiter.php" class="btn btn-primary">Back to Dashboard</a>
         <?php else: ?>
         <form action="/php/postjob.php" method="POST" id="postJobForm" enctype="multipart/form-data">
             <div class="row g-4">

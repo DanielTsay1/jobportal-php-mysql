@@ -5,7 +5,7 @@ require_once '../php/db.php';
 $jobid = isset($_GET['jobid']) ? intval($_GET['jobid']) : 0;
 
 // Fetch job info
-$stmt = $conn->prepare("SELECT jp.*, c.name AS company_name FROM `job-post` jp JOIN company c ON jp.compid = c.compid WHERE jp.jobid = ?");
+$stmt = $conn->prepare("SELECT jp.*, c.name AS company_name, c.suspended, c.suspension_reason FROM `job-post` jp JOIN company c ON jp.compid = c.compid WHERE jp.jobid = ?");
 $stmt->bind_param("i", $jobid);
 $stmt->execute();
 $job = $stmt->get_result()->fetch_assoc();
@@ -13,6 +13,9 @@ $stmt->close();
 
 $userid = $_SESSION['userid'] ?? null;
 $application = null;
+
+// Check if company is suspended
+$company_suspended = !empty($job['suspended']) && $job['suspended'] == 1;
 
 // If user is logged in, check if they have applied and fetch application details
 if ($userid && $job) {
@@ -59,6 +62,15 @@ if ($application) {
                     <div class="alert alert-info">Your application has been successfully withdrawn.</div>
                 <?php endif; ?>
 
+                <?php if (isset($_GET['error']) && $_GET['error'] === 'suspended'): ?>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Application Blocked</strong><br>
+                        This company is currently suspended and not accepting new applications.<br>
+                        <span>Reason: <?= htmlspecialchars($_GET['reason'] ?? 'No reason provided.') ?></span>
+                    </div>
+                <?php endif; ?>
+
                 <h1 class="display-6"><?= htmlspecialchars($job['designation']) ?></h1>
                 <h2 class="h4 text-muted mb-3"><?= htmlspecialchars($job['company_name']) ?></h2>
                 
@@ -73,6 +85,15 @@ if ($application) {
                     <?= nl2br(htmlspecialchars($job['description'])) ?>
                 </div>
 
+                <?php if ($company_suspended): ?>
+                    <div class="alert alert-warning mt-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Application Temporarily Unavailable</strong><br>
+                        This company is currently suspended and not accepting new applications.<br>
+                        <small class="text-muted">Reason: <?= htmlspecialchars($job['suspension_reason'] ?? 'No reason provided.') ?></small>
+                    </div>
+                <?php endif; ?>
+
                 <div class="mt-4 pt-4 border-top">
                     <?php if (!isset($_SESSION['userid'])): ?>
                         <a href="/main/login.html" class="btn btn-primary btn-lg">Login to Apply</a>
@@ -86,6 +107,10 @@ if ($application) {
                                 <i class="fas fa-trash-alt me-2"></i>Withdraw Application
                             </button>
                         </form>
+                    <?php elseif ($company_suspended): ?>
+                        <button class="btn btn-secondary btn-lg" disabled>
+                            <i class="fas fa-ban me-2"></i>Applications Disabled
+                        </button>
                     <?php else: ?>
                         <a href="/main/apply.php?jobid=<?= $jobid ?>" class="btn btn-primary btn-lg">Apply Now</a>
                     <?php endif; ?>
