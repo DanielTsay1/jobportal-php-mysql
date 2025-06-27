@@ -74,7 +74,7 @@ if ($_POST) {
                 $data = $conn->query("SELECT * FROM `$table`");
                 while ($row = $data->fetch_assoc()) {
                     $values = array_map(function($value) use ($conn) {
-                        return $conn->real_escape_string($value);
+                        return $conn->real_escape_string($value ?? '');
                     }, $row);
                     $backup_content .= "INSERT INTO `$table` VALUES ('" . implode("','", $values) . "');\n";
                 }
