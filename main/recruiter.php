@@ -94,23 +94,38 @@ $conn->close();
     <link href="/css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        body {
+            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+            color: #f3f3fa;
+            font-family: 'Inter', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            padding-top: 68px;
+        }
         .dashboard-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: rgba(255,255,255,0.10);
+            backdrop-filter: blur(18px) saturate(1.2);
+            color: #fff;
             padding: 2rem 0;
             margin-bottom: 2rem;
+            border-radius: 32px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+            border: 1.5px solid rgba(255,255,255,0.13);
         }
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        .stat-card, .chart-container, .recent-applications, .quick-actions {
+            background: rgba(255,255,255,0.13);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(123,63,228,0.08);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
+            border: 1.5px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(8px) saturate(1.1);
+            color: #f3f3fa;
         }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        .stat-card:hover, .chart-container:hover, .recent-applications:hover, .quick-actions:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(123,63,228,0.13);
         }
         .stat-icon {
             width: 60px;
@@ -121,83 +136,107 @@ $conn->close();
             justify-content: center;
             font-size: 1.5rem;
             color: white;
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
         }
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
             margin: 0;
+            color: #fff;
         }
         .stat-label {
-            color: #6c757d;
+            color: #b3b3c6;
             font-size: 0.9rem;
             margin: 0;
         }
-        .chart-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1rem 1rem 0.5rem 1rem;
-            margin-bottom: 1rem;
-            max-width: 100%;
-            min-height: unset;
-        }
-        .recent-applications {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-        }
         .application-item {
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #00e0d6;
             padding: 1rem;
             margin-bottom: 1rem;
-            background: #f8f9fa;
+            background: rgba(255,255,255,0.08);
             border-radius: 0 10px 10px 0;
+            color: #f3f3fa;
         }
         .status-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 15px;
             font-size: 0.8rem;
             font-weight: 600;
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            color: #fff;
+            border: none;
         }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-reviewed { background: #d1ecf1; color: #0c5460; }
-        .status-hired { background: #d4edda; color: #155724; }
-        .status-rejected { background: #f8d7da; color: #721c24; }
-        .quick-actions {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-        }
+        .status-pending { background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); color: #856404; }
+        .status-reviewed { background: linear-gradient(135deg, #d1ecf1 0%, #b2ebf2 100%); color: #0c5460; }
+        .status-hired { background: linear-gradient(135deg, #d4edda 0%, #a5d6a7 100%); color: #155724; }
+        .status-rejected { background: linear-gradient(135deg, #f8d7da 0%, #ef9a9a 100%); color: #721c24; }
         .action-btn {
             display: block;
             width: 100%;
             padding: 1rem;
             margin-bottom: 1rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 18px;
             text-decoration: none;
-            color: white;
+            color: #fff;
             text-align: center;
             transition: all 0.3s ease;
+            font-weight: 600;
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
         }
         .action-btn:hover {
-            transform: translateY(-2px);
-            color: white;
+            transform: translateY(-2px) scale(1.03);
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+            box-shadow: 0 8px 32px rgba(0,224,214,0.13);
+        }
+        .main-header-glass {
+            position: fixed;
+            top: 0; left: 0; width: 100vw;
+            height: 68px;
+            z-index: 2000;
+            background: rgba(30, 30, 50, 0.38);
+            backdrop-filter: blur(18px) saturate(1.2);
+            box-shadow: 0 2px 16px rgba(30,20,60,0.10);
+            border-bottom: 1.5px solid rgba(255,255,255,0.10);
+            display: flex;
+            align-items: center;
+            transition: background 0.18s;
+        }
+        .nav-link-glass {
+            color: #f3f3fa;
+            font-weight: 500;
+            font-size: 1.08rem;
+            text-decoration: none;
+            padding: 0.3rem 1.1rem;
+            border-radius: 18px;
+            transition: background 0.18s, color 0.18s;
+            opacity: 0.92;
+        }
+        .nav-link-glass:hover, .nav-link-glass:focus {
+            background: rgba(0,224,214,0.10);
+            color: #00e0d6;
             text-decoration: none;
         }
-        .action-post { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
-        .action-manage { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); }
-        .action-applicants { background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); }
-        .action-settings { background: linear-gradient(135deg, #6c757d 0%, #545b62 100%); }
+        .nav-link-cta {
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            color: #fff !important;
+            font-weight: 700;
+            border-radius: 22px;
+            padding: 0.3rem 1.5rem;
+            margin-left: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
+            transition: background 0.18s, color 0.18s;
+        }
+        .nav-link-cta:hover, .nav-link-cta:focus {
+            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+            color: #fff;
+        }
         html, body {
             height: 100%;
-        }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
         .main-content {
             flex: 1 0 auto;
