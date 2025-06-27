@@ -7,7 +7,7 @@ A sophisticated, full-featured job portal system built with PHP, MySQL, and mode
 ## ✨ Key Features
 
 ### 🎯 Core Functionality
-- **Dual User System**: Separate interfaces for job seekers (Type B) and recruiters (Type A)
+- **Dual User System**: Separate interfaces for job seekers (Type B) and recruiters (Type A) + Admin Panel
 - **Job Posting & Management**: Complete job lifecycle management with approval workflows
 - **Application System**: Multi-resume support with cover letter uploads
 - **Real-time Search**: Advanced filtering with AJAX-powered instant results
@@ -282,11 +282,10 @@ new Chart(applicationCtx, {
 
 For questions about this FBLA competition entry or technical implementation:
 
-- **Developer**: [Your Name]
-- **School**: [Your School]
+- **Developer**: Mandy Chang, Daniel Tsay, Brian Lin
+- **School**: Union High School
 - **Competition**: FBLA Website Coding & Development
 - **Year**: 2024-2025
 
 ---
 
-**Note**: This project demonstrates advanced web development skills and goes beyond basic requirements to showcase professional-level implementation suitable for real-world deployment.
