@@ -77,8 +77,8 @@ switch ($action) {
         $stmt->bind_param('si', $reason, $compid);
         $stmt->execute();
         $stmt->close();
-        // Suspend all jobs
-        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Suspended' WHERE compid = ?");
+        // Suspend all active jobs (set to Suspended status)
+        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Suspended' WHERE compid = ? AND status = 'Active'");
         $stmt->bind_param('i', $compid);
         $stmt->execute();
         $stmt->close();
@@ -88,8 +88,8 @@ switch ($action) {
         $rec_stmt->execute();
         $rec_result = $rec_stmt->get_result();
         while ($rec = $rec_result->fetch_assoc()) {
-            $msg = "Your company has been suspended. Reason: " . htmlspecialchars($reason);
-            $conn->query("INSERT INTO notifications (userid, message, link) VALUES (NULL, '" . $conn->real_escape_string($msg) . "', '/main/edit-company.php')");
+            $msg = "Your company has been suspended. Reason: " . htmlspecialchars($reason) . ". Contact support at JobPortalSupport@gmail.com";
+            $conn->query("INSERT INTO notifications (userid, message, link) VALUES (" . intval($rec['recid']) . ", '" . $conn->real_escape_string($msg) . "', '/main/edit-company.php')");
         }
         $rec_stmt->close();
         // Notify all applicants
@@ -116,8 +116,8 @@ switch ($action) {
         $stmt->bind_param('i', $compid);
         $stmt->execute();
         $stmt->close();
-        // Reactivate jobs (set to Pending)
-        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Pending' WHERE compid = ? AND status = 'Suspended'");
+        // Reactivate suspended jobs (set back to Active)
+        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Active' WHERE compid = ? AND status = 'Suspended'");
         $stmt->bind_param('i', $compid);
         $stmt->execute();
         $stmt->close();
@@ -128,7 +128,7 @@ switch ($action) {
         $rec_result = $rec_stmt->get_result();
         while ($rec = $rec_result->fetch_assoc()) {
             $msg = "Your company has been unsuspended. You may now post and manage jobs again.";
-            $conn->query("INSERT INTO notifications (userid, message, link) VALUES (NULL, '" . $conn->real_escape_string($msg) . "', '/main/edit-company.php')");
+            $conn->query("INSERT INTO notifications (userid, message, link) VALUES (" . intval($rec['recid']) . ", '" . $conn->real_escape_string($msg) . "', '/main/edit-company.php')");
         }
         $rec_stmt->close();
         // Notify all applicants

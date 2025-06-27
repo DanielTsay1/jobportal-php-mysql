@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
     $description = trim($_POST['description'] ?? '');
     $location = trim($_POST['location'] ?? '');
     $salary = trim($_POST['salary'] ?? '');
-    $status = 'Active';
+    $status = 'Pending';
     $questions = $_POST['questions'] ?? [];
     $questions_json = json_encode(array_filter(array_map('trim', $questions)));
 

@@ -9,9 +9,10 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'A' || !isset($
 }
 
 $compid = $_SESSION['compid'];
+$recid = $_SESSION['recid'] ?? null;
 
-// Get status from GET param, default to 'Active'
-$status_filter = $_GET['status'] ?? 'Active';
+// Get status from GET param, default to 'All'
+$status_filter = $_GET['status'] ?? 'All';
 
 // Get recruiter info
 $stmt = $conn->prepare("SELECT * FROM recruiter WHERE username = ?");
@@ -30,48 +31,114 @@ if ($compid) {
     $stmt->close();
 }
 
-// Handle actions (delete, unpost, repost, edit)
-if (isset($_GET['action'], $_GET['jobid'])) {
-    $jobid = intval($_GET['jobid']);
-    // All actions require a simple redirect back to the current view
-    $redirect_url = "manage-jobs.php?status=" . urlencode($status_filter);
+// Check if company is suspended
+$company_suspended = !empty($company['suspended']) && $company['suspended'] == 1;
+
+// Handle AJAX actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
+    $response = ['success' => false, 'message' => '', 'action' => ''];
+    $jobid = intval($_POST['jobid'] ?? 0);
     
-    if ($_GET['action'] === 'delete') {
-        $stmt = $conn->prepare("DELETE FROM `job-post` WHERE jobid = ? AND compid = ?");
-        $stmt->bind_param("ii", $jobid, $compid);
-        $stmt->execute();
-        header("Location: $redirect_url");
-        exit;
+    if ($jobid > 0) {
+        // Get job details for notification
+        $job_stmt = $conn->prepare("SELECT designation FROM `job-post` WHERE jobid = ? AND compid = ?");
+        $job_stmt->bind_param("ii", $jobid, $compid);
+        $job_stmt->execute();
+        $job_result = $job_stmt->get_result();
+        $job = $job_result->fetch_assoc();
+        $job_stmt->close();
+        
+        if ($job) {
+            $job_title = $job['designation'];
+            
+            switch ($_POST['ajax_action']) {
+                case 'delete':
+                    $stmt = $conn->prepare("DELETE FROM `job-post` WHERE jobid = ? AND compid = ?");
+                    $stmt->bind_param("ii", $jobid, $compid);
+                    if ($stmt->execute()) {
+                        $response = [
+                            'success' => true, 
+                            'message' => "Job '$job_title' has been permanently deleted.",
+                            'action' => 'delete'
+                        ];
+                    } else {
+                        $response['message'] = "Failed to delete job.";
+                    }
+                    $stmt->close();
+                    break;
+                    
+                case 'unpost':
+                    $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Inactive' WHERE jobid = ? AND compid = ?");
+                    $stmt->bind_param("ii", $jobid, $compid);
+                    if ($stmt->execute()) {
+                        $response = [
+                            'success' => true, 
+                            'message' => "Job '$job_title' has been unposted (set to inactive).",
+                            'action' => 'unpost'
+                        ];
+                    } else {
+                        $response['message'] = "Failed to unpost job.";
+                    }
+                    $stmt->close();
+                    break;
+                    
+                case 'repost':
+                    if (!$company_suspended) {
+                        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Active' WHERE jobid = ? AND compid = ?");
+                        $stmt->bind_param("ii", $jobid, $compid);
+                        if ($stmt->execute()) {
+                            $response = [
+                                'success' => true, 
+                                'message' => "Job '$job_title' has been reposted (set to active).",
+                                'action' => 'repost'
+                            ];
+                        } else {
+                            $response['message'] = "Failed to repost job.";
+                        }
+                        $stmt->close();
+                    } else {
+                        $response['message'] = "Cannot repost job - company is suspended.";
+                    }
+                    break;
+            }
+        } else {
+            $response['message'] = "Job not found.";
+        }
+    } else {
+        $response['message'] = "Invalid job ID.";
     }
-    if ($_GET['action'] === 'unpost') {
-        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Inactive' WHERE jobid = ? AND compid = ?");
-        $stmt->bind_param("ii", $jobid, $compid);
-        $stmt->execute();
-        header("Location: $redirect_url");
-        exit;
-    }
-    if ($_GET['action'] === 'repost') {
-        $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Active' WHERE jobid = ? AND compid = ?");
-        $stmt->bind_param("ii", $jobid, $compid);
-        $stmt->execute();
-        header("Location: $redirect_url");
-        exit;
-    }
+    
+    // Return JSON response for AJAX
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
 }
 
-// Handle edit (POST)
-if (isset($_POST['edit_jobid'])) {
+// Handle edit (POST) - keep this as is for form submission
+if (isset($_POST['edit_jobid']) && !isset($_POST['ajax_action'])) {
     $jobid = intval($_POST['edit_jobid']);
     $designation = $_POST['designation'] ?? '';
     $location = $_POST['location'] ?? '';
     $salary = $_POST['salary'] ?? '';
     $description = $_POST['description'] ?? '';
     $spots = intval($_POST['spots'] ?? 1);
+    
+    // Get job title for notification
+    $job_stmt = $conn->prepare("SELECT designation FROM `job-post` WHERE jobid = ? AND compid = ?");
+    $job_stmt->bind_param("ii", $jobid, $compid);
+    $job_stmt->execute();
+    $job_result = $job_stmt->get_result();
+    $job = $job_result->fetch_assoc();
+    $job_stmt->close();
+    
     $stmt = $conn->prepare("UPDATE `job-post` SET designation=?, location=?, salary=?, description=?, spots=? WHERE jobid=? AND compid=?");
     $stmt->bind_param("ssdsiii", $designation, $location, $salary, $description, $spots, $jobid, $compid);
-    $stmt->execute();
-    header("Location: manage-jobs.php?status=" . urlencode($status_filter));
-    exit;
+    if ($stmt->execute()) {
+        $edit_message = "Job '" . ($job['designation'] ?? 'Unknown') . "' has been updated successfully.";
+    } else {
+        $edit_message = "Failed to update job.";
+    }
+    $stmt->close();
 }
 
 // Fetch jobs based on status filter
@@ -96,6 +163,7 @@ $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
     $jobs[] = $row;
 }
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -244,6 +312,11 @@ while ($row = $result->fetch_assoc()) {
             opacity: 0.8;
         }
         
+        .job-card.suspended {
+            border-left-color: #dc3545;
+            opacity: 0.6;
+        }
+        
         .job-card.animated {
             animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) forwards;
         }
@@ -346,6 +419,15 @@ while ($row = $result->fetch_assoc()) {
             background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
         }
         
+        .badge-suspended {
+            background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        }
+        
+        .badge-pending {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+        
         .modal-content {
             border-radius: 16px;
             border: none;
@@ -404,6 +486,20 @@ while ($row = $result->fetch_assoc()) {
             margin-top: 1rem;
         }
         
+        .suspension-notice {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .suspension-notice i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
         @media (max-width: 768px) {
             .job-actions {
                 flex-direction: column;
@@ -443,6 +539,110 @@ while ($row = $result->fetch_assoc()) {
             flex-shrink: 0;
             width: 100vw;
         }
+        
+        /* Notification Popup Styles */
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .notification-popup.show {
+            transform: translateX(0);
+        }
+        
+        .notification-popup.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-left: 4px solid #155724;
+        }
+        
+        .notification-popup.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border-left: 4px solid #721c24;
+        }
+        
+        .notification-popup.warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+            border-left: 4px solid #856404;
+        }
+        
+        .notification-content {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .notification-icon {
+            font-size: 1.25rem;
+            margin-top: 0.125rem;
+        }
+        
+        .notification-message {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 0.5rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        /* Loading overlay for actions */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+        
+        .loading-spinner {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -460,35 +660,57 @@ while ($row = $result->fetch_assoc()) {
             </a>
         </div>
     </div>
-</div>
+    </div>
 
 <div class="container main-content">
+    <?php if ($company_suspended): ?>
+        <div class="suspension-notice">
+            <i class="fas fa-ban"></i>
+            <h5>Account Suspended</h5>
+            <p>Your company account has been suspended. You cannot post new jobs or reactivate existing ones.</p>
+            <p><strong>Reason:</strong> <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided') ?></p>
+            <p><strong>Contact Support:</strong> <a href="mailto:JobPortalSupport@gmail.com" style="color: white; text-decoration: underline;">JobPortalSupport@gmail.com</a></p>
+        </div>
+    <?php endif; ?>
+
     <!-- Status Filter Pills -->
     <div class="d-flex justify-content-center mb-4">
         <ul class="nav nav-pills">
-            <li class="nav-item">
+        <li class="nav-item">
                 <a class="nav-link <?= $status_filter === 'Active' ? 'active' : '' ?>" href="?status=Active">
                     <i class="fas fa-check-circle me-2"></i>Active
                 </a>
-            </li>
-            <li class="nav-item">
+        </li>
+        <li class="nav-item">
+                <a class="nav-link <?= $status_filter === 'Pending' ? 'active' : '' ?>" href="?status=Pending">
+                    <i class="fas fa-clock me-2"></i>Pending
+                </a>
+        </li>
+        <li class="nav-item">
                 <a class="nav-link <?= $status_filter === 'Inactive' ? 'active' : '' ?>" href="?status=Inactive">
                     <i class="fas fa-pause-circle me-2"></i>Inactive
                 </a>
-            </li>
-            <li class="nav-item">
+        </li>
+        <li class="nav-item">
+                <a class="nav-link <?= $status_filter === 'Suspended' ? 'active' : '' ?>" href="?status=Suspended">
+                    <i class="fas fa-ban me-2"></i>Suspended
+                </a>
+        </li>
+        <li class="nav-item">
                 <a class="nav-link <?= $status_filter === 'All' ? 'active' : '' ?>" href="?status=All">
                     <i class="fas fa-list me-2"></i>All
                 </a>
-            </li>
-        </ul>
+        </li>
+    </ul>
     </div>
 
-    <?php if (count($jobs) > 0): ?>
+            <?php if (count($jobs) > 0): ?>
         <div class="row">
             <?php foreach ($jobs as $i => $job): ?>
                 <div class="col-lg-6 col-xl-4">
-                    <div class="job-card <?= $job['status'] === 'Inactive' ? 'inactive' : '' ?>" style="animation-delay: <?= 0.1 + ($i * 0.08) ?>s">
+                    <div class="job-card <?= $job['status'] === 'Inactive' ? 'inactive' : ($job['status'] === 'Suspended' ? 'suspended' : '') ?>" 
+                         data-jobid="<?= $job['jobid'] ?>" 
+                         style="animation-delay: <?= 0.1 + ($i * 0.08) ?>s">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div class="flex-grow-1">
                                 <h5 class="mb-1 fw-bold"><?= htmlspecialchars($job['designation']) ?></h5>
@@ -497,9 +719,9 @@ while ($row = $result->fetch_assoc()) {
                                     <span><i class="fas fa-dollar-sign"></i><?= number_format($job['salary']) ?></span>
                                 </div>
                             </div>
-                            <span class="badge badge-modern <?= $job['status'] === 'Active' ? 'badge-active' : 'badge-inactive' ?>">
-                                <?= htmlspecialchars($job['status']) ?>
-                            </span>
+                            <span class="badge badge-modern <?= $job['status'] === 'Active' ? 'badge-active' : ($job['status'] === 'Suspended' ? 'badge-suspended' : ($job['status'] === 'Pending' ? 'badge-pending' : 'badge-inactive')) ?>">
+                                    <?= htmlspecialchars($job['status']) ?>
+                                </span>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -513,47 +735,51 @@ while ($row = $result->fetch_assoc()) {
                         
                         <div class="text-muted small mb-3">
                             <i class="fas fa-calendar me-1"></i>Posted <?= date('M d, Y', strtotime($job['created_at'])) ?>
+                            <?php if ($job['status'] === 'Pending'): ?>
+                                <br><i class="fas fa-clock me-1 text-warning"></i>Waiting for admin approval
+                            <?php endif; ?>
                         </div>
                         
                         <div class="job-actions">
                             <button class="btn btn-warning btn-modern btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?= $job['jobid'] ?>">
                                 <i class="fas fa-edit me-1"></i>Edit
-                            </button>
+                                </button>
                             
-                            <?php if ($job['status'] === 'Active'): ?>
-                                <a href="?action=unpost&jobid=<?= $job['jobid'] ?>&status=<?= urlencode($status_filter) ?>" 
-                                   class="btn btn-secondary btn-modern btn-sm" 
-                                   onclick="return confirm('Unpost this job?');">
+                                <?php if ($job['status'] === 'Active'): ?>
+                                <button class="btn btn-secondary btn-modern btn-sm" 
+                                        onclick="performAction('unpost', <?= $job['jobid'] ?>, '<?= htmlspecialchars($job['designation']) ?>')">
                                     <i class="fas fa-eye-slash me-1"></i>Unpost
-                                </a>
-                            <?php else: ?>
-                                <a href="?action=repost&jobid=<?= $job['jobid'] ?>&status=<?= urlencode($status_filter) ?>" 
-                                   class="btn btn-success btn-modern btn-sm" 
-                                   onclick="return confirm('Repost this job?');">
+                                </button>
+                                <?php elseif ($job['status'] === 'Inactive' && !$company_suspended): ?>
+                                <button class="btn btn-success btn-modern btn-sm" 
+                                        onclick="performAction('repost', <?= $job['jobid'] ?>, '<?= htmlspecialchars($job['designation']) ?>')">
                                     <i class="fas fa-undo me-1"></i>Repost
-                                </a>
-                            <?php endif; ?>
+                                </button>
+                                <?php elseif ($job['status'] === 'Suspended'): ?>
+                                <span class="btn btn-secondary btn-modern btn-sm disabled" title="Job suspended due to company suspension">
+                                    <i class="fas fa-ban me-1"></i>Suspended
+                                </span>
+                                <?php endif; ?>
                             
-                            <a href="?action=delete&jobid=<?= $job['jobid'] ?>&status=<?= urlencode($status_filter) ?>" 
-                               class="btn btn-danger btn-modern btn-sm" 
-                               onclick="return confirm('Are you sure you want to permanently delete this job and all its applications?');">
+                            <button class="btn btn-danger btn-modern btn-sm" 
+                                    onclick="performAction('delete', <?= $job['jobid'] ?>, '<?= htmlspecialchars($job['designation']) ?>')">
                                 <i class="fas fa-trash me-1"></i>Delete
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Edit Modal -->
-                <div class="modal fade" id="editModal<?= $job['jobid'] ?>" tabindex="-1" aria-hidden="true">
+                        <!-- Edit Modal -->
+                        <div class="modal fade" id="editModal<?= $job['jobid'] ?>" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
-                        <form method="post" class="modal-content">
-                            <div class="modal-header">
+                            <form method="post" class="modal-content">
+                              <div class="modal-header">
                                 <h5 class="modal-title">
                                     <i class="fas fa-edit me-2"></i>Edit Job: <?= htmlspecialchars($job['designation']) ?>
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
+                              </div>
+                              <div class="modal-body">
                                 <input type="hidden" name="edit_jobid" value="<?= $job['jobid'] ?>">
                                 
                                 <div class="row">
@@ -586,26 +812,28 @@ while ($row = $result->fetch_assoc()) {
                                     <label class="form-label fw-bold">Description</label>
                                     <textarea name="description" class="form-control" rows="4" required><?= htmlspecialchars($job['description']) ?></textarea>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
+                              </div>
+                              <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary btn-modern">
                                     <i class="fas fa-save me-2"></i>Save Changes
                                 </button>
                                 <button type="button" class="btn btn-secondary btn-modern" data-bs-dismiss="modal">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
-    <?php else: ?>
+            <?php else: ?>
         <div class="empty-state">
             <i class="fas fa-briefcase"></i>
             <h4>No jobs found</h4>
             <p>No jobs found for the '<?= htmlspecialchars($status_filter) ?>' filter.</p>
+            <?php if (!$company_suspended): ?>
             <a href="post-job.php" class="btn btn-primary btn-modern">
                 <i class="fas fa-plus me-2"></i>Post Your First Job
             </a>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 </div>
@@ -623,6 +851,18 @@ while ($row = $result->fetch_assoc()) {
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Notification Container -->
+<div id="notificationContainer"></div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <i class="fas fa-spinner"></i>
+        <p class="mt-2 mb-0">Processing...</p>
+    </div>
+</div>
+
 <script>
 // Animate job cards on load (staggered)
 document.addEventListener('DOMContentLoaded', function() {
@@ -631,6 +871,141 @@ document.addEventListener('DOMContentLoaded', function() {
       card.classList.add('animated');
     }, 80 * idx);
   });
+  
+  // Show edit notification if exists
+  <?php if (isset($edit_message)): ?>
+    showNotification('<?= addslashes($edit_message) ?>', 'success');
+  <?php endif; ?>
+});
+
+// Notification system
+function showNotification(message, type = 'success') {
+    const container = document.getElementById('notificationContainer');
+    const notification = document.createElement('div');
+    notification.className = `notification-popup ${type}`;
+    
+    const icon = type === 'success' ? 'fas fa-check-circle' : 
+                 type === 'error' ? 'fas fa-exclamation-circle' : 
+                 'fas fa-exclamation-triangle';
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="notification-icon ${icon}"></i>
+            <div class="notification-message">${message}</div>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    container.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Action confirmation and execution
+function performAction(action, jobId, jobTitle) {
+    let confirmMessage = '';
+    let confirmAction = false;
+    
+    switch(action) {
+        case 'delete':
+            confirmMessage = `Are you sure you want to permanently delete the job "${jobTitle}" and all its applications?`;
+            confirmAction = confirm(confirmMessage);
+            break;
+        case 'unpost':
+            confirmMessage = `Are you sure you want to unpost the job "${jobTitle}"?`;
+            confirmAction = confirm(confirmMessage);
+            break;
+        case 'repost':
+            confirmMessage = `Are you sure you want to repost the job "${jobTitle}"?`;
+            confirmAction = confirm(confirmMessage);
+            break;
+    }
+    
+    if (confirmAction) {
+        executeAction(action, jobId, jobTitle);
+    }
+}
+
+// Execute AJAX action
+function executeAction(action, jobId, jobTitle) {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'flex';
+    
+    const formData = new FormData();
+    formData.append('ajax_action', action);
+    formData.append('jobid', jobId);
+    
+    fetch('manage-jobs.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingOverlay.style.display = 'none';
+        
+        if (data.success) {
+            showNotification(data.message, 'success');
+            
+            // Remove the job card from DOM if it was deleted
+            if (action === 'delete') {
+                const jobCard = document.querySelector(`[data-jobid="${jobId}"]`);
+                if (jobCard) {
+                    jobCard.style.opacity = '0';
+                    jobCard.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        jobCard.remove();
+                    }, 300);
+                }
+            } else {
+                // Refresh the page to update job statuses
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        } else {
+            showNotification(data.message || 'Action failed. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        loadingOverlay.style.display = 'none';
+        console.error('Error:', error);
+        showNotification('An error occurred. Please try again.', 'error');
+    });
+}
+
+// Handle edit form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const editForms = document.querySelectorAll('form[method="post"]');
+    editForms.forEach(form => {
+        if (form.querySelector('input[name="edit_jobid"]')) {
+            form.addEventListener('submit', function(e) {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.style.display = 'flex';
+                
+                // Form will submit normally, but we'll show loading
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 1000);
+            });
+        }
+    });
 });
 </script>
 </body>

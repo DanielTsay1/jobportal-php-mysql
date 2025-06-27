@@ -2,15 +2,15 @@
 session_start();
 require_once '../php/db.php';
 
-// Get search parameters
-$search = $_GET['search'] ?? '';
-$location = $_GET['location'] ?? '';
-$salary_min = $_GET['salary_min'] ?? '';
-$salary_max = $_GET['salary_max'] ?? '';
-$category = $_GET['category'] ?? '';
+// Handle both GET and POST requests for search
+$search = $_GET['search'] ?? $_POST['search'] ?? '';
+$location = $_GET['location'] ?? $_POST['location'] ?? '';
+$salary_min = $_GET['salary_min'] ?? $_POST['salary_min'] ?? '';
+$salary_max = $_GET['salary_max'] ?? $_POST['salary_max'] ?? '';
+$category = $_GET['category'] ?? $_POST['category'] ?? '';
 
 // Build query with filters
-$where_conditions = ["j.status = 'Active'", "c.suspended IS NULL OR c.suspended = 0"];
+$where_conditions = ["j.status = 'Active'", "(c.suspended IS NULL OR c.suspended = 0)"];
 $params = [];
 $types = '';
 
@@ -196,7 +196,7 @@ $conn->close();
             </h2>
             
             <!-- Search Form -->
-            <form id="searchForm" class="row g-3">
+            <form id="searchForm" class="row g-3" method="GET">
                 <div class="col-md-4">
                     <input type="text" class="form-control search-input" id="searchInput" 
                            name="search" placeholder="Job title, company, or keywords..." 
@@ -233,19 +233,27 @@ $conn->close();
     </div>
 
     <div class="container main-content">
+        <!-- Error Messages -->
+        <?php if (isset($_GET['error']) && $_GET['error'] === 'job_not_available'): ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Job Not Available</strong> The job you were looking for is not currently available for applications.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
         <!-- Filters -->
         <div class="filter-card">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h6 class="mb-2">Filter by Category:</h6>
                     <div class="d-flex flex-wrap gap-2">
-                        <button class="btn filter-btn <?= empty($category) ? 'active' : '' ?>" 
-                                data-category="">All Jobs</button>
+                        <a href="job-list.php" class="btn filter-btn <?= empty($category) ? 'active' : '' ?>">All Jobs</a>
                         <?php while ($cat = $categories->fetch_assoc()): ?>
-                            <button class="btn filter-btn <?= $category === $cat['designation'] ? 'active' : '' ?>" 
-                                    data-category="<?= htmlspecialchars($cat['designation']) ?>">
+                            <a href="job-list.php?category=<?= urlencode($cat['designation']) ?>" 
+                               class="btn filter-btn <?= $category === $cat['designation'] ? 'active' : '' ?>">
                                 <?= htmlspecialchars($cat['designation']) ?>
-                            </button>
+                            </a>
                         <?php endwhile; ?>
                     </div>
                 </div>
@@ -332,101 +340,20 @@ $conn->close();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Debounce function for search
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Real-time search functionality
-        const searchInput = document.getElementById('searchInput');
-        const locationSelect = document.getElementById('locationSelect');
-        const salaryMin = document.getElementById('salaryMin');
-        const salaryMax = document.getElementById('salaryMax');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const jobResults = document.getElementById('jobResults');
-        const resultsCount = document.getElementById('resultsCount');
-
-        function performSearch() {
-            const formData = new FormData();
-            formData.append('search', searchInput.value);
-            formData.append('location', locationSelect.value);
-            formData.append('salary_min', salaryMin.value);
-            formData.append('salary_max', salaryMax.value);
-
+        // Simple form submission - no need for complex AJAX since we're using GET
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            // Form will submit normally with GET method
             // Show loading spinner
-            loadingSpinner.style.display = 'block';
-            jobResults.style.display = 'none';
-
-            fetch('job-list.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(html => {
-                // Parse the HTML and extract job results
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const newResults = doc.getElementById('jobResults');
-                const newCount = doc.getElementById('resultsCount');
-                
-                if (newResults) {
-                    jobResults.innerHTML = newResults.innerHTML;
-                }
-                if (newCount) {
-                    resultsCount.innerHTML = newCount.innerHTML;
-                }
-                
-                // Hide loading spinner
-                loadingSpinner.style.display = 'none';
-                jobResults.style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Search error:', error);
-                loadingSpinner.style.display = 'none';
-                jobResults.style.display = 'block';
-            });
-        }
-
-        // Add event listeners for real-time search
-        const debouncedSearch = debounce(performSearch, 500);
-        
-        searchInput.addEventListener('input', debouncedSearch);
-        locationSelect.addEventListener('change', debouncedSearch);
-        salaryMin.addEventListener('input', debouncedSearch);
-        salaryMax.addEventListener('input', debouncedSearch);
-
-        // Category filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const category = this.dataset.category;
-                
-                // Update active state
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Update URL and reload
-                const url = new URL(window.location);
-                if (category) {
-                    url.searchParams.set('category', category);
-                } else {
-                    url.searchParams.delete('category');
-                }
-                window.location.href = url.toString();
-            });
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('jobResults').style.display = 'none';
         });
 
-        // Form submission
-        document.getElementById('searchForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            performSearch();
+        // Show loading when filters change
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('loadingSpinner').style.display = 'block';
+                document.getElementById('jobResults').style.display = 'none';
+            });
         });
     </script>
 </body>

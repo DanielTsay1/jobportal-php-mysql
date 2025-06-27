@@ -39,9 +39,9 @@ $app_stats_stmt = $conn->prepare("
         SUM(CASE WHEN a.status = 'Reviewed' THEN 1 ELSE 0 END) as reviewed_applications,
         SUM(CASE WHEN a.status = 'Hired' THEN 1 ELSE 0 END) as hired_applications,
         SUM(CASE WHEN a.status = 'Rejected' THEN 1 ELSE 0 END) as rejected_applications
-    FROM applied a
-    JOIN `job-post` j ON a.jobid = j.jobid
-    WHERE j.compid = ?
+        FROM applied a
+        JOIN `job-post` j ON a.jobid = j.jobid
+        WHERE j.compid = ?
 ");
 $app_stats_stmt->bind_param("i", $compid);
 $app_stats_stmt->execute();
@@ -209,7 +209,7 @@ $conn->close();
     </style>
 </head>
 <body>
-    <?php include 'header-recruiter.php'; ?>
+<?php include 'header-recruiter.php'; ?>
 
     <?php if (!empty($company['suspended']) && $company['suspended'] == 1): ?>
         <div class="alert alert-danger text-center" style="font-size:1.1rem; font-weight:600; margin-bottom: 2rem;">
@@ -217,7 +217,7 @@ $conn->close();
             Your company is currently <b>suspended</b>.<br>
             <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span>
         </div>
-    <?php endif; ?>
+                    <?php endif; ?>
 
     <!-- Dashboard Header -->
     <div class="dashboard-header">
@@ -238,7 +238,7 @@ $conn->close();
                             <i class="fas fa-building me-2"></i>Recruiter Dashboard
                         </span>
                         <small class="text-light">Last updated: <?= date('M j, Y g:i A') ?></small>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -320,8 +320,8 @@ $conn->close();
                         Job Performance Overview
                     </h5>
                     <canvas id="jobPerformanceChart" height="60" style="max-height:220px;"></canvas>
-                </div>
-            </div>
+    </div>
+</div>
 
             <!-- Sidebar -->
             <div class="col-lg-4">
@@ -394,7 +394,7 @@ $conn->close();
       </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Application Status Chart
         const applicationCtx = document.getElementById('applicationChart').getContext('2d');

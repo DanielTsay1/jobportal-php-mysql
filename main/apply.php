@@ -220,6 +220,12 @@ function selectResume(type, resumeId = null) {
             radio.checked = false;
         });
         document.querySelector('input[name="resume_type"][value="new"]').checked = true;
+        
+        // Make the file input required when new resume is selected
+        const fileInput = document.querySelector('input[name="resume_file"]');
+        if (fileInput) {
+            fileInput.required = true;
+        }
     }
 }
 
@@ -234,11 +240,51 @@ document.querySelector('form').addEventListener('submit', function(e) {
     
     if (resumeType.value === 'new') {
         const fileInput = document.querySelector('input[name="resume_file"]');
-        if (!fileInput.files[0]) {
+        if (!fileInput || !fileInput.files[0]) {
             e.preventDefault();
             alert('Please select a resume file to upload.');
             return;
         }
+        
+        // Check file size (5MB limit)
+        const fileSize = fileInput.files[0].size / 1024 / 1024; // Convert to MB
+        if (fileSize > 5) {
+            e.preventDefault();
+            alert('Resume file size must be less than 5MB.');
+            return;
+        }
+        
+        // Check file type
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!allowedTypes.includes(fileInput.files[0].type)) {
+            e.preventDefault();
+            alert('Please upload a PDF, DOC, or DOCX file.');
+            return;
+        }
+    }
+    
+    // Check cover letter
+    const coverLetterInput = document.querySelector('input[name="cover_letter_file"]');
+    if (!coverLetterInput || !coverLetterInput.files[0]) {
+        e.preventDefault();
+        alert('Please select a cover letter file.');
+        return;
+    }
+    
+    // Check cover letter file size (5MB limit)
+    const coverLetterSize = coverLetterInput.files[0].size / 1024 / 1024; // Convert to MB
+    if (coverLetterSize > 5) {
+        e.preventDefault();
+        alert('Cover letter file size must be less than 5MB.');
+        return;
+    }
+    
+    // Check cover letter file type
+    const allowedCoverTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedCoverTypes.includes(coverLetterInput.files[0].type)) {
+        e.preventDefault();
+        alert('Please upload a PDF, DOC, or DOCX file for the cover letter.');
+        return;
     }
 });
 </script>

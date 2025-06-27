@@ -22,7 +22,7 @@ $stmt = $conn->prepare("UPDATE `job-post` SET status = 'Pending' WHERE `jobid` =
 $stmt->bind_param("i", $jobid);
 
 if ($stmt->execute()) {
-    header("Location: ../main/admin-dashboard.php?msg=job_requeued");
+    header("Location: ../main/admin-dashboard.php?tab=jobs&msg=job_requeued");
     exit;
 } else {
     echo "Error updating job status: " . $conn->error;

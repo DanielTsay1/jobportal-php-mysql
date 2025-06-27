@@ -11,6 +11,12 @@ $stmt->execute();
 $job = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+// Check if job exists and is active
+if (!$job || $job['status'] !== 'Active') {
+    header('Location: /main/job-list.php?error=job_not_available');
+    exit;
+}
+
 $userid = $_SESSION['userid'] ?? null;
 $application = null;
 

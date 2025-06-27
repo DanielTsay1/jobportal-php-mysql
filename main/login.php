@@ -8,7 +8,7 @@ $error_message = '';
 if (isset($_GET['error'])) {
     switch ($_GET['error']) {
         case 'missing_fields':
-            $error_message = 'All fields are required.';
+        $error_message = 'All fields are required.';
             break;
         case 'bad_credentials':
             $error_message = 'Invalid username or password.';
@@ -289,60 +289,60 @@ if (isset($_GET['error'])) {
         <span style="font-size:2rem; font-weight:700; color:#1976d2; letter-spacing:-1px;">
           Job<span style="color:#7b1fa2;">Portal</span>
         </span>
-      </div>
+              </div>
       <div class="auth-tabs">
         <button class="auth-tab active" id="loginTab" onclick="showTab('login')" type="button">Login</button>
         <button class="auth-tab" id="registerTab" onclick="showTab('register')" type="button">Register</button>
-      </div>
+            </div>
       <div id="loginForm">
         <?php if (!empty($error_message)): ?>
-          <div class="alert error">
-            <p><?= htmlspecialchars($error_message) ?></p>
-          </div>
-        <?php endif; ?>
+                <div class="alert error">
+                  <p><?= htmlspecialchars($error_message) ?></p>
+                </div>
+                <?php endif; ?>
         <form action="/php/login.php" method="post" autocomplete="on">
           <div class="form-floating position-relative mb-3">
             <i class="fa fa-user"></i>
             <input type="text" class="form-control" id="login-username" name="username" placeholder="Username or Email" required>
             <label for="login-username">Username or Email</label>
-          </div>
+                </div>
           <div class="form-floating position-relative mb-3">
             <i class="fa fa-lock"></i>
             <input type="password" class="form-control" id="login-password" name="password" placeholder="Password" required>
             <label for="login-password">Password</label>
-          </div>
+                </div>
           <button type="submit" class="auth-btn">Sign In</button>
-        </form>
+          </form>
         <span class="auth-toggle" onclick="showTab('register')">Don't have an account? <b>Sign up here</b></span>
-      </div>
+        </div>
       <div id="registerForm" style="display:none;">
         <form action="/php/register.php" method="post" autocomplete="on">
           <div class="form-floating position-relative mb-3">
             <i class="fa fa-user"></i>
             <input type="text" class="form-control" id="register-username" name="username" placeholder="Full Name" required>
             <label for="register-username">Full Name</label>
-          </div>
+                </div>
           <div class="form-floating position-relative mb-3">
             <i class="fa fa-envelope"></i>
             <input type="email" class="form-control" id="register-email" name="email" placeholder="Email Address" required>
             <label for="register-email">Email Address</label>
-          </div>
+                </div>
           <div class="form-floating position-relative mb-3">
             <i class="fa fa-lock"></i>
             <input type="password" class="form-control" id="register-password" name="password" placeholder="Password" required>
             <label for="register-password">Password</label>
-          </div>
+                </div>
           <div class="form-floating position-relative mb-3">
             <i class="fa fa-lock"></i>
             <input type="password" class="form-control" id="register-confirm" name="confirm_password" placeholder="Confirm Password" required>
             <label for="register-confirm">Confirm Password</label>
-          </div>
+                </div>
           <div class="radio-group mb-3">
             <label><input type="radio" name="user_type" value="A" required> <span>Recruiter</span></label>
             <label><input type="radio" name="user_type" value="B" required> <span>Job Seeker</span></label>
-          </div>
+                </div>
           <button type="submit" class="auth-btn">Create Account</button>
-        </form>
+          </form>
         <span class="auth-toggle" onclick="showTab('login')">Already have an account? <b>Sign in here</b></span>
       </div>
       <button type="button" class="google-btn-white" onclick="alert('Google OAuth integration coming soon!')">

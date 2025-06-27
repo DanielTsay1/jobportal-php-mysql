@@ -15,5 +15,5 @@ if ($jobid && in_array($action, ['approve', 'reject'])) {
     $stmt->bind_param('si', $status, $jobid);
     $stmt->execute();
 }
-header('Location: ../main/admin-dashboard.php');
+header('Location: ../main/admin-dashboard.php?tab=jobs');
 exit; 

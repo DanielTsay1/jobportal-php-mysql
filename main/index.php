@@ -375,13 +375,13 @@
         <div class="container position-relative" style="z-index:2;">
             <div class="hero-title typewriter-container">
                 <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
-            </div>
+    </div>
             <div class="hero-subtitle animated-subtext">
                 <span class="sub1">A new era of job search.</span> <span class="sub2">Effortless.</span> <span class="sub3">Curated.</span> <span class="sub4">Beautiful.</span><br>
                 <span class="sub5">Discover top jobs, apply in one click, and get hired faster.</span>
-            </div>
-        </div>
-    </div>
+                                </div>
+                            </div>
+                        </div>
     <div class="glass-panel">
         <div class="features-title">Why JobPortal?</div>
         <div class="features-list">
@@ -394,19 +394,19 @@
                 <div class="feature-icon"><i class="fas fa-briefcase"></i></div>
                 <div class="feature-title">Curated Opportunities</div>
                 <div class="feature-desc">Handpicked jobs from top companies, updated daily.</div>
-            </div>
+                    </div>
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
                 <div class="feature-title">Verified Employers</div>
                 <div class="feature-desc">We screen every employer for authenticity and quality.</div>
-            </div>
+                </div>
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
                 <div class="feature-title">Career Growth</div>
                 <div class="feature-desc">Resources, tips, and personalized recommendations to boost your career.</div>
             </div>
         </div>
-    </div>
+                    </div>
     <div class="testimonials-section">
         <div class="testimonials-title">What Our Users Say</div>
         <div class="testimonial-carousel">
@@ -424,8 +424,8 @@
                 <div class="testimonial-user">
                     <img src="/img/testimonial-2.jpg" alt="User 2">
                     <span>Rahul M., Recruiter</span>
-                </div>
-            </div>
+                            </div>
+                        </div>
             <div class="testimonial-item">
                 <div class="testimonial-quote"><i class="fas fa-quote-left"></i></div>
                 "The 1-click apply feature is a game changer. Highly recommend to all job seekers!"
