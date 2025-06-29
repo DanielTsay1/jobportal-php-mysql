@@ -12,12 +12,28 @@ $job = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 // Check if job exists and is active
-if (!$job || $job['status'] !== 'Active') {
+if (!$job) {
     header('Location: /main/job-list.php?error=job_not_available');
     exit;
 }
 
+// Check if user has been hired for this job (even if job is not active)
+$user_hired = false;
 $userid = $_SESSION['userid'] ?? null;
+if ($userid && $job) {
+    $hired_stmt = $conn->prepare("SELECT status FROM applied WHERE userid = ? AND jobid = ? AND status = 'Hired'");
+    $hired_stmt->bind_param("ii", $userid, $jobid);
+    $hired_stmt->execute();
+    $user_hired = $hired_stmt->get_result()->num_rows > 0;
+    $hired_stmt->close();
+}
+
+// Only redirect if job is not active AND user is not hired for it
+if ($job['status'] !== 'Active' && !$user_hired) {
+    header('Location: /main/job-list.php?error=job_not_available');
+    exit;
+}
+
 $application = null;
 
 // Check if company is suspended
@@ -316,6 +332,13 @@ if ($application) {
         .bg-primary {
             background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
         }
+        
+        .modal-dialog {
+            margin-top: 100px !important;
+        }
+        .modal-dialog-centered {
+            align-items: flex-start !important;
+        }
     </style>
 </head>
 <body style="padding-top:68px;">
@@ -346,6 +369,25 @@ if ($application) {
             <h1 class="job-title"><?= htmlspecialchars($job['designation']) ?></h1>
             <h2 class="company-name"><?= htmlspecialchars($job['company_name']) ?></h2>
             
+            <?php if ($user_hired): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(32, 201, 151, 0.15) 100%); border: 2px solid rgba(40, 167, 69, 0.4); color: #28a745; border-radius: 15px; margin-bottom: 2rem; padding: 1.5rem;">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-trophy me-3" style="font-size: 2rem; color: #28a745;"></i>
+                        <div>
+                            <h4 class="mb-2" style="color: #28a745; font-weight: 700;">🎉 Congratulations! You've Been Hired!</h4>
+                            <p class="mb-2" style="color: #28a745; font-weight: 500; font-size: 1.1rem;">
+                                <strong><?= htmlspecialchars($job['company_name']) ?></strong> has hired you for the position of <strong><?= htmlspecialchars($job['designation']) ?></strong>!
+                            </p>
+                            <p class="mb-0" style="color: #28a745; font-size: 0.95rem;">
+                                <i class="fas fa-info-circle me-1"></i>
+                                This job posting is no longer active as the position has been filled.
+                            </p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+            
             <div class="job-meta">
                 <span><i class="fas fa-map-marker-alt"></i><?= htmlspecialchars($job['location']) ?></span>
                 <span><i class="fas fa-dollar-sign"></i><?= number_format($job['salary']) ?></span>
@@ -373,12 +415,14 @@ if ($application) {
                     <button type="button" class="btn btn-apply" data-bs-toggle="modal" data-bs-target="#applicationPreviewModal">
                         <i class="fas fa-eye me-2"></i>View My Application
                     </button>
+                    <?php if ($job['status'] === 'Active' && $job['spots'] > 0): ?>
                     <form method="post" action="/php/remove-application.php" class="d-inline ms-2">
                         <input type="hidden" name="jobid" value="<?= $jobid ?>">
                         <button type="submit" class="btn btn-danger-custom" onclick="return confirm('Are you sure you want to withdraw your application?');">
                             <i class="fas fa-trash-alt me-2"></i>Withdraw Application
                         </button>
                     </form>
+                    <?php endif; ?>
                 <?php elseif ($company_suspended): ?>
                     <button class="btn btn-secondary-custom" disabled>
                         <i class="fas fa-ban me-2"></i>Applications Disabled
@@ -417,6 +461,18 @@ if ($application) {
                 <?= htmlspecialchars($application['status']) ?>
             </span>
         </div>
+
+        <?php if ($application['status'] === 'Hired'): ?>
+            <div class="alert alert-success mb-3" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%); border: 1px solid rgba(40, 167, 69, 0.3); color: #28a745; border-radius: 10px;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-trophy me-2" style="color: #28a745;"></i>
+                    <div>
+                        <strong>🎉 Congratulations!</strong> You have been hired for this position! 
+                        <br><small>The company will contact you with next steps.</small>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <hr>
 

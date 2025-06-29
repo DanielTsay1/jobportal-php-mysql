@@ -413,10 +413,6 @@ if (isset($_GET['error'])) {
         </form>
         <span class="auth-toggle" onclick="showTab('login')">Already have an account? <b>Sign in here</b></span>
       </div>
-      <button type="button" class="google-btn" onclick="alert('Google OAuth integration coming soon!')">
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width:22px; height:22px; vertical-align:middle; margin-right:10px;">
-        <span>Continue with Google</span>
-      </button>
     </div>
     <script>
       function showTab(tab) {
