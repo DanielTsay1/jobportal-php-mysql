@@ -90,159 +90,127 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $recruiter && $company) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
-            background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%);
+            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+            color: #f3f3fa;
+            font-family: 'Inter', Arial, sans-serif;
             min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            padding-top: 68px; /* Prevent content under header */
         }
-        .edit-company-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .card, .main-content, .empty-state {
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.18);
+            border: 1.5px solid rgba(120,130,255,0.13);
+            color: #f3f3fa;
         }
-        .edit-company-card {
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(30, 144, 255, 0.10);
-            padding: 2.5rem 2rem 2rem 2rem;
-            max-width: 900px;
-            width: 100%;
-            margin: 2rem auto;
-            opacity: 0;
-            transform: translateY(40px);
-            animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
-        }
-        .edit-company-card h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1976d2;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.5px;
-            text-align: center;
-        }
-        .edit-company-card h5 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1976d2;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-        .form-label {
+        .form-control, .form-select {
+            background: #39395a !important;
+            color: #f3f3fa !important;
+            border: 2px solid #e9ecef !important;
+            border-radius: 10px !important;
+            font-size: 1.08rem;
             font-weight: 500;
-            color: #2B3940;
-            margin-bottom: 0.25rem;
+            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            margin-bottom: 0.2rem;
         }
-        .form-control {
-            border-radius: 12px;
-            border: 2px solid #e9ecef;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            transition: border 0.2s, box-shadow 0.2s;
+        .form-control:focus, .form-select:focus {
+            background: #44446a !important;
+            color: #fff !important;
+            border-color: #667eea !important;
+            box-shadow: 0 4px 24px rgba(102, 126, 234, 0.25) !important;
         }
-        .form-control:focus {
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 0.15rem rgba(30, 144, 255, 0.10);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #1976d2 0%, #1E90FF 100%);
+        .btn, .btn-modern {
+            background: linear-gradient(90deg, #00e0d6 0%, #7b3fe4 100%);
             border: none;
-            border-radius: 20px;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.08);
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
-            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.12);
-        }
-        .btn-secondary {
-            border-radius: 20px;
-            font-weight: 500;
-            padding: 0.6rem 1.5rem;
-        }
-        .divider {
-            border-top: 1.5px solid #e9ecef;
-            margin: 2rem 0 1.5rem 0;
-        }
-        .alert {
             border-radius: 12px;
-            font-size: 1rem;
-            margin-bottom: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.18);
         }
-        @media (max-width: 992px) {
-            .edit-company-card {
-                max-width: 98vw;
-                padding: 2rem 1rem 1.5rem 1rem;
-            }
+        .btn:hover, .btn-modern:hover {
+            background: linear-gradient(90deg, #7b3fe4 0%, #00e0d6 100%);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            transform: translateY(-1px);
         }
-        @media (max-width: 576px) {
-            .edit-company-card {
-                padding: 1.5rem 0.5rem 1rem 0.5rem;
-            }
+        .empty-state {
+            color: #b3b3c6;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin: 2rem auto;
         }
-        @keyframes fadeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @media (max-width: 900px) {
+            .main-content { padding: 1rem 0.7rem; }
+        }
+        @media (max-width: 700px) {
+            .main-content { padding: 1.2rem 0.5rem 1.2rem 0.5rem; }
+        }
+        .glass-panel {
+            background: rgba(255,255,255,0.10);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+            backdrop-filter: blur(18px) saturate(1.2);
+            border: 1.5px solid rgba(255,255,255,0.13);
+            z-index: 2;
+            position: relative;
         }
     </style>
 </head>
 <body style="padding-top:68px;">
-<?php include 'header-jobseeker.php'; ?>
-<div class="edit-company-container">
-    <form method="post" class="edit-company-card">
-        <h2><i class="fa fa-edit me-2"></i><?= $is_new_setup ? 'Complete Company Setup' : 'Edit Company & Contact Info' ?></h2>
-        <?= $message ?>
-        <?php if (!empty($company['suspended']) && $company['suspended'] == 1): ?>
-            <div class="alert alert-danger" style="font-size:1.1rem; font-weight:600;">
-                <i class="fas fa-ban me-2"></i>
-                Your company is currently <b>suspended</b>.<br>
-                <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span><br>
-                <span>Contact Support: <a href="mailto:JobPortalSupport@gmail.com" style="color: #dc3545; text-decoration: underline;">JobPortalSupport@gmail.com</a></span>
-            </div>
-        <?php endif; ?>
-        <div class="mb-3">
-            <label class="form-label">Company Name</label>
-            <input type="text" name="company_name" class="form-control" value="<?= htmlspecialchars($company['name'] ?? '') ?>" required>
+<?php include 'header-recruiter.php'; ?>
+<div class="container">
+  <div class="glass-panel" style="max-width: 700px; margin: 3rem auto 2rem auto; padding: 2.5rem 2rem 2rem 2rem;">
+    <form method="post">
+      <h2 class="mb-4" style="font-weight:700;"><i class="fa fa-edit me-2"></i><?= $is_new_setup ? 'Complete Company Setup' : 'Edit Company & Contact Info' ?></h2>
+      <?= $message ?>
+      <?php if (!empty($company['suspended']) && $company['suspended'] == 1): ?>
+        <div class="alert alert-danger" style="font-size:1.1rem; font-weight:600;">
+          <i class="fas fa-ban me-2"></i>
+          Your company is currently <b>suspended</b>.<br>
+          <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span><br>
+          <span>Contact Support: <a href="mailto:JobPortalSupport@gmail.com" style="color: #dc3545; text-decoration: underline;">JobPortalSupport@gmail.com</a></span>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Location</label>
-            <input type="text" name="location" class="form-control" value="<?= htmlspecialchars($company['location'] ?? '') ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Contact Phone</label>
-            <input type="text" name="contact" class="form-control" value="<?= htmlspecialchars($company['contact'] ?? '') ?>" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Website</label>
-            <input type="text" name="website" class="form-control" value="<?= htmlspecialchars($company['website'] ?? '') ?>">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">About Company</label>
-            <textarea name="about" class="form-control" rows="4"><?= htmlspecialchars($company['about'] ?? '') ?></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Industry</label>
-            <input type="text" name="industry" class="form-control" value="<?= htmlspecialchars($company['industry'] ?? '') ?>" placeholder="e.g. Technology, Healthcare, Education">
-        </div>
-        <div class="divider"></div>
-        <h5>Recruiter Contact Info</h5>
-        <div class="mb-3">
-            <label class="form-label">Recruiter Email</label>
-            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($recruiter['email'] ?? '') ?>" required>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <button type="submit" class="btn btn-primary"><?= $is_new_setup ? 'Complete Setup' : 'Save Changes' ?></button>
-            <a href="recruiter.php" class="btn btn-secondary ms-2">Go Back</a>
-        </div>
+      <?php endif; ?>
+      <div class="mb-3">
+        <label class="form-label">Company Name</label>
+        <input type="text" name="company_name" class="form-control" value="<?= htmlspecialchars($company['name'] ?? '') ?>" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Location</label>
+        <input type="text" name="location" class="form-control" value="<?= htmlspecialchars($company['location'] ?? '') ?>" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contact Phone</label>
+        <input type="text" name="contact" class="form-control" value="<?= htmlspecialchars($company['contact'] ?? '') ?>" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Website</label>
+        <input type="text" name="website" class="form-control" value="<?= htmlspecialchars($company['website'] ?? '') ?>">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">About Company</label>
+        <textarea name="about" class="form-control" rows="4"><?= htmlspecialchars($company['about'] ?? '') ?></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Industry</label>
+        <input type="text" name="industry" class="form-control" value="<?= htmlspecialchars($company['industry'] ?? '') ?>" placeholder="e.g. Technology, Healthcare, Education">
+      </div>
+      <div class="divider my-4"></div>
+      <h5 class="mb-3">Recruiter Contact Info</h5>
+      <div class="mb-3">
+        <label class="form-label">Recruiter Email</label>
+        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($recruiter['email'] ?? '') ?>" required>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <button type="submit" class="btn btn-primary px-4"><?= $is_new_setup ? 'Complete Setup' : 'Save Changes' ?></button>
+      </div>
     </form>
+  </div>
 </div>
     <?php include 'footer.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

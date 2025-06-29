@@ -96,271 +96,166 @@ $conn->close();
     <link href="/css/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html, body {
-            height: 100%;
-        }
         body {
+            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+            color: #f3f3fa;
+            font-family: 'Inter', Arial, sans-serif;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
-            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
+            margin: 0;
+            overflow-x: hidden;
+            padding-top: 68px; /* Prevent content under header */
         }
-        .main-content {
-            flex: 1 0 auto;
+        .page-header, .empty-state, .main-content, .table, .card, .search-bar {
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.18);
+            border: 1.5px solid rgba(120,130,255,0.13);
+            color: #f3f3fa;
         }
-        .page-header {
-            background: linear-gradient(90deg, #1E90FF 0%, #764ba2 100%);
-            color: white;
-            padding: 0.75rem 0 0.5rem 0;
-            margin-bottom: 1.5rem;
-            border-radius: 0 0 14px 14px;
-            box-shadow: 0 2px 10px rgba(30, 144, 255, 0.08);
-            opacity: 0;
-            transform: translateY(-30px);
-            animation: fadeSlideDown 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
-        }
-        .page-header h1 {
+        .btn, .btn-modern {
+            background: linear-gradient(90deg, #00e0d6 0%, #7b3fe4 100%);
+            border: none;
+            border-radius: 12px;
             font-weight: 600;
-            font-size: 1.25rem;
-            margin-bottom: 0;
-            letter-spacing: -0.5px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.18);
         }
-        .page-header .back-btn {
-            font-size: 0.95rem;
-            padding: 0.35rem 1rem;
-            border-radius: 20px;
-            background: #fff;
-            color: #1E90FF;
-            border: none;
-            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.07);
-            font-weight: 500;
-            transition: background 0.2s, color 0.2s;
+        .btn:hover, .btn-modern:hover {
+            background: linear-gradient(90deg, #7b3fe4 0%, #00e0d6 100%);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            transform: translateY(-1px);
         }
-        .page-header .back-btn:hover {
-            background: #e9ecef;
-            color: #764ba2;
-        }
-        .page-header .header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-        .page-header .header-row p {
-            margin-bottom: 0;
-            font-size: 0.98rem;
-            opacity: 0.7;
-        }
-        .card {
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(30, 144, 255, 0.08);
-            border: none;
-            opacity: 0;
-            transform: translateY(40px);
-            animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.3s forwards;
-        }
-        .card-header {
-            border-radius: 18px 18px 0 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #e9ecef 100%);
-            border-bottom: 1px solid #e9ecef;
-        }
-        .table {
-            font-size: 1rem;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .table thead th {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #495057;
-            border-bottom: 2px solid #e9ecef;
-        }
-        .table-hover tbody tr:hover {
-            background: #e3f0ff;
-            transition: background 0.2s;
-        }
-        .table-striped > tbody > tr:nth-of-type(odd) {
-            background: #f6fafd;
-        }
-        .badge {
-            border-radius: 12px;
-            font-size: 0.95em;
-            font-weight: 500;
-            padding: 0.5em 1em;
-            letter-spacing: 0.01em;
-        }
-        .btn, .dropdown-item {
-            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #1E90FF 0%, #764ba2 100%);
-            border: none;
-        }
-        .btn-secondary {
-            background: #e9ecef;
-            color: #2B3940;
-            border: none;
-        }
-        .btn-outline-secondary {
-            border-radius: 10px;
-        }
-        .dropdown-menu {
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.08);
-        }
-        .search-bar {
-            max-width: 400px;
-            margin-bottom: 1.5rem;
-        }
-        .search-bar input {
-            border-radius: 20px;
-            padding: 0.75rem 1.5rem;
-            border: 2px solid #e9ecef;
-            font-size: 1rem;
-        }
-        .search-bar input:focus {
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 0.15rem rgba(30, 144, 255, 0.10);
+        .table th, .table td {
+            background: transparent !important;
+            color: #f3f3fa !important;
         }
         .empty-state {
+            color: #b3b3c6;
             text-align: center;
-            padding: 3rem;
-            color: #6c757d;
+            padding: 2rem 1rem;
+            margin: 2rem auto;
         }
-        .empty-state i {
-            font-size: 3rem;
-            color: #dee2e6;
+        @media (max-width: 900px) {
+            .main-content { padding: 1rem 0.7rem; }
+        }
+        @media (max-width: 700px) {
+            .main-content { padding: 1.2rem 0.5rem 1.2rem 0.5rem; }
+        }
+        .glass-panel {
+            background: rgba(255,255,255,0.10);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+            backdrop-filter: blur(18px) saturate(1.2);
+            border: 1.5px solid rgba(255,255,255,0.13);
+            z-index: 2;
+            position: relative;
+        }
+        .status-badge {
+            display: inline-block;
+            border-radius: 10px;
+            font-size: 0.9em;
+            font-weight: 600;
+            padding: 0.4em 1em;
+            letter-spacing: 0.02em;
             margin-bottom: 1rem;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 0.95rem;
-            }
-            .page-header {
-                padding: 0.5rem 0 0.3rem 0;
-            }
-            .page-header h1 {
-                font-size: 1rem;
-            }
-            .page-header .header-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
+        .status-pending {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: #fff;
+            border: none;
         }
-        tbody tr {
-            opacity: 0;
-            transform: translateY(30px);
+        .status-hired {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: #fff;
+            border: none;
         }
-        tbody tr.animated {
-            animation: fadeRowIn 0.6s cubic-bezier(.4,1.4,.6,1) forwards;
+        .status-rejected {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: #fff;
+            border: none;
         }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeSlideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeRowIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        footer {
-            flex-shrink: 0;
-            width: 100vw;
+        .status-inactive {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: #fff;
+            border: none;
         }
     </style>
 </head>
 <body>
     <?php include 'header-recruiter.php'; ?>
-    <div class="page-header mb-4">
-        <div class="container">
-            <div class="header-row">
-                <h1><i class="fas fa-users me-2"></i>Manage Applicants</h1>
-                <?php
-                $back_url = ($user_type === 'admin') ? '/main/admin-dashboard.php' : '/main/recruiter.php';
-                ?>
-                <a href="<?= $back_url ?>" class="back-btn"><i class="fas fa-arrow-left me-1"></i>Back</a>
+    <div class="container py-4">
+        <div class="glass-panel" style="max-width:1200px; margin:2.5rem auto 2rem auto; padding:2.5rem 2rem 2rem 2rem;">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="mb-0" style="font-weight:700;"><i class="fas fa-users me-2"></i>Manage Applicants</h2>
+                <a href="recruiter.php" class="btn btn-gradient px-4"><i class="fas fa-arrow-left me-2"></i>Back</a>
             </div>
-            <p>All applications for <b><?= htmlspecialchars($company_name) ?></b></p>
-        </div>
-    </div>
-
-    <div class="container main-content">
-        <div class="d-flex justify-content-end">
-            <form class="search-bar w-100 w-md-auto" onsubmit="return false;">
+            <form class="search-bar mb-4" onsubmit="return false;">
                 <input type="text" id="searchInput" class="form-control" placeholder="Search applicants, job title, or status...">
             </form>
-        </div>
-
-        <div class="card shadow-sm">
-            <div class="card-header bg-light py-3">
-                <h5 class="mb-0"><i class="fas fa-users me-2"></i>All Applications</h5>
-            </div>
-            <div class="card-body p-0">
-                <?php if (empty($applicants)): ?>
-                    <div class="empty-state">
-                        <i class="fas fa-user-friends"></i>
-                        <h4>No applicants found yet.</h4>
-                        <p>Once candidates apply to your jobs, they will appear here.</p>
-                    </div>
-                <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped align-middle mb-0" id="applicantsTable">
-                            <thead class="table-light">
+            <?php if (empty($applicants)): ?>
+                <div class="empty-state text-center py-5">
+                    <i class="fas fa-user-friends fa-3x mb-3" style="color: #cbd5e1;"></i>
+                    <h4>No applicants found yet.</h4>
+                    <p>Once candidates apply to your jobs, they will appear here.</p>
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0" id="applicantsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3 px-4">Applicant</th>
+                                <th class="py-3 px-4">Job Title</th>
+                                <th class="py-3 px-4">Applied On</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4">Documents</th>
+                                <th class="py-3 px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($applicants as $app): ?>
                                 <tr>
-                                    <th class="py-3 px-4">Applicant</th>
-                                    <th class="py-3 px-4">Job Title</th>
-                                    <th class="py-3 px-4">Applied On</th>
-                                    <th class="py-3 px-4">Status</th>
-                                    <th class="py-3 px-4">Documents</th>
-                                    <th class="py-3 px-4">Actions</th>
+                                    <td class="px-4">
+                                        <strong><?= htmlspecialchars($app['applicant_name']) ?></strong>
+                                        <div class="text-muted small"><?= htmlspecialchars($app['applicant_email']) ?></div>
+                                    </td>
+                                    <td class="px-4"><?= htmlspecialchars($app['job_title']) ?></td>
+                                    <td class="px-4"><?= date('M d, Y', strtotime($app['applied_at'])) ?></td>
+                                    <td class="px-4">
+                                        <span class="status-badge status-<?= strtolower($app['status']) ?> text-uppercase ms-2"><?= htmlspecialchars($app['status']) ?></span>
+                                    </td>
+                                    <td class="px-4">
+                                        <div class="d-flex flex-row gap-2 align-items-center">
+                                            <?php if (!empty($app['resume_file'])): ?>
+                                                <a href="/uploads/<?= htmlspecialchars($app['resume_file']) ?>" target="_blank" class="btn btn-gradient btn-sm" style="height: 50px; line-height: 1;"><i class="fas fa-file-alt me-1"></i>Resume</a>
+                                            <?php endif; ?>
+                                            <?php if (!empty($app['cover_letter_file'])): ?>
+                                                <a href="/uploads/<?= htmlspecialchars($app['cover_letter_file']) ?>" target="_blank" class="btn btn-gradient btn-sm" style="height: 50px; line-height: 1;"><i class="fas fa-file-alt me-1"></i>Cover</a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-gradient btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 50px; line-height: 1;">
+                                                <i class="fas fa-edit me-1"></i>Update Status
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Pending')">Pending</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Hired')">Hired</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Rejected')">Rejected</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Inactive')">Inactive</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($applicants as $app): ?>
-                                    <tr id="app-row-<?= $app['app_id'] ?>" class="animated">
-                                        <td class="px-4">
-                                            <strong><?= htmlspecialchars($app['applicant_name']) ?></strong>
-                                            <div class="text-muted small"><?= htmlspecialchars($app['applicant_email']) ?></div>
-                                        </td>
-                                        <td class="px-4"><?= htmlspecialchars($app['job_title']) ?></td>
-                                        <td class="px-4"><?= date('M d, Y', strtotime($app['applied_at'])) ?></td>
-                                        <td class="px-4">
-                                            <span class="badge" id="status-badge-<?= $app['app_id'] ?>"></span>
-                                        </td>
-                                        <td class="px-4">
-                                            <?php if ($app['resume_file']): ?>
-                                                <a href="/uploads/<?= htmlspecialchars($app['resume_file']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="tooltip" title="View Resume"><i class="fas fa-file-alt me-1"></i>Resume</a>
-                                            <?php endif; ?>
-                                            <?php if ($app['cover_letter_file']): ?>
-                                                <a href="/uploads/<?= htmlspecialchars($app['cover_letter_file']) ?>" target="_blank" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="View Cover Letter"><i class="fas fa-envelope-open-text me-1"></i>Cover</a>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="px-4">
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    Update Status
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Viewed')">Viewed</a></li>
-                                                    <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Shortlisted')">Shortlisted</a></li>
-                                                    <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Hired')">Hired</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Rejected')">Rejected</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </div>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     

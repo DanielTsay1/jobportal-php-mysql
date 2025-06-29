@@ -94,117 +94,166 @@ $conn->close();
     <link href="/css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .dashboard-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
+        body {
+            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+            color: #f3f3fa;
+            font-family: 'Inter', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            padding-top: 68px; /* Prevent content under header */
+        }
+        .apply-card {
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.18);
+            border: 1.5px solid rgba(120,130,255,0.13);
+            color: #f3f3fa;
             margin-bottom: 2rem;
         }
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.01em;
+            text-shadow: 0 2px 8px rgba(102,126,234,0.13);
         }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        .section-divider {
+            border: none;
+            border-top: 2px solid rgba(120,130,255,0.13);
+            width: 60px;
+            margin-left: 0;
+            margin-bottom: 1.2rem;
+            opacity: 0.8;
+        }
+        .btn-gradient {
+            background: linear-gradient(90deg, #00e0d6 0%, #7b3fe4 100%);
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.18);
+            display: block;
+            margin-bottom: 12px;
+            text-align: center;
+            text-decoration: none !important;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(90deg, #7b3fe4 0%, #00e0d6 100%);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            transform: translateY(-1px);
+        }
+        .stat-card {
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(30,20,60,0.13);
+            border: 1.5px solid rgba(120,130,255,0.10);
+            color: #f3f3fa;
+            padding: 1.5rem 1.2rem;
+            margin-bottom: 1.2rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem 0;
+            color: #00e0d6;
+        }
+        .stat-label {
+            color: #b3b3c6;
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 600;
         }
         .stat-icon {
-            width: 60px;
-            height: 60px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            color: white;
+            color: #fff;
+            margin: 0 auto 0.7rem auto;
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
         }
-        .stat-number {
-            font-size: 2rem;
+        .quick-actions {
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+        }
+        .quick-actions h5 {
             font-weight: 700;
-            margin: 0;
-        }
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin: 0;
-        }
-        .chart-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1rem 1rem 0.5rem 1rem;
+            color: #e8eaf6;
             margin-bottom: 1rem;
-            max-width: 100%;
-            min-height: unset;
         }
         .recent-applications {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1.5rem;
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(30,20,60,0.13);
+            border: 1.5px solid rgba(120,130,255,0.10);
+            color: #f3f3fa;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.2rem;
         }
         .application-item {
-            border-left: 4px solid #667eea;
-            padding: 1rem;
+            border-left: 4px solid #00e0d6;
+            padding: 1rem 0.7rem 0.7rem 1.2rem;
             margin-bottom: 1rem;
-            background: #f8f9fa;
+            background: rgba(255,255,255,0.03);
             border-radius: 0 10px 10px 0;
         }
         .status-badge {
-            padding: 0.25rem 0.75rem;
             border-radius: 15px;
             font-size: 0.8rem;
             font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            background: #ffd700;
+            color: #23233a;
         }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-reviewed { background: #d1ecf1; color: #0c5460; }
-        .status-hired { background: #d4edda; color: #155724; }
-        .status-rejected { background: #f8d7da; color: #721c24; }
-        .quick-actions {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-        }
-        .action-btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: none;
-            border-radius: 10px;
-            text-decoration: none;
-            color: white;
+        .empty-state, .no-data {
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 18px;
+            color: #b3b3c6;
             text-align: center;
-            transition: all 0.3s ease;
+            padding: 2rem 1rem;
+            margin: 2rem auto;
+            box-shadow: 0 4px 20px rgba(30,20,60,0.13);
         }
-        .action-btn:hover {
-            transform: translateY(-2px);
-            color: white;
-            text-decoration: none;
+        .dashboard-header {
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
         }
-        .action-post { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
-        .action-manage { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); }
-        .action-applicants { background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); }
-        .action-settings { background: linear-gradient(135deg, #6c757d 0%, #545b62 100%); }
-        html, body {
-            height: 100%;
+        /* Responsive chart containers */
+        .apply-card canvas {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 220px !important;
+            max-height: 340px !important;
+            display: block;
+            margin: 0 auto;
         }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .apply-card .chart-container, .apply-card .chart-card {
+            min-height: 260px;
+            max-width: 100%;
+            margin-bottom: 1.5rem;
         }
-        .main-content {
-            flex: 1 0 auto;
+        @media (max-width: 900px) {
+            .stat-card { padding: 1rem 0.7rem; }
+            .recent-applications { padding: 1rem 0.5rem; }
+            .apply-card .chart-container, .apply-card .chart-card { min-height: 180px; }
         }
-        footer {
-            flex-shrink: 0;
-            width: 100vw;
+        @media (max-width: 700px) {
+            .dashboard-title { font-size: 1.3rem; }
+            .apply-card { padding: 1.2rem 0.5rem 1.2rem 0.5rem; }
+            .apply-card .chart-container, .apply-card .chart-card { min-height: 120px; }
         }
     </style>
 </head>
@@ -217,166 +266,87 @@ $conn->close();
             Your company is currently <b>suspended</b>.<br>
             <span>Reason: <?= htmlspecialchars($company['suspension_reason'] ?? 'No reason provided.') ?></span>
         </div>
-                    <?php endif; ?>
+    <?php endif; ?>
 
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="mb-2">
-                        <i class="fas fa-tachometer-alt me-3"></i>
-                        Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Recruiter') ?>!
-                    </h1>
-                    <p class="mb-0 fs-5">
-                        Managing opportunities at <strong><?= htmlspecialchars($company['name'] ?? 'Your Company') ?></strong>
-                    </p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <div class="d-flex flex-column align-items-md-end">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-12">
+                <div class="apply-card mb-4 p-4">
+                    <div class="mb-4">
+                        <span class="dashboard-title"><i class="fas fa-tachometer-alt me-3"></i>Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Recruiter') ?>!</span>
+                        <hr class="section-divider mb-3">
+                        <div class="fs-5 mb-2">Managing opportunities at <span class="text-gradient-company fw-bold"><?= htmlspecialchars($company['name'] ?? 'Your Company') ?></span></div>
                         <span class="badge bg-light text-primary fs-6 mb-2 px-3 py-2">
                             <i class="fas fa-building me-2"></i>Recruiter Dashboard
                         </span>
-                        <small class="text-light">Last updated: <?= date('M j, Y g:i A') ?></small>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container main-content">
-        <!-- Statistics Cards -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-icon me-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div>
-                            <p class="stat-number"><?= $job_stats['total_jobs'] ?? 0 ?></p>
-                            <p class="stat-label">Total Jobs Posted</p>
-                        </div>
+                        <small class="text-light d-block mb-2">Last updated: <?= date('M j, Y g:i A') ?></small>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-icon me-3" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div>
-                            <p class="stat-number"><?= $app_stats['total_applications'] ?? 0 ?></p>
-                            <p class="stat-label">Total Applications</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-icon me-3" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div>
-                            <p class="stat-number"><?= $app_stats['pending_applications'] ?? 0 ?></p>
-                            <p class="stat-label">Pending Reviews</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-icon me-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                            <i class="fas fa-user-check"></i>
-                        </div>
-                        <div>
-                            <p class="stat-number"><?= $app_stats['hired_applications'] ?? 0 ?></p>
-                            <p class="stat-label">Successful Hires</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Charts Section -->
-            <div class="col-lg-8">
-                <!-- Application Status Chart -->
-                <div class="chart-container">
-                    <h5 class="mb-3">
-                        <i class="fas fa-chart-pie me-2 text-primary"></i>
-                        Application Status Distribution
-                    </h5>
-                    <canvas id="applicationChart" height="60" style="max-height:220px;"></canvas>
-                </div>
-
-                <!-- Job Performance Chart -->
-                <div class="chart-container">
-                    <h5 class="mb-3">
-                        <i class="fas fa-chart-bar me-2 text-primary"></i>
-                        Job Performance Overview
-                    </h5>
-                    <canvas id="jobPerformanceChart" height="60" style="max-height:220px;"></canvas>
-    </div>
-</div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <!-- Quick Actions -->
-                <div class="quick-actions mb-4">
-                    <h5 class="mb-3">
-                        <i class="fas fa-bolt me-2 text-primary"></i>
-                        Quick Actions
-                    </h5>
-                    <a href="post-job.php" class="action-btn action-post">
-                        <i class="fas fa-plus me-2"></i>Post New Job
-                    </a>
-                    <a href="manage-jobs.php" class="action-btn action-manage">
-                        <i class="fas fa-cog me-2"></i>Manage Jobs
-                    </a>
-                    <a href="applicants.php" class="action-btn action-applicants">
-                        <i class="fas fa-users me-2"></i>View Applicants
-                    </a>
-                    <a href="edit-company.php" class="action-btn action-settings">
-                        <i class="fas fa-edit me-2"></i>Edit Company
-                    </a>
-                </div>
-
-                <!-- Recent Applications -->
-                <div class="recent-applications">
-                    <h5 class="mb-3">
-                        <i class="fas fa-clock me-2 text-primary"></i>
-                        Recent Applications
-                    </h5>
-                    <?php if ($recent_applications->num_rows > 0): ?>
-                        <?php while ($app = $recent_applications->fetch_assoc()): ?>
-                            <div class="application-item">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="mb-1"><?= htmlspecialchars($app['designation']) ?></h6>
-                                    <span class="status-badge status-<?= strtolower($app['status']) ?>">
-                                        <?= htmlspecialchars($app['status']) ?>
-                                    </span>
-                                </div>
-                                <p class="mb-1">
-                                    <i class="fas fa-user me-1"></i>
-                                    <?= htmlspecialchars($app['username']) ?>
-                                </p>
-                                <p class="mb-1">
-                                    <i class="fas fa-envelope me-1"></i>
-                                    <?= htmlspecialchars($app['email']) ?>
-                                </p>
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar me-1"></i>
-                                    <?= date('M j, Y', strtotime($app['applied_at'])) ?>
-                                </small>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon mb-2"><i class="fas fa-briefcase"></i></div>
+                                <div class="stat-number"><?= $job_stats['total_jobs'] ?? 0 ?></div>
+                                <div class="stat-label">Total Jobs Posted</div>
                             </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <p class="text-muted text-center py-3">No recent applications</p>
-                    <?php endif; ?>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon mb-2"><i class="fas fa-users"></i></div>
+                                <div class="stat-number"><?= $app_stats['total_applications'] ?? 0 ?></div>
+                                <div class="stat-label">Total Applications</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon mb-2"><i class="fas fa-clock"></i></div>
+                                <div class="stat-number"><?= $app_stats['pending_applications'] ?? 0 ?></div>
+                                <div class="stat-label">Pending Reviews</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon mb-2"><i class="fas fa-user-check"></i></div>
+                                <div class="stat-number"><?= $app_stats['hired_applications'] ?? 0 ?></div>
+                                <div class="stat-label">Successful Hires</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <div class="apply-card mb-4 p-3">
+                                <h5 class="fw-bold mb-3"><i class="fas fa-chart-pie me-2 text-gradient"></i>Application Status Distribution</h5>
+                                <canvas id="statusChart" height="120"></canvas>
+                            </div>
+                            <div class="apply-card mb-4 p-3">
+                                <h5 class="fw-bold mb-3"><i class="fas fa-chart-bar me-2 text-gradient"></i>Job Performance Overview</h5>
+                                <canvas id="jobPerformanceChart" height="120"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="apply-card mb-4 p-3 quick-actions">
+                                <h5 class="fw-bold mb-3"><i class="fas fa-bolt me-2 text-gradient"></i>Quick Actions</h5>
+                                <a href="post-job.php" class="btn-gradient"><i class="fas fa-plus me-2"></i>Post New Job</a>
+                                <a href="manage-jobs.php" class="btn-gradient"><i class="fas fa-cog me-2"></i>Manage Jobs</a>
+                                <a href="applicants.php" class="btn-gradient"><i class="fas fa-users me-2"></i>View Applicants</a>
+                                <a href="edit-company.php" class="btn-gradient"><i class="fas fa-edit me-2"></i>Edit Company</a>
+                            </div>
+                            <div class="apply-card recent-applications p-3">
+                                <h5 class="fw-bold mb-3"><i class="fas fa-clock me-2 text-gradient"></i>Recent Applications</h5>
+                                <?php if ($recent_applications && $recent_applications->num_rows > 0): ?>
+                                    <?php while ($app = $recent_applications->fetch_assoc()): ?>
+                                        <div class="application-item mb-2">
+                                            <div class="fw-semibold mb-1"><?= htmlspecialchars($app['designation']) ?></div>
+                                            <div class="small text-muted mb-1"><i class="fas fa-user me-1"></i><?= htmlspecialchars($app['username']) ?></div>
+                                            <div class="small text-muted mb-1"><i class="fas fa-envelope me-1"></i><?= htmlspecialchars($app['email']) ?></div>
+                                            <span class="status-badge"><?= htmlspecialchars($app['status']) ?></span>
+                                        </div>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <div class="empty-state">No recent applications found.</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -387,8 +357,8 @@ $conn->close();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Application Status Chart
-        const applicationCtx = document.getElementById('applicationChart').getContext('2d');
-        new Chart(applicationCtx, {
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
             type: 'doughnut',
             data: {
                 labels: ['Pending', 'Reviewed', 'Hired', 'Rejected'],

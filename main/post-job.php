@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
     <title>Post a Job</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
@@ -57,8 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            font-family: 'Poppins', Arial, sans-serif !important;
-            background: linear-gradient(135deg, #e3f0ff 0%, #f8fafc 100%);
+            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
+            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
+            color: #f3f3fa;
         }
         .main-content {
             flex: 1 0 auto;
@@ -70,9 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             justify-content: center;
         }
         .post-job-card {
-            background: #fff;
+            background: rgba(36, 38, 58, 0.98);
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(30, 144, 255, 0.10);
+            box-shadow: 0 8px 32px rgba(30, 20, 60, 0.10);
             padding: 2.5rem 2rem 2rem 2rem;
             max-width: 900px;
             width: 100%;
@@ -80,11 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             opacity: 0;
             transform: translateY(40px);
             animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
+            color: #f3f3fa;
+            border: 1.5px solid rgba(120,130,255,0.13);
         }
         .post-job-card h2 {
             font-size: 1.6rem;
             font-weight: 700;
-            color: #1976d2;
+            color: #00e0d6;
             margin-bottom: 1.5rem;
             letter-spacing: -0.5px;
             text-align: center;
@@ -94,8 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             margin: 2rem 0 1.5rem 0;
         }
         .form-label {
-            font-weight: 500;
-            color: #2B3940;
+            font-weight: 600;
+            color: #e8eaf6 !important;
             margin-bottom: 0.25rem;
         }
         .form-control, .form-select {
@@ -105,23 +109,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             font-size: 1rem;
             margin-bottom: 1rem;
             transition: border 0.2s, box-shadow 0.2s;
+            background: #39395a !important;
+            color: #f3f3fa !important;
+            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
         }
         .form-control:focus, .form-select:focus {
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 0.15rem rgba(30, 144, 255, 0.10);
+            border-color: #00e0d6;
+            box-shadow: 0 0 0 0.15rem rgba(0, 224, 214, 0.10);
+            background: #44446a !important;
+            color: #fff !important;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #1976d2 0%, #1E90FF 100%);
+            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
             border: none;
             border-radius: 20px;
             font-weight: 600;
             padding: 0.6rem 1.5rem;
             box-shadow: 0 2px 8px rgba(30, 144, 255, 0.08);
             transition: background 0.2s, box-shadow 0.2s;
+            color: #fff;
         }
         .btn-primary:hover {
-            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
             box-shadow: 0 4px 16px rgba(30, 144, 255, 0.12);
+            color: #fff;
         }
         .btn-outline-secondary, .btn-outline-danger {
             border-radius: 20px;
@@ -202,25 +213,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="designation" name="designation" placeholder="Job Title" required>
+                        <input type="text" class="form-control" id="designation" name="designation" required>
                         <label for="designation">Job Title / Designation</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="location" name="location" placeholder="Location" required>
+                        <input type="text" class="form-control" id="location" name="location" required>
                         <label for="location">Location (e.g., City, State)</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="salary" name="salary" placeholder="Annual Salary" required>
+                        <input type="number" class="form-control" id="salary" name="salary" required>
                         <label for="salary">Annual Salary (USD)</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="spots" name="spots" placeholder="Available Spots" value="1" min="1" required>
+                        <input type="number" class="form-control" id="spots" name="spots" value="1" min="1" required>
                         <label for="spots">Number of Available Spots</label>
                     </div>
                 </div>
@@ -268,19 +279,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Job Description" id="description" name="description" style="height: 150px" required></textarea>
+                        <textarea class="form-control" id="description" name="description" style="height: 150px" required></textarea>
                         <label for="description">Job Description</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Benefits" id="benefits" name="benefits" style="height: 80px"></textarea>
+                        <textarea class="form-control" id="benefits" name="benefits" style="height: 80px"></textarea>
                         <label for="benefits">Benefits (optional)</label>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="skills" name="skills" placeholder="Required Skills">
+                        <input type="text" class="form-control" id="skills" name="skills">
                         <label for="skills">Required Skills (comma-separated)</label>
                     </div>
                 </div>
@@ -290,13 +301,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
                     <div id="questions-container">
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" name="questions[]" placeholder="e.g., How many years of experience do you have?">
-                            <button class="btn btn-outline-danger" type="button" onclick="removeQuestion(this)">Remove</button>
+                            <button class="btn btn-outline-secondary" type="button" onclick="removeQuestion(this)">Remove</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addQuestion()">+ Add another question</button>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="addQuestion()">+ Add another question</button>
                 </div>
                 <div class="col-12 text-center mt-3">
-                    <button class="btn btn-primary py-3 px-5" type="submit">Post Job</button>
+                    <button class="btn btn-primary py-3 px-5" type="submit" style="background:#3b82f6; border:none; border-radius:20px; font-weight:600;">Post Job</button>
                 </div>
             </div>
         </form>
@@ -306,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
 <script>
 function addQuestion() {
     const div = document.createElement('div');
-    div.innerHTML = '<div class="input-group mb-3"><input type="text" class="form-control" name="questions[]" placeholder="Another question"><button class="btn btn-outline-danger" type="button" onclick="removeQuestion(this)">Remove</button></div>';
+    div.innerHTML = '<div class="input-group mb-3"><input type="text" class="form-control" name="questions[]" placeholder="Another question"><button class="btn btn-outline-secondary" type="button" onclick="removeQuestion(this)">Remove</button></div>';
     document.getElementById('questions-container').appendChild(div);
 }
 
