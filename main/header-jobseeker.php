@@ -87,6 +87,11 @@
             <i class="fa fa-user"></i> Profile
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? ' active' : '' ?>" href="contact.php">
+            <i class="fa fa-envelope"></i> Contact
+          </a>
+        </li>
         <?php if (isset($_SESSION['userid'])): ?>
         <li class="nav-item">
           <?php include 'notification-component.php'; ?>

@@ -423,9 +423,8 @@
                 <i class="fas fa-rocket me-2" style="color:#00e0d6;"></i>Job<span style="color:#00e0d6;">Portal</span>
             </div>
             <nav class="d-flex align-items-center gap-3" aria-label="Main Navigation">
-                <a href="#jobs" class="nav-link-glass" aria-label="Browse Jobs">Jobs</a>
-                <a href="#about" class="nav-link-glass" aria-label="About">About</a>
-                <a href="#contact" class="nav-link-glass" aria-label="Contact">Contact</a>
+                <a href="/main/job-list.php" class="nav-link-glass" aria-label="Browse Jobs">Jobs</a>
+                <a href="/main/contact.php" class="nav-link-glass" aria-label="Contact">Contact</a>
                 <a href="/main/login.php" class="nav-link-glass nav-link-cta" aria-label="Login or Sign Up">Login / Sign Up</a>
             </nav>
         </div>
@@ -469,36 +468,6 @@
             </div>
         </div>
     </div>
-    <div class="trusted-section">
-        <div class="trusted-title">Trusted by leading companies</div>
-        <div class="trusted-logos">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft logo" tabindex="0">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Apple-logo.png" alt="Apple logo" tabindex="0">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM logo" tabindex="0">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google logo" tabindex="0">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix logo" tabindex="0">
-        </div>
-    </div>
-    <div class="testimonials-section">
-        <div class="testimonials-title">What our users say</div>
-        <div class="testimonial-carousel">
-            <div class="testimonial-item" tabindex="0">
-                <div class="testimonial-quote">“I landed my dream job in just two weeks! The process was seamless and the jobs were top quality.”</div>
-                <div class="testimonial-user">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Testimonial user photo">
-                    <span>Sarah Lee, Product Designer at Google</span>
-                </div>
-            </div>
-            <div class="testimonial-item" tabindex="0">
-                <div class="testimonial-quote">“The 1-click apply feature saved me so much time. I highly recommend JobPortal to all job seekers.”</div>
-                <div class="testimonial-user">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Testimonial user photo">
-                    <span>Michael Chen, Software Engineer at Microsoft</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <button class="cta-btn-sticky" aria-label="Find your dream job now">Find Your Dream Job</button>
     <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
