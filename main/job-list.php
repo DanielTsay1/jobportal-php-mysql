@@ -74,7 +74,7 @@ $categories_stmt->execute();
 $categories = $categories_stmt->get_result();
 $categories_stmt->close();
 
-$conn->close();
+// Don't close connection yet - we need it for notifications
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -520,6 +520,7 @@ $conn->close();
     </div>
 
     <?php include 'footer.php'; ?>
+    <?php $conn->close(); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Simple form submission - no need for complex AJAX since we're using GET
