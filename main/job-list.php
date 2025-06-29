@@ -382,6 +382,50 @@ $conn->close();
     </div>
 
     <div class="container main-content">
+        <!-- Hired Notification Banner -->
+        <?php if (isset($_SESSION['userid'])): ?>
+            <?php
+            // Check for recent "Hired" notifications
+            $userid = $_SESSION['userid'];
+            $hired_notifications_stmt = $conn->prepare("
+                SELECT n.*, a.jobid, j.designation, c.name as company_name 
+                FROM notifications n
+                JOIN applied a ON n.userid = a.userid 
+                JOIN `job-post` j ON a.jobid = j.jobid
+                JOIN company c ON j.compid = c.compid
+                WHERE n.userid = ? 
+                AND n.message LIKE '%Hired%'
+                AND n.is_read = 0
+                ORDER BY n.created_at DESC
+                LIMIT 5
+            ");
+            $hired_notifications_stmt->bind_param("i", $userid);
+            $hired_notifications_stmt->execute();
+            $hired_notifications = $hired_notifications_stmt->get_result();
+            $hired_notifications_stmt->close();
+            
+            if ($hired_notifications->num_rows > 0):
+            ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%); border: 2px solid rgba(40, 167, 69, 0.3); color: #28a745; border-radius: 15px; margin-bottom: 2rem;">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-trophy me-3" style="font-size: 1.5rem; color: #28a745;"></i>
+                        <div>
+                            <h5 class="mb-1" style="color: #28a745; font-weight: 700;">🎉 Congratulations! You've Been Hired!</h5>
+                            <p class="mb-2" style="color: #28a745; font-weight: 500;">
+                                <?php while ($notification = $hired_notifications->fetch_assoc()): ?>
+                                    <strong><?= htmlspecialchars($notification['company_name']) ?></strong> has hired you for the position of <strong><?= htmlspecialchars($notification['designation']) ?></strong>!
+                                <?php endwhile; ?>
+                            </p>
+                            <a href="my-applications.php" class="btn btn-success btn-sm">
+                                <i class="fas fa-eye me-1"></i>View My Applications
+                            </a>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+
         <!-- Error Messages -->
         <?php if (isset($_GET['error']) && $_GET['error'] === 'job_not_available'): ?>
             <div class="alert alert-warning alert-dismissible fade show" role="alert" style="background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); color: #ffc107;">

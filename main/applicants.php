@@ -178,6 +178,11 @@ $conn->close();
             color: #fff;
             border: none;
         }
+        .status-reviewed {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: #fff;
+            border: none;
+        }
         .status-inactive {
             background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             color: #fff;
@@ -225,7 +230,7 @@ $conn->close();
                                     <td class="px-4"><?= htmlspecialchars($app['job_title']) ?></td>
                                     <td class="px-4"><?= date('M d, Y', strtotime($app['applied_at'])) ?></td>
                                     <td class="px-4">
-                                        <span class="status-badge status-<?= strtolower($app['status']) ?> text-uppercase ms-2"><?= htmlspecialchars($app['status']) ?></span>
+                                        <span id="status-badge-<?= $app['app_id'] ?>" class="status-badge status-<?= strtolower($app['status']) ?> text-uppercase ms-2"><?= htmlspecialchars($app['status']) ?></span>
                                     </td>
                                     <td class="px-4">
                                         <div class="d-flex flex-row gap-2 align-items-center">
@@ -243,10 +248,8 @@ $conn->close();
                                                 <i class="fas fa-edit me-1"></i>Update Status
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Pending')">Pending</a></li>
                                                 <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Hired')">Hired</a></li>
                                                 <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Rejected')">Rejected</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); updateStatus(<?= $app['app_id'] ?>, 'Inactive')">Inactive</a></li>
                                             </ul>
                                         </div>
                                     </td>
@@ -269,13 +272,13 @@ $conn->close();
         if (!badge) return;
 
         badge.textContent = status;
-        badge.className = 'badge '; // Reset classes
+        badge.className = 'status-badge text-uppercase ms-2'; // Reset to base classes
         switch(status) {
-            case 'Hired': badge.classList.add('bg-success'); break;
-            case 'Rejected': badge.classList.add('bg-danger'); break;
-            case 'Shortlisted': badge.classList.add('bg-info', 'text-dark'); break;
-            case 'Viewed': badge.classList.add('bg-secondary'); break;
-            default: badge.classList.add('bg-primary');
+            case 'Hired': badge.classList.add('status-hired'); break;
+            case 'Rejected': badge.classList.add('status-rejected'); break;
+            case 'Pending': badge.classList.add('status-pending'); break;
+            case 'Reviewed': badge.classList.add('status-reviewed'); break;
+            default: badge.classList.add('status-pending'); // Default fallback
         }
     }
 
@@ -284,8 +287,11 @@ $conn->close();
         setBadge(appId, '...');
         fetch('/php/update_application_status.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `app_id=${appId}&status=${newStatus}`
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                app_id: appId,
+                status: newStatus
+            })
         })
         .then(response => response.json())
         .then(data => {

@@ -87,6 +87,11 @@
             <i class="fa fa-user"></i> Profile
           </a>
         </li>
+        <?php if (isset($_SESSION['userid'])): ?>
+        <li class="nav-item">
+          <?php include 'notification-component.php'; ?>
+        </li>
+        <?php endif; ?>
         <li class="nav-item">
           <a class="nav-link logout" href="/php/logout.php">
             <i class="fa fa-sign-out-alt"></i> Logout
