@@ -359,6 +359,18 @@ if (isset($_GET['error'])) {
   <body>
     <div class="auth-bg"></div>
     <div class="auth-card">
+      <button type="button" onclick="goBack()" style="margin-bottom: 1.2rem; border-radius: 20px; font-weight: 600; width: 120px; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); color: #f3f3fa; box-shadow: 0 2px 8px rgba(30,20,60,0.10);">
+        <i class="fas fa-arrow-left me-2"></i>Go Back
+      </button>
+      <script>
+        function goBack() {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = '/main/index.php';
+          }
+        }
+      </script>
       <div style="text-align:center; margin-bottom: 1.2rem;">
         <span style="font-size:2rem; font-weight:700; color:#fff; letter-spacing:-1px;">
           <i class="fas fa-rocket me-2" style="color:#00e0d6;"></i>Job<span style="color:#00e0d6;">Portal</span>
