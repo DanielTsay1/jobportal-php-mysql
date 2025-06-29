@@ -70,23 +70,29 @@ foreach ($applications as $app) {
       .main-content { flex: 1 0 auto; }
       .applications-header {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
       }
       .applications-header h1 {
-        font-size: 1.7rem;
-        font-weight: 600;
-        color: #1976d2;
-        margin-bottom: 0.3rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #e8eaf6;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        letter-spacing: 0.03em;
       }
       .applications-header p {
-        color: #888;
-        font-size: 1rem;
+        color: #b3b3c6;
+        font-size: 1.1rem;
         margin-bottom: 0;
+        font-weight: 400;
+        letter-spacing: 0.02em;
       }
       .applications-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1.2rem;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
       }
       .glass-panel {
         background: rgba(255,255,255,0.10);
@@ -95,7 +101,7 @@ foreach ($applications as $app) {
         backdrop-filter: blur(18px) saturate(1.2);
         border: 1.5px solid rgba(255,255,255,0.13);
         margin: 2rem auto;
-        max-width: 1100px;
+        max-width: 1200px;
         padding: 2.5rem 2rem 2rem 2rem;
         z-index: 2;
         position: relative;
@@ -108,82 +114,172 @@ foreach ($applications as $app) {
         backdrop-filter: blur(8px) saturate(1.1);
         color: #f3f3fa;
         margin-bottom: 1.5rem;
-        padding: 1.5rem;
-        transition: box-shadow 0.2s, border 0.2s;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .app-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       }
       .app-card:hover {
         box-shadow: 0 8px 25px rgba(123,63,228,0.13);
         border-color: #00e0d6;
+        transform: translateY(-2px);
       }
       .btn-apply, .btn-primary, .btn-outline-primary {
-        background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
-        border-radius: 25px;
-        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
         font-weight: 600;
         color: #fff;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
       }
       .btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover {
-        background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
         color: #fff;
-        box-shadow: 0 8px 25px rgba(0,224,214,0.3);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        transform: translateY(-1px);
       }
       .application-title {
-        font-size: 1.08rem;
-        font-weight: 500;
-        color: #1976d2;
-        margin-bottom: 0.1rem;
-        line-height: 1.2;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #e8eaf6;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
       }
       .application-company {
-        color: #7b1fa2;
-        font-size: 0.98rem;
-        margin-bottom: 0.4rem;
+        color: #667eea;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.02em;
       }
       .application-meta {
-        color: #6c757d;
-        font-size: 0.93rem;
-        margin-bottom: 0.4rem;
+        color: #b3b3c6;
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        font-weight: 400;
       }
       .status-badge {
         display: inline-block;
-        border-radius: 8px;
-        font-size: 0.89em;
-        font-weight: 500;
-        padding: 0.22em 0.8em;
-        letter-spacing: 0.01em;
-        margin-bottom: 0.4rem;
-        background: #f0f4fa;
-        color: #1976d2;
-        border: 1px solid #e3f0ff;
+        border-radius: 10px;
+        font-size: 0.9em;
+        font-weight: 600;
+        padding: 0.4em 1em;
+        letter-spacing: 0.02em;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       }
-      .status-hired { background: #e8f5e9; color: #388e3c; border-color: #d4edda; }
-      .status-rejected { background: #fbe9e7; color: #c62828; border-color: #f8d7da; }
+      .status-pending { 
+        background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); 
+        color: #fff; 
+        border: none;
+      }
+      .status-hired { 
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+        color: #fff; 
+        border: none;
+      }
+      .status-rejected { 
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); 
+        color: #fff; 
+        border: none;
+      }
+      .status-withdrawn { 
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); 
+        color: #fff; 
+        border: none;
+      }
       .application-actions {
-        margin-top: auto;
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
       }
       .btn-modern {
-        border-radius: 16px;
+        border-radius: 10px;
         font-weight: 500;
-        padding: 0.45rem 1.1rem;
-        font-size: 0.98rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
         border: none;
-        background: #1976d2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: #fff;
-        box-shadow: none;
-        transition: background 0.2s;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
       }
       .btn-modern:hover {
-        background: #7b1fa2;
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
         color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        text-decoration: none;
       }
-      @media (max-width: 600px) {
+      .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #b3b3c6;
+      }
+      .empty-state i {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+      }
+      .empty-state h3 {
+        color: #e8eaf6;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      @media (max-width: 768px) {
+        .applications-header h1 {
+          font-size: 2rem;
+        }
         .applications-grid {
           grid-template-columns: 1fr;
+          gap: 1rem;
         }
-        .application-card {
-          padding: 0.9rem 0.5rem 0.7rem 0.5rem;
+        .app-card {
+          padding: 1.5rem;
+        }
+        .application-actions {
+          flex-direction: column;
+        }
+        .btn-modern {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+      @media (max-width: 576px) {
+        .applications-header {
+          padding: 1.5rem 0;
+        }
+        .applications-header h1 {
+          font-size: 1.8rem;
+        }
+        .glass-panel {
+          padding: 1.5rem 1rem;
+        }
+        .app-card {
+          padding: 1rem;
         }
       }
     </style>
@@ -194,41 +290,50 @@ foreach ($applications as $app) {
     <div class="container main-content py-5">
         <div class="applications-header">
             <h1>My Applications</h1>
-            <p>Track your job applications</p>
+            <p>Track your job applications and their status</p>
         </div>
-        <div class="applications-grid">
+        
+        <div class="glass-panel">
             <?php if (empty($applications)): ?>
-                <div class="application-card text-center">
-                    <i class="fas fa-briefcase fa-2x mb-3 text-muted"></i>
-                    <h4>No applications found</h4>
-                    <p>Start applying to jobs and your applications will appear here.</p>
-                    <a href="job-list.php" class="btn btn-modern mt-2">Browse Jobs</a>
+                <div class="empty-state">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>No Applications Yet</h3>
+                    <p>Start applying to jobs and your applications will appear here for easy tracking.</p>
+                    <a href="job-list.php" class="btn btn-modern">
+                        <i class="fas fa-search me-2"></i>Browse Available Jobs
+                    </a>
                 </div>
             <?php else: ?>
-                <?php foreach ($applications as $app): ?>
-                    <div class="application-card">
-                        <div class="application-title"><?= htmlspecialchars($app['designation']) ?></div>
-                        <div class="application-company"><?= htmlspecialchars($app['company_name']) ?></div>
-                        <div class="application-meta">
-                            <?= date('M d, Y', strtotime($app['applied_at'])) ?>
-                        </div>
-                        <span class="status-badge status-<?= strtolower($app['status']) ?>">
-                            <?= htmlspecialchars($app['status']) ?>
-                        </span>
-                        
-                        <?php if (!empty($app['suspended']) && $app['suspended'] == 1): ?>
-                            <div class="alert alert-warning mt-2 mb-2" style="font-size: 0.85rem; padding: 0.5rem;">
-                                <i class="fas fa-exclamation-triangle me-1"></i>
-                                <strong>Company Suspended</strong><br>
-                                <small>Reason: <?= htmlspecialchars($app['suspension_reason'] ?? 'No reason provided.') ?></small>
+                <div class="applications-grid">
+                    <?php foreach ($applications as $app): ?>
+                        <div class="app-card">
+                            <div class="application-title"><?= htmlspecialchars($app['designation']) ?></div>
+                            <div class="application-company">
+                                <i class="fas fa-building me-2"></i><?= htmlspecialchars($app['company_name']) ?>
                             </div>
-                        <?php endif; ?>
-                        
-                        <div class="application-actions">
-                            <a href="/main/job-details.php?jobid=<?= $app['jobid'] ?>" class="btn btn-modern">View Job</a>
+                            <div class="application-meta">
+                                <i class="fas fa-calendar-alt me-2"></i>Applied on <?= date('M d, Y', strtotime($app['applied_at'])) ?>
+                            </div>
+                            <span class="status-badge status-<?= strtolower($app['status']) ?>">
+                                <i class="fas fa-circle me-1"></i><?= htmlspecialchars($app['status']) ?>
+                            </span>
+                            
+                            <?php if (!empty($app['suspended']) && $app['suspended'] == 1): ?>
+                                <div class="alert alert-warning mt-2 mb-2" style="font-size: 0.85rem; padding: 0.75rem; border-radius: 8px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); color: #ffc107;">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    <strong>Company Suspended</strong><br>
+                                    <small>Reason: <?= htmlspecialchars($app['suspension_reason'] ?? 'No reason provided.') ?></small>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="application-actions">
+                                <a href="/main/job-details.php?jobid=<?= $app['jobid'] ?>" class="btn btn-modern">
+                                    <i class="fas fa-eye me-1"></i>View Job Details
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
         </div>
     </div>

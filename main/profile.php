@@ -162,7 +162,7 @@ $hired_stmt->close();
         }
     </style>
 </head>
-<body style="padding-top:68px;">
+<body class="profile-page" style="padding-top:68px;">
 <?php include 'header-jobseeker.php'; ?>
     <div class="main-content" style="animation: fadeIn 0.7s cubic-bezier(.4,1.4,.6,1);">
     <?php if ($is_hired): ?>
@@ -194,21 +194,29 @@ $hired_stmt->close();
     <?php endif; ?>
     
     <!-- Profile Header -->
-    <div class="profile-header">
+    <div class="profile-header-linkedin">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-3 text-center">
-                    <img src="<?= htmlspecialchars($user['profile_picture'] ?? '/img/profile.png') ?>" 
-                         alt="Profile Picture" class="profile-picture mb-3">
-                    <button class="btn btn-light btn-sm" onclick="document.getElementById('profile-picture-input').click()">
-                        <i class="fas fa-camera me-2"></i>Change Photo
-                    </button>
-                    <input type="file" id="profile-picture-input" accept="image/*" style="display: none;" onchange="uploadProfilePicture(this)">
-                </div>
-                <div class="col-md-9">
-                    <h1 class="mb-2"><?= htmlspecialchars($username) ?></h1>
-                    <p class="mb-1"><i class="fas fa-envelope me-2"></i><?= htmlspecialchars($user['email'] ?? 'No email set') ?></p>
-                    <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i><?= htmlspecialchars($user['location'] ?? 'No location set') ?></p>
+            <div class="profile-header-linkedin-group">
+                <div class="profile-card-linkedin">
+                    <div class="profile-picture-linkedin-container">
+                        <img src="<?= htmlspecialchars($user['profile_picture'] ?? '/img/profile.png') ?>" 
+                             alt="Profile Picture" class="profile-picture-linkedin">
+                        <button class="change-photo-btn-linkedin" title="Change Photo" onclick="document.getElementById('profile-picture-input').click()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        <input type="file" id="profile-picture-input" accept="image/*" style="display: none;" onchange="uploadProfilePicture(this)">
+                    </div>
+                    <div class="profile-info-linkedin">
+                        <h1 class="profile-username-linkedin mb-2"><?= htmlspecialchars($username) ?></h1>
+                        <div class="profile-info-row-linkedin">
+                            <i class="fas fa-envelope me-2"></i>
+                            <span><?= htmlspecialchars($user['email'] ?? 'No email set') ?></span>
+                        </div>
+                        <div class="profile-info-row-linkedin">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            <span><?= htmlspecialchars($user['location'] ?? 'No location set') ?></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -234,11 +242,11 @@ $hired_stmt->close();
             <div class="tab-pane fade show active" id="profile" role="tabpanel">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Personal Information</h5>
-                        
+                        <h5 class="card-title mb-2">Personal Information</h5>
+                        <hr class="section-divider mb-3">
                         <?php if ($is_hired): ?>
                         <!-- Employment Status Section -->
-                        <div class="alert alert-success border-0 mb-4" role="alert">
+                        <div class="alert alert-success border-0 mb-3" role="alert">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <i class="fas fa-briefcase fa-2x text-success"></i>
@@ -257,50 +265,44 @@ $hired_stmt->close();
                             </div>
                         </div>
                         <?php endif; ?>
-                        
                         <form id="personalForm">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                            <div class="row g-3">
+                                <div class="col-md-6">
                                     <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="email" name="email" 
-                                           value="<?= htmlspecialchars($user['email'] ?? '') ?>">
+                                    <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <label for="phone" class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" 
-                                           value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
+                                    <input type="tel" class="form-control" id="phone" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <label for="location" class="form-label">Location</label>
-                                    <input type="text" class="form-control" id="location" name="location" 
-                                           value="<?= htmlspecialchars($user['location'] ?? '') ?>">
+                                    <input type="text" class="form-control" id="location" name="location" value="<?= htmlspecialchars($user['location'] ?? '') ?>">
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <label for="website" class="form-label">Website (Optional)</label>
-                                    <input type="url" class="form-control" id="website" name="website" 
-                                           value="<?= htmlspecialchars($user['website'] ?? '') ?>">
+                                    <input type="url" class="form-control" id="website" name="website" value="<?= htmlspecialchars($user['website'] ?? '') ?>">
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="about" class="form-label">About Me</label>
-                                <textarea class="form-control" id="about" name="about" rows="4" 
-                                          placeholder="Tell employers about yourself..."><?= htmlspecialchars($user['about'] ?? '') ?></textarea>
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <label for="about" class="form-label">About Me</label>
+                                    <textarea class="form-control" id="about" name="about" rows="3" placeholder="Tell employers about yourself..."><?= htmlspecialchars($user['about'] ?? '') ?></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="education" class="form-label">Education</label>
+                                    <textarea class="form-control" id="education" name="education" rows="3" placeholder="List your educational background..."><?= htmlspecialchars($user['education'] ?? '') ?></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="experience" class="form-label">Work Experience</label>
+                                    <textarea class="form-control" id="experience" name="experience" rows="3" placeholder="Describe your work experience..."><?= htmlspecialchars($user['experience'] ?? '') ?></textarea>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="education" class="form-label">Education</label>
-                                <textarea class="form-control" id="education" name="education" rows="4" 
-                                          placeholder="List your educational background..."><?= htmlspecialchars($user['education'] ?? '') ?></textarea>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
                             </div>
-                            <div class="mb-3">
-                                <label for="experience" class="form-label">Work Experience</label>
-                                <textarea class="form-control" id="experience" name="experience" rows="4" 
-                                          placeholder="Describe your work experience..."><?= htmlspecialchars($user['experience'] ?? '') ?></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Changes
-                            </button>
                         </form>
                     </div>
                 </div>

@@ -61,90 +61,182 @@ $has_resumes = count($user_resumes) > 0;
             margin: 0;
             overflow-x: hidden;
         }
-        .apply-glass-panel {
-            background: rgba(255,255,255,0.10);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
-            backdrop-filter: blur(18px) saturate(1.2);
-            border: 1.5px solid rgba(255,255,255,0.13);
-            margin: 2rem auto;
-            max-width: 700px;
-            padding: 2.5rem 2rem 2rem 2rem;
-            z-index: 2;
-            position: relative;
+        .apply-card {
+            background: rgba(36, 38, 58, 0.98);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(30,20,60,0.18);
+            border: 1.5px solid rgba(120,130,255,0.13);
+            color: #f3f3fa;
         }
-        .btn-apply, .btn-primary, .btn-outline-primary {
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+        .apply-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.01em;
+            text-shadow: 0 2px 8px rgba(102,126,234,0.13);
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #00e0d6 0%, #7b3fe4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        .text-gradient-company {
+            background: linear-gradient(90deg, #ffd700 0%, #7b3fe4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        .section-divider {
+            border: none;
+            border-top: 2px solid rgba(120,130,255,0.13);
+            width: 60px;
+            margin-left: 0;
+            margin-bottom: 1.2rem;
+            opacity: 0.8;
+        }
+        .btn-gradient {
+            background: linear-gradient(90deg, #00e0d6 0%, #7b3fe4 100%);
             border: none;
             border-radius: 25px;
-            padding: 0.75rem 2rem;
             font-weight: 600;
             color: #fff;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.18);
         }
-        .btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover {
-            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+        .btn-gradient:hover {
+            background: linear-gradient(90deg, #7b3fe4 0%, #00e0d6 100%);
             color: #fff;
-            box-shadow: 0 8px 25px rgba(0,224,214,0.3);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            transform: translateY(-1px);
         }
-        input[type="text"], input[type="email"], input[type="number"], input[type="file"], textarea, select {
-            background: rgba(255,255,255,0.13) !important;
-            border: 1.5px solid rgba(255,255,255,0.18) !important;
-            border-radius: 16px !important;
-            color: #f3f3fa !important;
-            font-size: 1.08rem;
-            font-weight: 500;
-            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
-            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
-            outline: none;
-            backdrop-filter: blur(8px) saturate(1.1);
+        .apply-form {
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
         }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="file"]:focus, textarea:focus, select:focus {
-            border: 1.5px solid #00e0d6 !important;
-            background: rgba(255,255,255,0.18) !important;
-            box-shadow: 0 4px 24px rgba(0,224,214,0.13);
-            color: #fff !important;
-        }
-        ::placeholder {
-            color: #b3b3c6 !important;
-            font-weight: 400;
-            opacity: 1;
-            letter-spacing: 0.01em;
-        }
-        .resume-option {
+        .resume-option, .upload-new-resume {
             border: 2px solid #dee2e6;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
+            background: rgba(255,255,255,0.07);
         }
-        .resume-option:hover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
+        .resume-option.selected, .upload-new-resume.selected {
+            border-color: #00e0d6;
+            background: rgba(0,224,214,0.07);
         }
-        .resume-option.selected {
-            border-color: #007bff;
-            background-color: #e3f2fd;
+        .resume-option:hover, .upload-new-resume:hover {
+            border-color: #7b3fe4;
+            background: rgba(123,63,228,0.07);
         }
-        .resume-option input[type="radio"] {
+        .resume-option input[type="radio"], .upload-new-resume input[type="radio"] {
             margin-right: 10px;
         }
-        .upload-new-resume {
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
+        .additional-questions-section {
+            background: rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 1.2rem 1rem 1rem 1rem;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+            margin-bottom: 1.2rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #e8eaf6;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.01em;
+        }
+        .form-control {
+            background: #39395a !important;
+            color: #f3f3fa !important;
+            border: 2px solid #e9ecef !important;
+            border-radius: 10px !important;
+            font-size: 1.08rem;
+            font-weight: 500;
+            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            margin-bottom: 0.2rem;
+        }
+        .form-control:focus {
+            background: #44446a !important;
+            color: #fff !important;
+            border-color: #667eea !important;
+            box-shadow: 0 4px 24px rgba(102, 126, 234, 0.25) !important;
+        }
+        .form-select {
+            background: #39395a !important;
+            color: #f3f3fa !important;
+            border: 2px solid #e9ecef !important;
+            border-radius: 10px !important;
+            font-size: 1.08rem;
+            font-weight: 500;
+            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            margin-bottom: 0.2rem;
+        }
+        .form-select:focus {
+            background: #44446a !important;
+            color: #fff !important;
+            border-color: #667eea !important;
+            box-shadow: 0 4px 24px rgba(102, 126, 234, 0.25) !important;
+        }
+        .bg-light, .bg-light.rounded {
+            background: rgba(255,255,255,0.07) !important;
+            color: #e8eaf6 !important;
+        }
+        .text-primary {
+            color: #00e0d6 !important;
+        }
+        .text-dark {
+            color: #e8eaf6 !important;
+        }
+        .btn-outline-secondary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 10px;
+            font-weight: 500;
+            background: transparent;
             transition: all 0.3s ease;
         }
-        .upload-new-resume:hover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
+        .btn-outline-secondary:hover {
+            background: #667eea;
+            color: #fff;
+            border-color: #667eea;
         }
-        .upload-new-resume.selected {
-            border-color: #007bff;
-            background-color: #e3f2fd;
+        .form-check-label, .form-check-input {
+            cursor: pointer;
+        }
+        .form-check-input:checked {
+            background-color: #00e0d6;
+            border-color: #00e0d6;
+        }
+        .alert-info {
+            background: rgba(0,224,214,0.08);
+            color: #00e0d6;
+            border: 1.5px solid #00e0d6;
+        }
+        .alert-danger {
+            background: rgba(220,53,69,0.08);
+            color: #dc3545;
+            border: 1.5px solid #dc3545;
+        }
+        .text-muted {
+            color: #b3b3c6 !important;
+        }
+        @media (max-width: 700px) {
+            .apply-title {
+                font-size: 1.3rem;
+            }
+            .apply-card {
+                padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -152,153 +244,101 @@ $has_resumes = count($user_resumes) > 0;
 <?php include 'header-jobseeker.php'; ?>
 
 <div class="container py-4">
-    <h2 class="mb-4">Apply for <?= htmlspecialchars($job['designation'] ?? 'Job') ?> at <?= htmlspecialchars($job['company_name'] ?? '') ?></h2>
-    <?php if (!$job): ?>
-        <div class="alert alert-danger">Job not found.</div>
-    <?php else: ?>
-    <form method="post" action="/php/apply.php" enctype="multipart/form-data" class="card p-4 shadow-sm">
-        <input type="hidden" name="jobid" value="<?= $jobid ?>">
-        
-        <div class="mb-3">
-            <label class="form-label">Cover Letter (PDF/DOC/DOCX)</label>
-            <input type="file" name="cover_letter_file" class="form-control" accept=".pdf,.doc,.docx" required>
-        </div>
-        
-        <div class="mb-3">
-            <label class="form-label">Resume Selection</label>
-            
-            <?php if ($has_resumes): ?>
-                <div class="mb-3">
-                    <h6>Select from your existing resumes:</h6>
-                    <?php foreach ($user_resumes as $index => $resume): ?>
-                        <div class="resume-option <?= $index === 0 ? 'selected' : '' ?>" data-resume-id="<?= $resume['id'] ?>" onclick="selectResume('existing', <?= $resume['id'] ?>)">
-                            <input type="radio" name="resume_type" value="existing" <?= $index === 0 ? 'checked' : '' ?>>
-                            <i class="fas fa-file-pdf me-2"></i>
-                            <strong><?= htmlspecialchars($resume['original_filename']) ?></strong>
-                            <small class="text-muted d-block ms-4">
-                                Uploaded: <?= date('M j, Y', filemtime('../uploads/' . $resume['filename'])) ?> | 
-                                Size: <?= number_format(filesize('../uploads/' . $resume['filename']) / 1024, 1) ?> KB
-                            </small>
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-10">
+            <div class="apply-card mb-4">
+                <div class="card-body p-4">
+                    <h2 class="apply-title mb-3">Apply for <span class="text-primary"><?= htmlspecialchars($job['designation'] ?? 'Job') ?></span> at <span class="text-dark"><?= htmlspecialchars($job['company_name'] ?? '') ?></span></h2>
+                    <hr class="section-divider mb-3">
+                    <?php if (!$job): ?>
+                        <div class="alert alert-danger">Job not found.</div>
+                    <?php else: ?>
+                    <form method="post" action="/php/apply.php" enctype="multipart/form-data" id="applyForm">
+                        <input type="hidden" name="jobid" value="<?= $jobid ?>">
+                        <input type="hidden" name="resume_type" id="resume_type" value="<?= $has_resumes ? 'existing' : 'new' ?>">
+                        <div class="mb-3">
+                            <label class="form-label">Cover Letter <span class="text-muted">(PDF/DOC/DOCX)</span></label>
+                            <input type="file" name="cover_letter_file" class="form-control" accept=".pdf,.doc,.docx" required>
                         </div>
-                    <?php endforeach; ?>
+                        <div class="mb-3">
+                            <label class="form-label">Resume <span class="text-muted">(PDF/DOC/DOCX)</span></label>
+                            <?php if ($has_resumes): ?>
+                                <div class="mb-2">
+                                    <select class="form-select mb-2" name="selected_resume_id" id="selected_resume_id">
+                                        <option value="">-- Select from your saved resumes --</option>
+                                        <?php foreach ($user_resumes as $resume): ?>
+                                            <option value="<?= $resume['id'] ?>"><?= htmlspecialchars($resume['original_filename']) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div class="text-muted small mb-2">Or upload a new resume below:</div>
+                                </div>
+                            <?php endif; ?>
+                            <input type="file" name="resume_file" class="form-control mb-2" accept=".pdf,.doc,.docx" <?= $has_resumes ? '' : 'required' ?> id="resume_file_input">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="save_resume_to_profile" id="save_resume_to_profile" checked>
+                                <label class="form-check-label" for="save_resume_to_profile">
+                                    Save this resume to my profile for future applications
+                                </label>
+                            </div>
+                        </div>
+                        <?php if (!empty($questions)): ?>
+                            <div class="mb-3 p-3 bg-light rounded border">
+                                <h6 class="fw-semibold mb-3">Additional Questions</h6>
+                                <?php foreach ($questions as $idx => $q): ?>
+                                    <div class="mb-2">
+                                        <label class="form-label mb-1"><?= htmlspecialchars($q) ?></label>
+                                        <input type="text" name="question_answers[<?= $idx ?>]" class="form-control" required>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="submit" class="btn btn-gradient px-4">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Application
+                            </button>
+                            <a href="job-details.php?jobid=<?= $jobid ?>" class="btn btn-outline-secondary px-4">Back</a>
+                        </div>
+                    </form>
+                    <?php endif; ?>
                 </div>
-                
-                <div class="mb-3">
-                    <h6>Or upload a new resume:</h6>
-                    <div class="upload-new-resume" onclick="selectResume('new')">
-                        <input type="radio" name="resume_type" value="new">
-                        <i class="fas fa-upload fa-2x mb-2"></i>
-                        <div><strong>Upload New Resume</strong></div>
-                        <small class="text-muted">PDF, DOC, or DOCX (max 5MB)</small>
-                    </div>
-                </div>
-                
-                <div id="new-resume-upload" style="display: none;">
-                    <input type="file" name="resume_file" class="form-control" accept=".pdf,.doc,.docx">
-                    <div class="form-check mt-2">
-                        <input class="form-check-input" type="checkbox" name="save_resume_to_profile" id="save_resume_to_profile" checked>
-                        <label class="form-check-label" for="save_resume_to_profile">
-                            Save this resume to my profile for future applications.
-                        </label>
-                    </div>
-                </div>
-                
-                <!-- Hidden input for selected resume ID -->
-                <input type="hidden" name="selected_resume_id" id="selected_resume_id" value="<?= $user_resumes[0]['id'] ?? '' ?>">
-                
-            <?php else: ?>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    No resumes found in your profile. Please upload a resume to apply.
-                </div>
-                <input type="file" name="resume_file" class="form-control" accept=".pdf,.doc,.docx" required>
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="checkbox" name="save_resume_to_profile" id="save_resume_to_profile" checked>
-                    <label class="form-check-label" for="save_resume_to_profile">
-                        Save this resume to my profile for future applications.
-                    </label>
-                </div>
-            <?php endif; ?>
+            </div>
         </div>
-        
-        <?php if (!empty($questions)): ?>
-            <hr>
-            <h5>Additional Questions</h5>
-            <?php foreach ($questions as $idx => $q): ?>
-                <div class="mb-3">
-                    <label class="form-label"><?= htmlspecialchars($q) ?></label>
-                    <input type="text" name="question_answers[<?= $idx ?>]" class="form-control" required>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        
-        <button type="submit" class="btn btn-primary">Submit Application</button>
-        <a href="job-details.php?jobid=<?= $jobid ?>" class="btn btn-secondary ms-2">Back</a>
-    </form>
-    <?php endif; ?>
+    </div>
 </div>
 
 <script>
-function selectResume(type, resumeId = null) {
-    // Remove selected class from all options
-    document.querySelectorAll('.resume-option, .upload-new-resume').forEach(el => {
-        el.classList.remove('selected');
+// Resume selection logic
+const resumeTypeInput = document.getElementById('resume_type');
+const resumeFileInput = document.getElementById('resume_file_input');
+const resumeDropdown = document.getElementById('selected_resume_id');
+
+if (resumeFileInput) {
+    resumeFileInput.addEventListener('change', function() {
+        if (resumeFileInput.value) {
+            resumeTypeInput.value = 'new';
+            if (resumeDropdown) resumeDropdown.value = '';
+        }
     });
-    
-    // Add selected class to clicked option
-    if (type === 'existing') {
-        // Find the clicked option by resumeId
-        const clickedOption = document.querySelector(`.resume-option[data-resume-id="${resumeId}"]`);
-        if (clickedOption) {
-            clickedOption.classList.add('selected');
+}
+if (resumeDropdown) {
+    resumeDropdown.addEventListener('change', function() {
+        if (resumeDropdown.value) {
+            resumeTypeInput.value = 'existing';
+            if (resumeFileInput) resumeFileInput.value = '';
         }
-        document.getElementById('new-resume-upload').style.display = 'none';
-        
-        // Update the hidden input with the selected resume ID
-        document.getElementById('selected_resume_id').value = resumeId;
-        
-        // Uncheck all existing radio buttons and check the one in the clicked option
-        document.querySelectorAll('input[name="resume_type"][value="existing"]').forEach(radio => {
-            radio.checked = false;
-        });
-        
-        // Find the radio button in the clicked option and check it
-        const radioInOption = clickedOption.querySelector('input[type="radio"]');
-        if (radioInOption) {
-            radioInOption.checked = true;
-        }
-        
-    } else {
-        document.querySelector('.upload-new-resume').classList.add('selected');
-        document.getElementById('new-resume-upload').style.display = 'block';
-        
-        // Clear the selected resume ID
-        document.getElementById('selected_resume_id').value = '';
-        
-        // Uncheck all existing radio buttons and check the new one
-        document.querySelectorAll('input[name="resume_type"][value="existing"]').forEach(radio => {
-            radio.checked = false;
-        });
-        document.querySelector('input[name="resume_type"][value="new"]').checked = true;
-        
-        // Make the file input required when new resume is selected
-        const fileInput = document.querySelector('input[name="resume_file"]');
-        if (fileInput) {
-            fileInput.required = true;
-        }
-    }
+    });
 }
 
 // Form validation
 document.querySelector('form').addEventListener('submit', function(e) {
-    const resumeType = document.querySelector('input[name="resume_type"]:checked');
-    if (!resumeType) {
+    const resumeType = document.getElementById('resume_type').value;
+    if (!resumeType || (resumeType !== 'existing' && resumeType !== 'new')) {
         e.preventDefault();
         alert('Please select a resume option.');
         return;
     }
     
-    if (resumeType.value === 'new') {
+    if (resumeType === 'new') {
         const fileInput = document.querySelector('input[name="resume_file"]');
         if (!fileInput || !fileInput.files[0]) {
             e.preventDefault();

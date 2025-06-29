@@ -74,6 +74,46 @@
     border-radius: 2px;
 }
 
+/* Override global input styles for profile page consistency */
+.profile-page input[type="text"], 
+.profile-page input[type="email"], 
+.profile-page input[type="tel"], 
+.profile-page input[type="url"], 
+.profile-page input[type="password"],
+.profile-page input[type="file"],
+.profile-page textarea,
+.profile-page select {
+    background: #39395a !important;
+    color: #f3f3fa !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 10px !important;
+    padding: 0.75rem 1rem !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 2px 12px rgba(123,63,228,0.08) !important;
+    backdrop-filter: blur(8px) saturate(1.1) !important;
+}
+
+.profile-page input[type="text"]:focus, 
+.profile-page input[type="email"]:focus, 
+.profile-page input[type="tel"]:focus, 
+.profile-page input[type="url"]:focus, 
+.profile-page input[type="password"]:focus,
+.profile-page input[type="file"]:focus,
+.profile-page textarea:focus,
+.profile-page select:focus {
+    background: #44446a !important;
+    color: #fff !important;
+    border-color: #667eea !important;
+    box-shadow: 0 4px 24px rgba(102, 126, 234, 0.25) !important;
+}
+
+.profile-page ::placeholder {
+    color: #b3b3c6 !important;
+    font-weight: 400 !important;
+    opacity: 1 !important;
+}
+
 .form-control {
     background: #39395a !important;
     color: #f3f3fa;
@@ -89,10 +129,35 @@
     color: #fff;
 }
 
+/* Improved label and heading visibility */
 .form-label {
     font-weight: 600;
-    color: #495057;
+    color: #e8eaf6 !important;
     margin-bottom: 0.5rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+}
+
+.card-title {
+    color: #e8eaf6 !important;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-size: 1.4rem;
+    letter-spacing: 0.03em;
+}
+
+.card-title::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
 }
 
 .btn-primary {
@@ -145,11 +210,64 @@
     transform: translateY(-1px);
 }
 
+/* Enhanced button styles for resume and security sections */
+.btn-outline-info {
+    border: 2px solid #17a2b8;
+    color: #17a2b8;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.btn-outline-info:hover {
+    background: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+    transform: translateY(-1px);
+    color: white;
+}
+
 .card {
     border: none;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     border-radius: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: rgba(255,255,255,0.10);
+    backdrop-filter: blur(18px) saturate(1.2);
+    border: 1.5px solid rgba(255,255,255,0.13);
 }
 
 .card:hover {
@@ -158,25 +276,21 @@
 }
 
 .card-body {
-    padding: 2rem;
+    padding: 1.5rem 2rem 1.5rem 2rem;
 }
 
-.card-title {
-    color: #2c3e50;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    position: relative;
+.card-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.5rem 2rem;
 }
 
-.card-title::after {
-    content: '';
-    position: absolute;
-    bottom: -0.5rem;
-    left: 0;
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 2px;
+.card-header h5 {
+    color: #e8eaf6 !important;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .upload-area {
@@ -222,6 +336,28 @@
 .resume-preview p {
     color: #6c757d;
     margin-bottom: 1rem;
+}
+
+/* Enhanced resume list styling */
+.list-group-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e8eaf6;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(2px);
+}
+
+.resume-name-display {
+    font-weight: 500;
+    color: #e8eaf6;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 /* Alert Styles */
@@ -397,4 +533,349 @@
 .status-icon.error {
     background: #dc3545;
     color: white;
+}
+
+/* Modern Profile Header Styles */
+.profile-header-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3.5rem 0 2.5rem 0;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 260px;
+}
+.profile-header-modern::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><defs><pattern id=\'grain\' width=\'100\' height=\'100\' patternUnits=\'userSpaceOnUse\'><circle cx=\'25\' cy=\'25\' r=\'1\' fill=\'white\' opacity=\'0.08\'/><circle cx=\'75\' cy=\'75\' r=\'1\' fill=\'white\' opacity=\'0.08\'/><circle cx=\'50\' cy=\'10\' r=\'0.5\' fill=\'white\' opacity=\'0.08\'/><circle cx=\'10\' cy=\'60\' r=\'0.5\' fill=\'white\' opacity=\'0.08\'/><circle cx=\'90\' cy=\'40\' r=\'0.5\' fill=\'white\' opacity=\'0.08\'/></pattern></defs><rect width=\'100\' height=\'100\' fill=\'url(%23grain)\'/></svg>');
+    opacity: 0.25;
+    z-index: 1;
+}
+.profile-header-flex {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+}
+.profile-picture-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+    margin-bottom: 1rem;
+}
+.profile-picture {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 8px 32px rgba(30,20,60,0.18), 0 0 0 8px rgba(102,126,234,0.10);
+    background: #23233a;
+    transition: box-shadow 0.3s, border 0.3s;
+}
+.profile-picture:hover {
+    box-shadow: 0 12px 40px rgba(102,126,234,0.18), 0 0 0 12px rgba(102,126,234,0.13);
+    border-color: #764ba2;
+}
+.change-photo-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(30,30,50,0.85);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.18);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    z-index: 3;
+    outline: none;
+}
+.change-photo-btn:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.25);
+}
+.profile-info-card {
+    background: rgba(255,255,255,0.13);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(30,20,60,0.13);
+    backdrop-filter: blur(18px) saturate(1.2);
+    border: 1.5px solid rgba(255,255,255,0.13);
+    padding: 2.2rem 2.5rem 2.2rem 2.5rem;
+    min-width: 320px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+}
+.profile-username {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 8px rgba(102,126,234,0.13);
+}
+.profile-info-row {
+    display: flex;
+    align-items: center;
+    font-size: 1.15rem;
+    color: #e8eaf6;
+    margin-bottom: 0.7rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.profile-info-row i {
+    color: #ffd700;
+    font-size: 1.2rem;
+    margin-right: 0.7rem;
+}
+@media (max-width: 900px) {
+    .profile-header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    .profile-info-card {
+        padding: 1.5rem 1.2rem;
+        min-width: 0;
+        width: 100%;
+    }
+    .profile-picture {
+        width: 110px;
+        height: 110px;
+    }
+}
+@media (max-width: 600px) {
+    .profile-header-modern {
+        padding: 2rem 0 1.2rem 0;
+    }
+    .profile-info-card {
+        padding: 1.1rem 0.7rem;
+    }
+    .profile-username {
+        font-size: 1.5rem;
+    }
+    .profile-picture {
+        width: 80px;
+        height: 80px;
+    }
+    .change-photo-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        bottom: 2px;
+        right: 2px;
+    }
+}
+
+/* LinkedIn Style Profile Header */
+.profile-header-linkedin {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4.5rem 0 3.5rem 0;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+.profile-header-linkedin-group {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+.profile-card-linkedin {
+    background: rgba(255,255,255,0.16);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(30,20,60,0.18);
+    backdrop-filter: blur(18px) saturate(1.2);
+    border: 1.5px solid rgba(255,255,255,0.13);
+    padding: 2.5rem 3.5rem 2.5rem 6.5rem;
+    min-width: 340px;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    margin: 0 auto;
+}
+.profile-picture-linkedin-container {
+    position: absolute;
+    left: -70px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-picture-linkedin {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 8px 32px rgba(30,20,60,0.18), 0 0 0 8px rgba(102,126,234,0.10);
+    background: #23233a;
+    transition: box-shadow 0.3s, border 0.3s;
+}
+.profile-picture-linkedin:hover {
+    box-shadow: 0 12px 40px rgba(102,126,234,0.18), 0 0 0 12px rgba(102,126,234,0.13);
+    border-color: #764ba2;
+}
+.change-photo-btn-linkedin {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(30,30,50,0.85);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.18);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    z-index: 4;
+    outline: none;
+}
+.change-photo-btn-linkedin:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.25);
+}
+.profile-info-linkedin {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0;
+    width: 100%;
+}
+.profile-username-linkedin {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.7rem;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 8px rgba(102,126,234,0.13);
+    width: 100%;
+}
+.profile-username-linkedin::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.7rem;
+}
+.profile-info-row-linkedin {
+    display: flex;
+    align-items: center;
+    font-size: 1.08rem;
+    color: #e8eaf6;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.profile-info-row-linkedin i {
+    color: #7b8cff;
+    font-size: 1.1rem;
+    margin-right: 0.7rem;
+}
+@media (max-width: 900px) {
+    .profile-header-linkedin {
+        padding: 2.5rem 0 1.5rem 0;
+        min-height: 220px;
+    }
+    .profile-card-linkedin {
+        padding: 2rem 1.2rem 2rem 5.5rem;
+        min-width: 0;
+        width: 100%;
+    }
+    .profile-picture-linkedin-container {
+        left: -60px;
+    }
+    .profile-picture-linkedin {
+        width: 100px;
+        height: 100px;
+    }
+}
+@media (max-width: 600px) {
+    .profile-header-linkedin {
+        padding: 1.2rem 0 0.5rem 0;
+    }
+    .profile-card-linkedin {
+        padding: 1.1rem 0.7rem 1.1rem 3.5rem;
+    }
+    .profile-picture-linkedin-container {
+        left: -40px;
+    }
+    .profile-picture-linkedin {
+        width: 60px;
+        height: 60px;
+    }
+    .change-photo-btn-linkedin {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        bottom: 2px;
+        right: 2px;
+    }
+}
+
+/* Section divider for Personal Information */
+.section-divider {
+    border: none;
+    border-top: 2px solid rgba(120,130,255,0.13);
+    width: 60px;
+    margin-left: 0;
+    margin-bottom: 1.2rem;
+    opacity: 0.8;
+}
+
+#personalForm .form-label {
+    margin-bottom: 0.3rem;
+}
+
+#personalForm .form-control {
+    margin-bottom: 0.2rem;
+}
+
+#personalForm textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#personalForm .row.g-3 {
+    margin-bottom: 0.2rem;
+}
+
+#personalForm .d-flex.justify-content-end {
+    margin-top: 1.2rem;
 } 

@@ -6,6 +6,11 @@
     <div style="margin-top:0.5rem; color:#b3b3c6; font-size:1rem;">
         <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
     </div>
+    <div style="margin-top:0.5rem;">
+        <a href="/main/admin-login.php" style="color:#b3b3c6; text-decoration:underline; font-size:1rem; margin-right:0.5rem;">
+            <i class="fas fa-user-shield me-1"></i>Admin Login
+        </a>
+    </div>
     <div style="margin-top:0.5rem; color:#f3f3fa; font-size:0.98rem;">
         &copy; <?= date('Y') ?> <span style="color:#f3f3fa;">Job</span><span style="color:#00e0d6;">Portal</span> &mdash; Your gateway to new opportunities
     </div>
