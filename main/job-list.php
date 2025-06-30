@@ -322,11 +322,17 @@ $conn->close();
             font-size: 1rem;
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
-            transition: all 0.2s ease;
+            /* Subtle breathing animation */
+            animation: salaryFloat 5s ease-in-out infinite;
+        }
+        @keyframes salaryFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
         }
         .salary-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            /* No animation on hover */
+            transform: none;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
         }
         .view-btn {
             background: var(--bg-light);
@@ -568,7 +574,7 @@ $conn->close();
             border: 4px solid var(--border-light);
             border-top: 4px solid var(--primary-blue);
             border-radius: 50%;
-            animation: spin 0.5s linear infinite;
+            animation: spin 0.8s linear infinite;
             margin: 0 auto 1rem;
         }
 
@@ -632,6 +638,50 @@ $conn->close();
                 padding: 1.2rem 0.5rem;
             }
             .hero-title { font-size: 2.1rem; }
+        }
+
+        #floatingChatBtn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 99999;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.18);
+            font-size: 2rem;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        #floatingChatBtn:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            box-shadow: 0 12px 32px rgba(37,99,235,0.25);
+            transform: translateY(-2px) scale(1.07);
+            color: #fff;
+            text-decoration: none;
+        }
+        #floatingChatBtn:active {
+            transform: scale(0.97);
+        }
+        #floatingChatBtn i {
+            pointer-events: none;
+        }
+        @media (max-width: 600px) {
+            #floatingChatBtn {
+                right: 16px;
+                bottom: 16px;
+                width: 48px;
+                height: 48px;
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -822,6 +872,11 @@ $conn->close();
         </div>
     </footer>
 
+    <!-- Floating Chat Button -->
+    <a href="https://www.stack-ai.com/chat/68623c004fe0ebb9c4eaeec8-6jBGBvdYxWKz2625u0mQhn" target="_blank" rel="noopener" id="floatingChatBtn" title="Chat with JobPortal AI Agent">
+      <i class="fas fa-comments"></i>
+    </a>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Enhanced debounce function
@@ -979,7 +1034,7 @@ $conn->close();
                             setTimeout(() => {
                                 child.style.opacity = '1';
                                 child.style.transform = 'translateY(0)';
-                            }, index * 50);
+                            }, index * 100);
                         });
                     }
                 });
