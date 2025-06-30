@@ -94,79 +94,98 @@ $conn->close();
     <link href="/css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-light: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+        }
+
         body {
-            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
-            color: #f3f3fa;
-            font-family: 'Inter', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
             min-height: 100vh;
             margin: 0;
             overflow-x: hidden;
-            padding-top: 68px; /* Prevent content under header */
+            padding-top: 68px;
         }
-        .apply-card {
-            background: rgba(36, 38, 58, 0.98);
-            border-radius: 22px;
-            box-shadow: 0 8px 32px rgba(30,20,60,0.18);
-            border: 1.5px solid rgba(120,130,255,0.13);
-            color: #f3f3fa;
-            margin-bottom: 2rem;
-        }
+
         .dashboard-title {
             font-size: 2rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--text-dark);
             letter-spacing: 0.01em;
-            text-shadow: 0 2px 8px rgba(102,126,234,0.13);
+            margin-bottom: 1rem;
         }
+
         .section-divider {
             border: none;
-            border-top: 2px solid rgba(120,130,255,0.13);
+            border-top: 2px solid var(--border-light);
             width: 60px;
             margin-left: 0;
             margin-bottom: 1.2rem;
             opacity: 0.8;
         }
+
         .btn-gradient {
-            background: linear-gradient(90deg, #00e0d6 0%, #7b3fe4 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
             border: none;
-            border-radius: 25px;
+            border-radius: 12px;
             font-weight: 600;
             color: #fff;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.18);
+            box-shadow: var(--shadow-md);
             display: block;
             margin-bottom: 12px;
             text-align: center;
             text-decoration: none !important;
+            padding: 0.75rem 1.5rem;
         }
+
         .btn-gradient:hover {
-            background: linear-gradient(90deg, #7b3fe4 0%, #00e0d6 100%);
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
             color: #fff;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.13);
             transform: translateY(-1px);
         }
+
         .stat-card {
-            background: rgba(36, 38, 58, 0.98);
+            background: var(--bg-white);
             border-radius: 18px;
-            box-shadow: 0 4px 20px rgba(30,20,60,0.13);
-            border: 1.5px solid rgba(120,130,255,0.10);
-            color: #f3f3fa;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
             padding: 1.5rem 1.2rem;
             margin-bottom: 1.2rem;
             text-align: center;
+            transition: all 0.3s ease;
         }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px 0 rgba(37,99,235,0.10);
+        }
+
         .stat-number {
             font-size: 2.1rem;
             font-weight: 700;
             margin: 0 0 0.2rem 0;
-            color: #00e0d6;
+            color: var(--primary-blue);
         }
+
         .stat-label {
-            color: #b3b3c6;
+            color: var(--text-light);
             font-size: 1rem;
             margin: 0;
             font-weight: 600;
         }
+
         .stat-icon {
             width: 48px;
             height: 48px;
@@ -177,83 +196,393 @@ $conn->close();
             font-size: 1.5rem;
             color: #fff;
             margin: 0 auto 0.7rem auto;
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
-            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            box-shadow: var(--shadow-md);
         }
+
         .quick-actions {
-            background: none;
-            border: none;
-            box-shadow: none;
-            padding: 0;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
         }
+
         .quick-actions h5 {
             font-weight: 700;
-            color: #e8eaf6;
+            color: var(--text-dark);
             margin-bottom: 1rem;
         }
+
         .recent-applications {
-            background: rgba(36, 38, 58, 0.98);
+            background: var(--bg-white);
             border-radius: 18px;
-            box-shadow: 0 4px 20px rgba(30,20,60,0.13);
-            border: 1.5px solid rgba(120,130,255,0.10);
-            color: #f3f3fa;
-            padding: 1.2rem 1rem;
-            margin-bottom: 1.2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
+            padding: 1.5rem;
         }
-        .application-item {
-            border-left: 4px solid #00e0d6;
-            padding: 1rem 0.7rem 0.7rem 1.2rem;
+
+        .recent-applications h5 {
+            color: var(--text-dark);
+            font-weight: 700;
             margin-bottom: 1rem;
-            background: rgba(255,255,255,0.03);
-            border-radius: 0 10px 10px 0;
         }
-        .status-badge {
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.25rem 0.75rem;
-            background: #ffd700;
-            color: #23233a;
+
+        .application-item {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-light);
         }
-        .empty-state, .no-data {
-            background: rgba(36, 38, 58, 0.98);
-            border-radius: 18px;
-            color: #b3b3c6;
-            text-align: center;
-            padding: 2rem 1rem;
-            margin: 2rem auto;
-            box-shadow: 0 4px 20px rgba(30,20,60,0.13);
-        }
-        .dashboard-header {
-            background: none;
-            border: none;
-            box-shadow: none;
-            padding: 0;
+
+        .application-item:last-child {
             margin-bottom: 0;
         }
-        /* Responsive chart containers */
-        .apply-card canvas {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-height: 220px !important;
-            max-height: 340px !important;
-            display: block;
-            margin: 0 auto;
+
+        .application-title {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
         }
-        .apply-card .chart-container, .apply-card .chart-card {
-            min-height: 260px;
-            max-width: 100%;
+
+        .application-meta {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        .status-reviewed {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .status-hired {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .chart-container {
+            background: var(--bg-white);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
-        @media (max-width: 900px) {
-            .stat-card { padding: 1rem 0.7rem; }
-            .recent-applications { padding: 1rem 0.5rem; }
-            .apply-card .chart-container, .apply-card .chart-card { min-height: 180px; }
+
+        .chart-container h5 {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 1rem;
         }
-        @media (max-width: 700px) {
-            .dashboard-title { font-size: 1.3rem; }
-            .apply-card { padding: 1.2rem 0.5rem 1.2rem 0.5rem; }
-            .apply-card .chart-container, .apply-card .chart-card { min-height: 120px; }
+
+        /* Chart sizing fixes */
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .chart-wrapper canvas {
+            max-height: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Responsive chart sizing */
+        @media (max-width: 768px) {
+            .chart-wrapper {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .chart-wrapper {
+                height: 200px;
+            }
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #d97706;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+
+        .text-muted {
+            color: var(--text-light) !important;
+        }
+
+        .border-secondary {
+            border-color: var(--border-light) !important;
+        }
+
+        .text-secondary {
+            color: var(--text-light) !important;
+        }
+
+        /* Additional classes needed for the page */
+        .apply-card {
+            background: var(--bg-white);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .text-gradient-company {
+            color: var(--primary-blue);
+        }
+
+        .text-gradient {
+            color: var(--primary-blue);
+        }
+
+        .text-light {
+            color: var(--text-light) !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+            opacity: 0.5;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .bg-light {
+            background: var(--bg-light) !important;
+        }
+
+        .text-primary {
+            color: var(--primary-blue) !important;
+        }
+
+        .fw-bold {
+            font-weight: 700 !important;
+        }
+
+        .fw-semibold {
+            font-weight: 600 !important;
+        }
+
+        .small {
+            font-size: 0.875rem;
+        }
+
+        .fs-5 {
+            font-size: 1.25rem !important;
+        }
+
+        .fs-6 {
+            font-size: 1rem !important;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem !important;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem !important;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .me-1 {
+            margin-right: 0.25rem !important;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem !important;
+        }
+
+        .me-3 {
+            margin-right: 1rem !important;
+        }
+
+        .d-block {
+            display: block !important;
+        }
+
+        .py-4 {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+        }
+
+        .p-3 {
+            padding: 1rem !important;
+        }
+
+        .p-4 {
+            padding: 1.5rem !important;
+        }
+
+        .g-4 {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 1.5rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: calc(var(--bs-gutter-x) * -.5);
+            margin-left: calc(var(--bs-gutter-x) * -.5);
+        }
+
+        .col-lg-8, .col-lg-4, .col-md-3, .col-md-12, .col-lg-10 {
+            position: relative;
+            width: 100%;
+            padding-right: calc(var(--bs-gutter-x) * .5);
+            padding-left: calc(var(--bs-gutter-x) * .5);
+        }
+
+        .col-lg-8 {
+            flex: 0 0 auto;
+            width: 66.66666667%;
+        }
+
+        .col-lg-4 {
+            flex: 0 0 auto;
+            width: 33.33333333%;
+        }
+
+        .col-lg-10 {
+            flex: 0 0 auto;
+            width: 83.33333333%;
+        }
+
+        .col-md-3 {
+            flex: 0 0 auto;
+            width: 25%;
+        }
+
+        .col-md-12 {
+            flex: 0 0 auto;
+            width: 100%;
+        }
+
+        .justify-content-center {
+            justify-content: center !important;
+        }
+
+        /* Footer Styling - Same as job-list.php */
+        .footer {
+            background: var(--bg-white);
+            border-top: 1px solid var(--border-light);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+        .footer p {
+            color: var(--text-light);
+        }
+        .footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: var(--primary-blue-dark);
+        }
+        .footer i {
+            color: var(--primary-blue);
+        }
+        .admin-link {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .admin-link:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .col-lg-8, .col-lg-4, .col-lg-10 {
+                width: 100%;
+            }
+
+            .col-md-3 {
+                width: 50%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .col-md-3 {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -315,11 +644,15 @@ $conn->close();
                         <div class="col-lg-8">
                             <div class="apply-card mb-4 p-3">
                                 <h5 class="fw-bold mb-3"><i class="fas fa-chart-pie me-2 text-gradient"></i>Application Status Distribution</h5>
-                                <canvas id="statusChart" height="120"></canvas>
+                                <div class="chart-wrapper">
+                                    <canvas id="statusChart"></canvas>
+                                </div>
                             </div>
                             <div class="apply-card mb-4 p-3">
                                 <h5 class="fw-bold mb-3"><i class="fas fa-chart-bar me-2 text-gradient"></i>Job Performance Overview</h5>
-                                <canvas id="jobPerformanceChart" height="120"></canvas>
+                                <div class="chart-wrapper">
+                                    <canvas id="jobPerformanceChart"></canvas>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -370,10 +703,10 @@ $conn->close();
                         <?= $app_stats['rejected_applications'] ?? 0 ?>
                     ],
                     backgroundColor: [
-                        '#ffc107',
-                        '#17a2b8',
-                        '#28a745',
-                        '#dc3545'
+                        '#f59e0b', // Orange for pending
+                        '#3b82f6', // Blue for reviewed
+                        '#10b981', // Green for hired
+                        '#ef4444'  // Red for rejected
                     ],
                     borderWidth: 0
                 }]
@@ -383,7 +716,21 @@ $conn->close();
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            color: '#1f2937',
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10
                     }
                 }
             }
@@ -415,14 +762,14 @@ $conn->close();
                 datasets: [{
                     label: 'Applications',
                     data: jobData.applications,
-                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                    borderColor: 'rgba(102, 126, 234, 1)',
+                    backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
                     borderWidth: 1
                 }, {
                     label: 'Hires',
                     data: jobData.hires,
-                    backgroundColor: 'rgba(40, 167, 69, 0.8)',
-                    borderColor: 'rgba(40, 167, 69, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
                     borderWidth: 1
                 }]
             },
@@ -431,12 +778,50 @@ $conn->close();
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e5e7eb'
+                        },
+                        ticks: {
+                            color: '#6b7280',
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#e5e7eb'
+                        },
+                        ticks: {
+                            color: '#6b7280',
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 11
+                            },
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
                     }
                 },
                 plugins: {
                     legend: {
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            color: '#1f2937',
+                            font: {
+                                family: 'Inter, sans-serif',
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10
                     }
                 }
             }

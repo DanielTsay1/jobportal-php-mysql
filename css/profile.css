@@ -83,8 +83,8 @@
 .profile-page input[type="file"],
 .profile-page textarea,
 .profile-page select {
-    background: #39395a !important;
-    color: #f3f3fa !important;
+    background: #ffffff !important;
+    color: #010101 !important;
     border: 2px solid #e9ecef !important;
     border-radius: 10px !important;
     padding: 0.75rem 1rem !important;
@@ -102,20 +102,20 @@
 .profile-page input[type="file"]:focus,
 .profile-page textarea:focus,
 .profile-page select:focus {
-    background: #44446a !important;
-    color: #fff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
     border-color: #667eea !important;
     box-shadow: 0 4px 24px rgba(102, 126, 234, 0.25) !important;
 }
 
 .profile-page ::placeholder {
-    color: #b3b3c6 !important;
+    color: #000000 !important;
     font-weight: 400 !important;
     opacity: 1 !important;
 }
 
 .form-control {
-    background: #39395a !important;
+    background: #ffffff !important;
     color: #f3f3fa;
     border: 2px solid #e9ecef;
     border-radius: 10px;
@@ -132,7 +132,7 @@
 /* Improved label and heading visibility */
 .form-label {
     font-weight: 600;
-    color: #e8eaf6 !important;
+    color: #020202 !important;
     margin-bottom: 0.5rem;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     font-size: 0.95rem;
@@ -140,7 +140,7 @@
 }
 
 .card-title {
-    color: #e8eaf6 !important;
+    color: #000000 !important;
     font-weight: 700;
     margin-bottom: 1.5rem;
     position: relative;

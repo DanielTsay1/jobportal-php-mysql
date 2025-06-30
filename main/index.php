@@ -12,184 +12,204 @@
     <title>JobPortal - Find Your Dream Job</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-light: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+        }
+
         body {
-            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
-            color: #f3f3fa;
-            font-family: 'Inter', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
             min-height: 100vh;
             margin: 0;
             overflow-x: hidden;
             padding-top: 68px;
         }
+
+        .navbar {
+            background: var(--bg-white);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
         .hero {
-            position: relative;
-            min-height: 92vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 7rem 0 3rem;
             text-align: center;
-            z-index: 1;
-            padding-top: 5rem;
-            padding-bottom: 5rem;
+            position: relative;
             overflow: hidden;
         }
+
         .hero-bg {
             position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100%;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
             z-index: 0;
             pointer-events: none;
-            background: radial-gradient(ellipse at 60% 20%, #7b1fa2 0%, transparent 60%),
-                        radial-gradient(ellipse at 20% 80%, #1976d2 0%, transparent 70%);
-            animation: bgMove 12s ease-in-out infinite alternate;
-            filter: blur(2px) brightness(0.8);
-            opacity: 0.7;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
         }
-        @keyframes bgMove {
-            0% { background-position: 60% 20%, 20% 80%; }
-            100% { background-position: 65% 25%, 15% 75%; }
-        }
+
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-            color: #fff;
-            margin-bottom: 1.2rem;
-            text-shadow: 0 4px 32px rgba(123,63,228,0.10), 0 0 16px #00e0d644;
-            z-index: 2;
-            line-height: 1.08;
-            animation: fadeInUp 1.1s cubic-bezier(.4,1.4,.6,1), heroGlow 3s ease-in-out infinite alternate;
-        }
-        @keyframes heroGlow {
-            0% { text-shadow: 0 4px 32px rgba(123,63,228,0.10), 0 0 8px #00e0d644; }
-            100% { text-shadow: 0 4px 32px rgba(123,63,228,0.18), 0 0 32px #00e0d6cc; }
-        }
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: #b3b3c6;
-            margin-bottom: 2.8rem;
-            z-index: 2;
-            font-weight: 400;
-            animation: fadeInUp 1.3s cubic-bezier(.4,1.4,.6,1);
-        }
-        .cta-btn-sticky {
-            position: fixed;
-            bottom: 2.2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.18);
-            backdrop-filter: blur(16px) saturate(1.2);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 30px;
-            padding: 1.1rem 3.2rem;
-            box-shadow: 0 8px 32px rgba(123,63,228,0.18);
-            transition: background 0.2s, box-shadow 0.2s, outline 0.2s;
-            z-index: 100;
-            outline: none;
-            animation: fadeInUp 1.5s cubic-bezier(.4,1.4,.6,1);
-            border: 2px solid transparent;
-        }
-        .cta-btn-sticky:focus {
-            outline: 2px solid #00e0d6;
-            outline-offset: 2px;
-            border-color: #00e0d6;
-            box-shadow: 0 0 0 4px #00e0d633, 0 8px 32px rgba(123,63,228,0.18);
-        }
-        .cta-btn-sticky:hover, .cta-btn-sticky:active {
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
-            color: #fff;
-            box-shadow: 0 12px 48px rgba(0,224,214,0.18), 0 0 0 6px #00e0d655;
-            border-color: #00e0d6;
-        }
-        .glass-panel {
-            background: rgba(255,255,255,0.10);
-            border-radius: 32px;
-            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
-            backdrop-filter: blur(18px) saturate(1.2);
-            border: 1.5px solid rgba(255,255,255,0.13);
-            margin: -3rem auto 2rem auto;
-            max-width: 1100px;
-            padding: 3.5rem 2rem 2.5rem 2rem;
-            z-index: 2;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
             position: relative;
-            animation: fadeInUp 1.2s cubic-bezier(.4,1.4,.6,1);
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
         }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-btn {
+            background: var(--bg-white);
+            color: var(--primary-blue);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-btn:hover {
+            background: var(--bg-light);
+            color: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.13);
+        }
+
+        .features-section {
+            background: var(--bg-white);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            padding: 3rem 2rem;
+            margin: -3rem auto 2rem auto;
+            max-width: 1000px;
+            border: 1px solid var(--border-light);
+            position: relative;
+            z-index: 3;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
         .features-title {
-            font-size: 2.1rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 2.2rem;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
             text-align: center;
-            letter-spacing: -1px;
         }
+
         .features-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 2.5rem;
+            gap: 2rem;
             justify-content: center;
-            margin-bottom: 1.5rem;
         }
+
         .feature-item {
-            background: rgba(255,255,255,0.13);
-            border-radius: 24px;
-            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
-            padding: 2.2rem 1.7rem 1.7rem 1.7rem;
-            min-width: 260px;
+            background: var(--bg-light);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            padding: 2rem 1.5rem;
+            min-width: 280px;
             max-width: 320px;
-            flex: 1 1 260px;
+            flex: 1 1 280px;
             text-align: center;
-            color: #f3f3fa;
-            transition: transform 0.18s, box-shadow 0.18s, outline 0.18s;
-            border: 1.5px solid rgba(255,255,255,0.10);
-            backdrop-filter: blur(8px) saturate(1.1);
-            animation: fadeInUp 1.3s cubic-bezier(.4,1.4,.6,1);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
         }
-        .feature-item:focus-within, .feature-item:focus {
-            outline: 2px solid #00e0d6;
-            outline-offset: 2px;
-            box-shadow: 0 0 0 4px #00e0d633;
+
+        .feature-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px 0 rgba(37,99,235,0.10);
+            border-color: var(--primary-blue);
         }
-        .feature-item:active {
-            transform: scale(0.98);
-        }
+
         .feature-icon {
-            font-size: 2.7rem;
-            margin-bottom: 1.1rem;
-            color: #00e0d6;
-            filter: drop-shadow(0 2px 8px #7b3fe4aa);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+            transition: transform 0.3s ease;
         }
+
+        .feature-item:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
         .feature-title {
-            font-size: 1.18rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #fff;
-            letter-spacing: -0.5px;
-        }
-        .feature-desc {
-            color: #b3b3c6;
-            font-size: 1.05rem;
-            font-weight: 400;
-        }
-        .testimonials-section {
-            max-width: 1100px;
-            margin: 2rem auto 0 auto;
-            padding: 2.5rem 1rem 2rem 1rem;
-            text-align: center;
-            animation: fadeInUp 1.4s cubic-bezier(.4,1.4,.6,1);
-        }
-        .testimonials-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            color: #fff;
-            margin-bottom: 2rem;
-            letter-spacing: -0.5px;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
         }
+
+        .feature-desc {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .testimonials-section {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            text-align: center;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .testimonials-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+        }
+
         .testimonial-carousel {
             display: flex;
             flex-wrap: nowrap;
@@ -199,326 +219,363 @@
             scroll-snap-type: x mandatory;
             padding-bottom: 1rem;
         }
+
         .testimonial-item {
-            background: rgba(255,255,255,0.13);
+            background: var(--bg-white);
             border-radius: 18px;
-            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
-            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            box-shadow: var(--shadow-md);
+            padding: 2rem 1.5rem;
             min-width: 320px;
             max-width: 340px;
             flex: 0 0 320px;
-            color: #f3f3fa;
-            font-size: 1.05rem;
-            position: relative;
+            border: 1px solid var(--border-light);
             scroll-snap-align: start;
-            border: 1.5px solid rgba(255,255,255,0.10);
-            backdrop-filter: blur(8px) saturate(1.1);
-            margin-bottom: 1rem;
-            transition: transform 0.18s, box-shadow 0.18s, outline 0.18s;
+            transition: all 0.3s ease;
         }
-        .testimonial-item:focus-within, .testimonial-item:focus {
-            outline: 2px solid #00e0d6;
-            outline-offset: 2px;
-            box-shadow: 0 0 0 4px #00e0d633;
+
+        .testimonial-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px 0 rgba(37,99,235,0.10);
         }
-        .testimonial-item:active {
-            transform: scale(0.98);
-        }
+
         .testimonial-quote {
             font-size: 1.5rem;
-            color: #00e0d6;
+            color: var(--primary-blue);
             margin-bottom: 1rem;
         }
+
+        .testimonial-text {
+            color: var(--text-dark);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
         .testimonial-user {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            margin-top: 1.2rem;
-            font-size: 1rem;
-            color: #b3b3c6;
             justify-content: center;
+            color: var(--text-light);
         }
+
         .testimonial-user img {
-            width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
-            border: 2px solid #7b3fe4;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
         }
-        @media (max-width: 900px) {
-            .features-list, .testimonial-carousel { flex-direction: column; gap: 1.5rem; }
-            .features-section, .testimonials-section { padding: 2rem 0.5rem; }
-            .testimonial-item { min-width: 90vw; max-width: 98vw; }
-        }
-        @media (max-width: 600px) {
-            .hero-title { font-size: 2.1rem; }
-            .features-title { font-size: 1.3rem; }
-            .features-section { border-radius: 18px; }
-            .feature-item, .testimonial-item { min-width: 90vw; max-width: 98vw; }
-            .cta-btn-sticky { font-size: 1rem; padding: 0.8rem 1.5rem; }
-            .trusted-logos img { height: 28px; }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .main-header-glass {
-            position: fixed;
-            top: 0; left: 0; width: 100vw;
-            height: 68px;
-            z-index: 2000;
-            background: rgba(30, 30, 50, 0.38);
-            backdrop-filter: blur(18px) saturate(1.2);
-            box-shadow: 0 2px 16px rgba(30,20,60,0.10);
-            border-bottom: 1.5px solid rgba(255,255,255,0.10);
-            display: flex;
-            align-items: center;
-            transition: background 0.18s;
-            animation: fadeInUp 0.8s cubic-bezier(.4,1.4,.6,1);
-        }
-        .main-header-glass:focus-within, .main-header-glass:focus {
-            outline: 2px solid #00e0d6;
-            outline-offset: 2px;
-        }
-        .nav-link-glass {
-            color: #f3f3fa;
+
+        .nav-link {
+            color: var(--text-dark);
             font-weight: 500;
-            font-size: 1.08rem;
             text-decoration: none;
-            padding: 0.3rem 1.1rem;
-            border-radius: 18px;
-            transition: background 0.18s, color 0.18s;
-            opacity: 0.92;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
-        .nav-link-glass:hover, .nav-link-glass:focus {
-            background: rgba(0,224,214,0.10);
-            color: #00e0d6;
-            text-decoration: none;
+
+        .nav-link:hover {
+            background: var(--bg-light);
+            color: var(--primary-blue);
         }
-        .nav-link-glass:focus, .nav-link-cta:focus {
-            outline: 2px solid #00e0d6;
-            outline-offset: 2px;
-            box-shadow: 0 0 0 2px #00e0d6;
-        }
+
         .nav-link-cta {
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
-            color: #fff !important;
-            font-weight: 700;
-            border-radius: 22px;
-            padding: 0.3rem 1.5rem;
+            background: var(--primary-blue);
+            color: white !important;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
             margin-left: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
-            transition: background 0.18s, color 0.18s;
+            transition: all 0.3s ease;
         }
-        .nav-link-cta:hover, .nav-link-cta:focus {
-            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
-            color: #fff;
+
+        .nav-link-cta:hover {
+            background: var(--primary-blue-dark);
+            color: white;
+            transform: translateY(-1px);
         }
-        .hero-animated-icons {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100%;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .floating-icon {
-            position: absolute;
-            font-size: 2.2rem;
-            opacity: 0.18;
-            filter: blur(0.5px) drop-shadow(0 2px 8px #7b3fe4aa);
-            animation: floatIcon 7s ease-in-out infinite alternate;
-            transition: opacity 0.2s;
-        }
-        .icon1 { left: 8vw; top: 12vh; color: #00e0d6; animation-delay: 0s; }
-        .icon2 { right: 10vw; top: 18vh; color: #7b1fa2; animation-delay: 1.2s; }
-        .icon3 { left: 18vw; bottom: 10vh; color: #fff; animation-delay: 2.1s; }
-        .icon4 { right: 16vw; bottom: 14vh; color: #00e0d6; animation-delay: 2.8s; }
-        .icon5 { left: 50vw; top: 8vh; color: #7b1fa2; animation-delay: 3.5s; }
-        @keyframes floatIcon {
-            0% { transform: translateY(0) scale(1) rotate(-8deg); }
-            100% { transform: translateY(-32px) scale(1.12) rotate(8deg); }
-        }
-        .animated-text .line1, .animated-text .line2, .animated-text .line3 {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(40px);
-            animation: fadeInUpText 0.8s cubic-bezier(.4,1.4,.6,1) forwards;
-        }
-        .animated-text .line1 { animation-delay: 0.1s; }
-        .animated-text .line2 { animation-delay: 0.4s; }
-        .animated-text .line3 { animation-delay: 0.7s; }
-        @keyframes fadeInUpText {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animated-subtext span {
-            opacity: 0;
-            transform: translateY(24px);
-            display: inline-block;
-            animation: fadeInUpText 0.7s cubic-bezier(.4,1.4,.6,1) forwards;
-        }
-        .animated-subtext .sub1 { animation-delay: 1.0s; }
-        .animated-subtext .sub2 { animation-delay: 1.2s; }
-        .animated-subtext .sub3 { animation-delay: 1.4s; }
-        .animated-subtext .sub4 { animation-delay: 1.6s; }
-        .animated-subtext .sub5 { animation-delay: 1.8s; }
+
         .typewriter-container {
             display: inline-block;
-            font-size: 3.5rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-            color: #fff;
-            line-height: 1.08;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
             min-height: 4.5em;
             text-align: center;
             white-space: pre-line;
+            position: relative;
+            z-index: 2;
         }
+
         .typewriter-cursor {
             display: inline-block;
-            color: #00e0d6;
+            color: white;
             font-weight: 700;
             font-size: 1em;
             margin-left: 2px;
-            animation: blinkCursor 0.8s steps(1) infinite;
+            animation: blinkCursor 1s steps(1) infinite;
             vertical-align: bottom;
         }
+
         @keyframes blinkCursor {
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
         }
-        /* Trusted by section */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .trusted-section {
-            max-width: 1100px;
-            margin: 2.5rem auto 0 auto;
-            padding: 2rem 1rem 1.5rem 1rem;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
             text-align: center;
-            animation: fadeInUp 1.3s cubic-bezier(.4,1.4,.6,1);
+            animation: fadeInUp 1s ease-out 1.5s both;
         }
+
         .trusted-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #b3b3c6;
-            margin-bottom: 1.2rem;
-            letter-spacing: 0.5px;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
         }
+
         .trusted-logos {
             display: flex;
             flex-wrap: wrap;
-            gap: 2.5rem;
+            gap: 2rem;
             justify-content: center;
             align-items: center;
         }
+
         .trusted-logos img {
-            height: 38px;
-            opacity: 0.85;
-            filter: grayscale(1) brightness(1.2) drop-shadow(0 2px 8px #7b3fe444);
-            transition: opacity 0.2s, filter 0.2s;
+            height: 40px;
+            opacity: 0.6;
+            filter: grayscale(1);
+            transition: all 0.3s ease;
         }
-        .trusted-logos img:hover, .trusted-logos img:focus {
+
+        .trusted-logos img:hover {
             opacity: 1;
             filter: none;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 900px) {
+            .features-list, .testimonial-carousel {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .features-section, .testimonials-section {
+                padding: 2rem 1rem;
+            }
+            
+            .testimonial-item {
+                min-width: 90vw;
+                max-width: 98vw;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 2.1rem;
+            }
+            
+            .features-title {
+                font-size: 1.5rem;
+            }
+            
+            .feature-item, .testimonial-item {
+                min-width: 90vw;
+                max-width: 98vw;
+            }
+            
+            .cta-btn {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .trusted-logos img {
+                height: 30px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <header class="main-header-glass" tabindex="0">
-        <div class="container-fluid d-flex align-items-center justify-content-between px-4" style="height:68px;">
-            <div class="brand" style="font-size:1.7rem; font-weight:800; letter-spacing:-1.5px; color:#fff;">
-                <i class="fas fa-rocket me-2" style="color:#00e0d6;"></i>Job<span style="color:#00e0d6;">Portal</span>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container-fluid d-flex align-items-center justify-content-between px-4">
+            <div class="navbar-brand">
+                <i class="fas fa-rocket me-2"></i>Job<span style="color: var(--accent-blue);">Portal</span>
             </div>
-            <nav class="d-flex align-items-center gap-3" aria-label="Main Navigation">
-                <a href="/main/job-list.php" class="nav-link-glass" aria-label="Browse Jobs">Jobs</a>
-                <a href="/main/contact.php" class="nav-link-glass" aria-label="Contact">Contact</a>
-                <a href="/main/login.php" class="nav-link-glass nav-link-cta" aria-label="Login or Sign Up">Login / Sign Up</a>
-            </nav>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/main/job-list.php" class="nav-link">Browse Jobs</a>
+                <a href="/main/login.php" class="nav-link nav-link-cta">Login / Sign Up</a>
+            </div>
         </div>
-    </header>
-    <div class="hero">
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="hero-bg"></div>
-        <div class="hero-animated-icons">
-            <i class="fas fa-rocket floating-icon icon1"></i>
-            <i class="fas fa-bolt floating-icon icon2"></i>
-            <i class="fas fa-briefcase floating-icon icon3"></i>
-            <i class="fas fa-user-shield floating-icon icon4"></i>
-            <i class="fas fa-chart-line floating-icon icon5"></i>
-        </div>
-        <div class="container position-relative" style="z-index:2;">
+        <div class="container position-relative">
             <div class="hero-title typewriter-container">
                 <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
             </div>
-            <div class="hero-subtitle animated-subtext">
-                <span class="sub1">A new era of job search.</span> <span class="sub2">Effortless.</span> <span class="sub3">Curated.</span> <span class="sub4">Beautiful.</span><br>
-                <span class="sub5">Discover top jobs, apply in one click, and get hired faster.</span>
+            <div class="hero-subtitle">
+                A new era of job search. Effortless. Curated. Beautiful.<br>
+                Discover top jobs, apply in one click, and get hired faster.
             </div>
+            <a href="/main/job-list.php" class="cta-btn">
+                <i class="fas fa-search me-2"></i>Explore Jobs
+            </a>
         </div>
-    </div>
-    <div class="glass-panel">
-        <div class="features-title">Why JobPortal?</div>
+    </section>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="features-title">Why Choose JobPortal?</div>
         <div class="features-list">
-            <div class="feature-item" tabindex="0">
-                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
                 <div class="feature-title">1-Click Apply</div>
                 <div class="feature-desc">Apply to jobs instantly with your profile. No more tedious forms.</div>
             </div>
-            <div class="feature-item" tabindex="0">
-                <div class="feature-icon"><i class="fas fa-briefcase"></i></div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
                 <div class="feature-title">Curated Opportunities</div>
                 <div class="feature-desc">Handpicked jobs from top companies, updated daily.</div>
             </div>
-            <div class="feature-item" tabindex="0">
-                <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
                 <div class="feature-title">Secure & Private</div>
                 <div class="feature-desc">Your data is protected with industry-leading security.</div>
             </div>
         </div>
     </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials-section">
+        <div class="testimonials-title">What Our Users Say</div>
+        <div class="testimonial-carousel">
+            <div class="testimonial-item">
+                <div class="testimonial-quote">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <div class="testimonial-text">
+                    "JobPortal made my job search incredibly smooth. I found my dream job within weeks!"
+                </div>
+                <div class="testimonial-user">
+                    <img src="/img/testimonial-1.jpg" alt="User">
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-dark);">Sarah Johnson</div>
+                        <div style="font-size: 0.9rem;">Software Engineer</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="testimonial-quote">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <div class="testimonial-text">
+                    "The one-click apply feature saved me hours. Highly recommended!"
+                </div>
+                <div class="testimonial-user">
+                    <img src="/img/testimonial-2.jpg" alt="User">
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-dark);">Mike Chen</div>
+                        <div style="font-size: 0.9rem;">Product Manager</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="testimonial-quote">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <div class="testimonial-text">
+                    "Clean interface and great job recommendations. Love it!"
+                </div>
+                <div class="testimonial-user">
+                    <img src="/img/testimonial-3.jpg" alt="User">
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-dark);">Emily Davis</div>
+                        <div style="font-size: 0.9rem;">UX Designer</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trusted By Section -->
+    <div class="trusted-section">
+        <div class="trusted-title">Trusted by Leading Companies</div>
+        <div class="trusted-logos">
+            <img src="/img/com-logo-1.jpg" alt="Company 1">
+            <img src="/img/com-logo-2.jpg" alt="Company 2">
+            <img src="/img/com-logo-3.jpg" alt="Company 3">
+            <img src="/img/com-logo-4.jpg" alt="Company 4">
+            <img src="/img/com-logo-5.jpg" alt="Company 5">
+        </div>
+    </div>
+
     <?php include 'footer.php'; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Typewriter animation for hero headline
-    document.addEventListener('DOMContentLoaded', function() {
-        const lines = [
-            'Your Next',
-            'Career Move',
-            'Starts Here.'
-        ];
-        const colors = [null, null, '#00e0d6'];
-        const typewriter = document.getElementById('typewriter-text');
-        const cursor = document.querySelector('.typewriter-cursor');
-        let lineIdx = 0, charIdx = 0;
-        let typing = true;
-        function typeLine() {
-            if (lineIdx >= lines.length) {
-                cursor.style.color = '#00e0d6';
-                return;
-            }
-            const line = lines[lineIdx];
-            const color = colors[lineIdx];
-            if (charIdx <= line.length) {
-                let html = '';
-                for (let i = 0; i < lineIdx; ++i) {
-                    if (colors[i]) html += `<span style='color:${colors[i]};font-weight:700;'>${lines[i]}</span><br>`;
-                    else html += lines[i] + '<br>';
+        // Simple typewriter animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const lines = [
+                'Your Next',
+                'Career Move',
+                'Starts Here.'
+            ];
+            const typewriter = document.getElementById('typewriter-text');
+            const cursor = document.querySelector('.typewriter-cursor');
+            let lineIdx = 0, charIdx = 0;
+
+            function typeLine() {
+                if (lineIdx >= lines.length) {
+                    return;
                 }
-                if (color) html += `<span style='color:${color};font-weight:700;'>${line.slice(0, charIdx)}</span>`;
-                else html += line.slice(0, charIdx);
-                typewriter.innerHTML = html;
-                setTimeout(typeLine, 55 + Math.random()*40);
-                charIdx++;
-            } else {
-                charIdx = 0;
-                lineIdx++;
-                setTimeout(typeLine, 500);
+                const line = lines[lineIdx];
+                if (charIdx <= line.length) {
+                    let html = '';
+                    for (let i = 0; i < lineIdx; ++i) {
+                        html += lines[i] + '<br>';
+                    }
+                    html += line.slice(0, charIdx);
+                    typewriter.innerHTML = html;
+                    setTimeout(typeLine, 80);
+                    charIdx++;
+                } else {
+                    charIdx = 0;
+                    lineIdx++;
+                    setTimeout(typeLine, 800);
+                }
             }
-        }
-        typeLine();
-    });
-    // Smooth scroll for nav links
-    document.querySelectorAll('a.nav-link-glass[href^="#"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
+            
+            // Start typewriter after a short delay
+            setTimeout(typeLine, 500);
         });
-    });
     </script>
 </body>
 

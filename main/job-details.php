@@ -66,285 +66,368 @@ if ($application) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-light: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+        }
+
         body {
-            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
-            color: #f3f3fa;
-            font-family: 'Inter', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
             min-height: 100vh;
             margin: 0;
             overflow-x: hidden;
             padding-top: 68px;
         }
-        
+
         .job-details-container {
-            background: rgba(255,255,255,0.10);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(30,20,60,0.13);
-            backdrop-filter: blur(18px) saturate(1.2);
-            border: 1.5px solid rgba(255,255,255,0.13);
+            background: var(--bg-white);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
             margin: 2rem auto;
             max-width: 900px;
             padding: 3rem 2rem;
-            z-index: 2;
             position: relative;
         }
-        
+
         .job-title {
-            color: #fff;
-            font-weight: 700;
+            color: var(--text-dark);
+            font-weight: 800;
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
         }
-        
+
         .company-name {
-            color: #00e0d6;
+            color: var(--primary-blue);
             font-weight: 600;
             font-size: 1.3rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .job-meta {
             display: flex;
             flex-wrap: wrap;
             gap: 1.5rem;
             margin-bottom: 2rem;
             padding: 1.5rem;
-            background: rgba(255,255,255,0.08);
+            background: var(--bg-light);
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--border-light);
         }
-        
+
         .job-meta span {
-            color: #b3b3c6;
+            color: var(--text-dark);
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .job-meta i {
-            color: #00e0d6;
+            color: var(--primary-blue);
             font-size: 1.1rem;
         }
-        
+
         .job-description {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
             border-radius: 16px;
             padding: 2rem;
-            color: #f3f3fa;
+            color: var(--text-dark);
             line-height: 1.7;
             margin: 2rem 0;
         }
-        
+
         .section-title {
-            color: #fff;
-            font-weight: 600;
+            color: var(--text-dark);
+            font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 1rem;
         }
-        
-        .btn-apply, .btn-primary, .btn-outline-primary {
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+
+        .btn-apply, .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
             border: none;
-            border-radius: 25px;
-            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
             font-weight: 600;
-            color: #fff;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-apply:hover, .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.13);
+        }
+
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
-        
-        .btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover {
-            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
-            color: #fff;
-            box-shadow: 0 8px 25px rgba(0,224,214,0.3);
+
+        .btn-outline-primary:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
-        
+
         .btn-secondary-custom {
-            background: rgba(255,255,255,0.1);
-            border: 1.5px solid rgba(255,255,255,0.2);
-            color: #b3b3c6;
-            border-radius: 25px;
-            padding: 1rem 2.5rem;
+            background: var(--bg-light);
+            border: 2px solid var(--border-light);
+            color: var(--text-light);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
         }
-        
+
         .btn-secondary-custom:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: #00e0d6;
-            color: #f3f3fa;
+            background: var(--text-light);
+            border-color: var(--text-light);
+            color: white;
+            transform: translateY(-1px);
         }
-        
+
         .btn-danger-custom {
-            background: rgba(255,107,107,0.1);
-            border: 1.5px solid rgba(255,107,107,0.3);
-            color: #ff6b6b;
-            border-radius: 25px;
-            padding: 1rem 2.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
         }
-        
+
         .btn-danger-custom:hover {
-            background: rgba(255,107,107,0.2);
-            border-color: #ff5252;
-            color: #ff5252;
+            background: #dc2626;
+            border-color: #dc2626;
+            color: white;
+            transform: translateY(-1px);
         }
-        
+
         .alert-custom {
-            background: rgba(255,193,7,0.1);
-            border: 1px solid rgba(255,193,7,0.3);
-            color: #ffc107;
-            border-radius: 16px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #d97706;
+            border-radius: 12px;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            backdrop-filter: blur(8px);
         }
-        
+
         .alert-info-custom {
-            background: rgba(0,224,214,0.1);
-            border: 1px solid rgba(0,224,214,0.3);
-            color: #00e0d6;
-            border-radius: 16px;
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            color: var(--primary-blue);
+            border-radius: 12px;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            backdrop-filter: blur(8px);
         }
-        
+
         .alert-warning-custom {
-            background: rgba(255,107,107,0.1);
-            border: 1px solid rgba(255,107,107,0.3);
-            color: #ff6b6b;
-            border-radius: 16px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+            border-radius: 12px;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            backdrop-filter: blur(8px);
         }
-        
-        .main-header-glass {
-            position: fixed;
-            top: 0; left: 0; width: 100vw;
-            height: 68px;
-            z-index: 2000;
-            background: rgba(30, 30, 50, 0.38);
-            backdrop-filter: blur(18px) saturate(1.2);
-            box-shadow: 0 2px 16px rgba(30,20,60,0.10);
-            border-bottom: 1.5px solid rgba(255,255,255,0.10);
-            display: flex;
-            align-items: center;
-            transition: background 0.18s;
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #059669;
+            border-radius: 12px;
         }
-        
-        .nav-link-glass {
-            color: #f3f3fa;
-            font-weight: 500;
-            font-size: 1.08rem;
-            text-decoration: none;
-            padding: 0.3rem 1.1rem;
-            border-radius: 18px;
-            transition: background 0.18s, color 0.18s;
-            opacity: 0.92;
-        }
-        
-        .nav-link-glass:hover, .nav-link-glass:focus {
-            background: rgba(0,224,214,0.10);
-            color: #00e0d6;
-            text-decoration: none;
-        }
-        
-        .nav-link-cta {
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
-            color: #fff !important;
-            font-weight: 700;
-            border-radius: 22px;
-            padding: 0.3rem 1.5rem;
-            margin-left: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0,224,214,0.10);
-            transition: background 0.18s, color 0.18s;
-        }
-        
-        .nav-link-cta:hover, .nav-link-cta:focus {
-            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
-            color: #fff;
-        }
-        
+
         .modal-content {
-            background: rgba(30, 30, 50, 0.95);
-            backdrop-filter: blur(18px) saturate(1.2);
-            border: 1.5px solid rgba(255,255,255,0.13);
-            color: #f3f3fa;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
         }
-        
+
         .modal-header {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-light);
+            border-radius: 18px 18px 0 0;
         }
-        
+
         .modal-footer {
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-light);
+            border-radius: 0 0 18px 18px;
         }
-        
+
         .list-group-item {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f3f3fa;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
         }
-        
+
         .list-group-item a {
-            color: #00e0d6;
+            color: var(--primary-blue);
             text-decoration: none;
+            font-weight: 500;
         }
-        
+
         .list-group-item a:hover {
-            color: #7b3fe4;
+            color: var(--primary-blue-dark);
+            text-decoration: underline;
         }
-        
+
         .badge {
             font-size: 0.9rem;
             padding: 0.5rem 1rem;
             border-radius: 20px;
+            font-weight: 600;
         }
-        
+
         .bg-success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
         }
-        
+
         .bg-danger {
-            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%) !important;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
         }
-        
+
         .bg-info {
-            background: linear-gradient(135deg, #17a2b8 0%, #00e0d6 100%) !important;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%) !important;
         }
-        
+
         .bg-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
         }
-        
+
         .bg-primary {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%) !important;
         }
-        
-        .modal-dialog {
-            margin-top: 100px !important;
+
+        .text-primary {
+            color: var(--primary-blue) !important;
         }
-        .modal-dialog-centered {
-            align-items: flex-start !important;
+
+        .border-top {
+            border-color: var(--border-light) !important;
+        }
+
+        .text-muted {
+            color: var(--text-light) !important;
+        }
+
+        .fst-italic {
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Footer Styling - Same as job-list.php */
+        .footer {
+            background: var(--bg-white);
+            border-top: 1px solid var(--border-light);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+        .footer p {
+            color: var(--text-light);
+        }
+        .footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: var(--primary-blue-dark);
+        }
+        .footer i {
+            color: var(--primary-blue);
+        }
+        .admin-link {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .admin-link:hover {
+            opacity: 1;
+        }
+        .border-secondary {
+            border-color: var(--border-light) !important;
+        }
+        .text-secondary {
+            color: var(--text-light) !important;
+        }
+        .text-light {
+            color: var(--text-dark) !important;
+        }
+
+        @media (max-width: 768px) {
+            .job-details-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .job-title {
+                font-size: 2rem;
+            }
+            
+            .job-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .job-title {
+                font-size: 1.75rem;
+            }
+            
+            .job-details-container {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
-<body style="padding-top:68px;">
+<body>
 <?php include 'header-jobseeker.php'; ?>
 
-<div class="container py-5">
+<div class="container py-4">
     <?php if (!$job): ?>
         <div class="alert alert-warning-custom text-center">
             <h4 class="alert-heading">Job Not Found</h4>
@@ -354,7 +437,10 @@ if ($application) {
     <?php else: ?>
         <div class="job-details-container">
             <?php if ($removed): ?>
-                <div class="alert alert-info-custom">Your application has been successfully withdrawn.</div>
+                <div class="alert alert-info-custom">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Your application has been successfully withdrawn.
+                </div>
             <?php endif; ?>
 
             <?php if (isset($_GET['error']) && $_GET['error'] === 'suspended'): ?>
@@ -370,15 +456,15 @@ if ($application) {
             <h2 class="company-name"><?= htmlspecialchars($job['company_name']) ?></h2>
             
             <?php if ($user_hired): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(32, 201, 151, 0.15) 100%); border: 2px solid rgba(40, 167, 69, 0.4); color: #28a745; border-radius: 15px; margin-bottom: 2rem; padding: 1.5rem;">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <div class="d-flex align-items-center">
-                        <i class="fas fa-trophy me-3" style="font-size: 2rem; color: #28a745;"></i>
+                        <i class="fas fa-trophy me-3" style="font-size: 2rem; color: #10b981;"></i>
                         <div>
-                            <h4 class="mb-2" style="color: #28a745; font-weight: 700;">🎉 Congratulations! You've Been Hired!</h4>
-                            <p class="mb-2" style="color: #28a745; font-weight: 500; font-size: 1.1rem;">
+                            <h4 class="mb-2" style="color: #059669; font-weight: 700;">🎉 Congratulations! You've Been Hired!</h4>
+                            <p class="mb-2" style="color: #059669; font-weight: 500; font-size: 1.1rem;">
                                 <strong><?= htmlspecialchars($job['company_name']) ?></strong> has hired you for the position of <strong><?= htmlspecialchars($job['designation']) ?></strong>!
                             </p>
-                            <p class="mb-0" style="color: #28a745; font-size: 0.95rem;">
+                            <p class="mb-0" style="color: #059669; font-size: 0.95rem;">
                                 <i class="fas fa-info-circle me-1"></i>
                                 This job posting is no longer active as the position has been filled.
                             </p>
@@ -408,9 +494,11 @@ if ($application) {
                 </div>
             <?php endif; ?>
 
-            <div class="mt-4 pt-4 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
+            <div class="mt-4 pt-4 border-top">
                 <?php if (!isset($_SESSION['userid'])): ?>
-                    <a href="/main/login.php" class="btn btn-apply">Login to Apply</a>
+                    <a href="/main/login.php" class="btn btn-apply">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Apply
+                    </a>
                 <?php elseif ($application): ?>
                     <button type="button" class="btn btn-apply" data-bs-toggle="modal" data-bs-target="#applicationPreviewModal">
                         <i class="fas fa-eye me-2"></i>View My Application
@@ -428,7 +516,9 @@ if ($application) {
                         <i class="fas fa-ban me-2"></i>Applications Disabled
                     </button>
                 <?php else: ?>
-                    <a href="/main/apply.php?jobid=<?= $jobid ?>" class="btn btn-apply">Apply Now</a>
+                    <a href="/main/apply.php?jobid=<?= $jobid ?>" class="btn btn-apply">
+                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                    </a>
                 <?php endif; ?>
             </div>
         </div>
@@ -441,7 +531,9 @@ if ($application) {
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="applicationPreviewModalLabel">Your Application for <?= htmlspecialchars($job['designation']) ?></h5>
+        <h5 class="modal-title" id="applicationPreviewModalLabel">
+            <i class="fas fa-file-alt me-2"></i>Your Application for <?= htmlspecialchars($job['designation']) ?>
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -463,9 +555,9 @@ if ($application) {
         </div>
 
         <?php if ($application['status'] === 'Hired'): ?>
-            <div class="alert alert-success mb-3" style="background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%); border: 1px solid rgba(40, 167, 69, 0.3); color: #28a745; border-radius: 10px;">
+            <div class="alert alert-success mb-3">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-trophy me-2" style="color: #28a745;"></i>
+                    <i class="fas fa-trophy me-2" style="color: #10b981;"></i>
                     <div>
                         <strong>🎉 Congratulations!</strong> You have been hired for this position! 
                         <br><small>The company will contact you with next steps.</small>

@@ -1,17 +1,32 @@
 <!-- filepath: c:\Users\mandy\jobportal-php-mysql\main\footer.php -->
-<footer class="footer-glass" style="width:100vw; background: rgba(30, 30, 50, 0.38); backdrop-filter: blur(18px) saturate(1.2); border-top: 1.5px solid rgba(255,255,255,0.10); margin-top:2rem; padding: 1.5rem 0 1rem 0; text-align:center; font-size:1rem; color:#f3f3fa;">
-    <div style="font-weight:600; letter-spacing:-0.5px; font-size:1.2rem;">
-        <i class="fas fa-envelope me-2" style="color:#00e0d6;"></i>Contact us: <a href="mailto:support@jobportal.com" style="color:#00e0d6; text-decoration:underline;">support@jobportal.com</a>
-    </div>
-    <div style="margin-top:0.5rem; color:#b3b3c6; font-size:1rem;">
-        <i class="fas fa-phone me-2"></i>+1 (800) 123-4567
-    </div>
-    <div style="margin-top:0.5rem;">
-        <a href="/main/admin-login.php" style="color:#b3b3c6; text-decoration:underline; font-size:1rem; margin-right:0.5rem;">
-            <i class="fas fa-user-shield me-1"></i>Admin Login
-        </a>
-    </div>
-    <div style="margin-top:0.5rem; color:#f3f3fa; font-size:0.98rem;">
-        &copy; <?= date('Y') ?> <span style="color:#f3f3fa;">Job</span><span style="color:#00e0d6;">Portal</span> &mdash; Your gateway to new opportunities
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <h4 class="footer-title">Ready to Shape the Future?</h4>
+            <p class="mb-4">Join thousands of tech professionals finding their dream roles</p>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <a href="mailto:hello@jobportal.com" class="text-decoration-none">
+                            hello@jobportal.com
+                        </a>
+                    </p>
+                    <p class="mb-3">
+                        <i class="fas fa-phone me-2"></i>
+                        <span>+1 (555) JOB-PORTAL</span>
+                    </p>
+                </div>
+            </div>
+            <div class="border-top border-secondary pt-3 mt-4">
+                <p class="mb-0 text-secondary">
+                    &copy; <?= date('Y') ?> <span style="color: var(--primary-blue);">Job</span><span style="color: var(--accent-blue);">Portal</span> 
+                    &mdash; Where innovation meets opportunity
+                </p>
+                <a href="admin-login.php" class="admin-link">
+                    <i class="fas fa-user-shield me-1"></i>Admin Login
+                </a>
+            </div>
+        </div>
     </div>
 </footer>

@@ -54,111 +54,483 @@ $hired_stmt->close();
     <link href="/css/style.css" rel="stylesheet">
     <link href="/css/profile.css" rel="stylesheet">
     <style>
-        /**** Only add missing theme classes if needed, do not override global theme ****/
-        .profile-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-light: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
         }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 7rem 0 3rem;
+            text-align: center;
+        }
+
+        .profile-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .profile-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .profile-container {
+            background: var(--bg-white);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+            border: 1px solid var(--border-light);
+        }
+
         .profile-picture {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
         }
+
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+
         .nav-tabs .nav-link {
+            color: black !important;
             border: none;
-            color: #6c757d;
             font-weight: 500;
             padding: 1rem 1.5rem;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
         }
+
         .nav-tabs .nav-link.active {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-            background: none;
+            color: #2563eb !important;
+            border-bottom: 3px solid var(--primary-blue);
+            background: rgba(37, 99, 235, 0.05);
         }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-blue);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .form-control {
+            background: var(--bg-light);
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            padding: 0.85rem 1.2rem;
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: var(--primary-blue);
+            background: var(--bg-white);
+            outline: none;
+            box-shadow: 0 0 0 2px #2563eb22;
         }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
             border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
         }
+
         .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.13);
         }
+
         .card {
             border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+            border-radius: 18px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-white);
         }
+
+        .card-header {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-light);
+            border-radius: 18px 18px 0 0 !important;
+            padding: 1.5rem 2rem;
+            color: #000 !important;
+        }
+
+        .card-header h5, .card-header h5 i {
+            color: #000 !important;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
         .upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
+            border: 2px dashed var(--border-light);
+            border-radius: 12px;
             padding: 2rem;
             text-align: center;
             transition: all 0.3s ease;
+            background: var(--bg-light);
         }
+
         .upload-area:hover {
-            border-color: #667eea;
-            background-color: #f8f9ff;
+            border-color: var(--primary-blue);
+            background-color: rgba(37, 99, 235, 0.05);
         }
+
         .resume-preview {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: var(--bg-light);
+            border-radius: 12px;
             padding: 1rem;
             margin-top: 1rem;
+            border: 1px solid var(--border-light);
         }
+
         .resume-name-container {
             flex: 1;
             min-width: 0;
         }
+
         .resume-name-display {
             font-weight: 500;
-            color: #495057;
+            color: var(--text-dark);
         }
+
         .resume-name-edit {
             max-width: 300px;
         }
+
         .resume-name-input {
-            border: 2px solid #667eea;
-            border-radius: 6px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
         }
+
         .resume-name-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px #2563eb22;
         }
+
         .btn-outline-info {
-            border-color: #17a2b8;
-            color: #17a2b8;
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
+
         .btn-outline-info:hover {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
             color: white;
+            transform: translateY(-1px);
         }
-        html, body {
-            height: 100%;
+
+        .btn-outline-primary {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+            transform: translateY(-1px);
         }
-        .main-content {
-            flex: 1 0 auto;
+
+        .btn-outline-danger {
+            border-color: #ef4444;
+            color: #ef4444;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-        footer {
-            flex-shrink: 0;
-            width: 100vw;
+
+        .btn-outline-danger:hover {
+            background-color: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            transform: translateY(-1px);
         }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #059669;
+            border-radius: 12px;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #d97706;
+            border-radius: 12px;
+        }
+
+        .list-group-item {
+            border: 1px solid var(--border-light);
+            background: var(--bg-white);
+            padding: 1rem 1.5rem;
+        }
+
+        .list-group-item:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .list-group-item:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        .text-muted {
+            color: var(--text-light) !important;
+        }
+
+        .section-divider {
+            border-color: var(--border-light);
+            opacity: 0.5;
+        }
+
+        /* Footer Styling - Same as my-applications.php */
+        .footer {
+            background: var(--bg-white);
+            border-top: 1px solid var(--border-light);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+        .footer p {
+            color: var(--text-light);
+        }
+        .footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: var(--primary-blue-dark);
+        }
+        .footer i {
+            color: var(--primary-blue);
+        }
+        .admin-link {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .admin-link:hover {
+            opacity: 1;
+        }
+        .border-secondary {
+            border-color: var(--border-light) !important;
+        }
+        .text-secondary {
+            color: var(--text-light) !important;
+        }
+        .text-light {
+            color: var(--text-dark) !important;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        .change-photo-btn-linkedin {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary-blue);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .change-photo-btn-linkedin:hover {
+            background: var(--primary-blue-dark);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-linkedin-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-picture-linkedin {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-header-linkedin {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 7rem 0 3rem;
+            text-align: center;
+        }
+
+        .profile-header-linkedin-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-card-linkedin {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-info-linkedin h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .profile-info-row-linkedin {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .profile-info-row-linkedin i {
+            margin-right: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .profile-card-linkedin {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .profile-info-linkedin h1 {
+                font-size: 2rem;
+            }
+
+            .profile-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .profile-title {
+                font-size: 2.1rem;
+            }
+
+            .profile-container {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
         }
     </style>
 </head>

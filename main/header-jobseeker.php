@@ -4,10 +4,9 @@
   top: 0; left: 0; width: 100vw;
   height: 68px;
   z-index: 2000;
-  background: rgba(30, 30, 50, 0.38);
-  backdrop-filter: blur(18px) saturate(1.2);
-  box-shadow: 0 2px 16px rgba(30,20,60,0.10);
-  border-bottom: 1.5px solid rgba(255,255,255,0.10);
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   transition: background 0.18s;
@@ -16,17 +15,18 @@
   font-size: 1.7rem;
   font-weight: 800;
   letter-spacing: -1.5px;
-  color: #fff;
+  color: #2563eb;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
 }
 .header-glass-jobseeker .navbar-brand .fa {
-  color: #00e0d6;
+  color: #3b82f6;
   font-size: 1.3em;
 }
 .header-glass-jobseeker .navbar-nav .nav-link {
-  color: #f3f3fa;
+  color: #1f2937;
   font-weight: 500;
   font-size: 1.08rem;
   text-decoration: none;
@@ -39,22 +39,22 @@
   gap: 0.5rem;
 }
 .header-glass-jobseeker .navbar-nav .nav-link.active, .header-glass-jobseeker .navbar-nav .nav-link:focus, .header-glass-jobseeker .navbar-nav .nav-link:hover {
-  background: rgba(0,224,214,0.10);
-  color: #00e0d6;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
   text-decoration: none;
 }
 .header-glass-jobseeker .navbar-nav .nav-link.logout {
-  background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   color: #fff !important;
   font-weight: 700;
   border-radius: 22px;
   padding: 0.3rem 1.5rem;
   margin-left: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,224,214,0.10);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
   transition: background 0.18s, color 0.18s;
 }
 .header-glass-jobseeker .navbar-nav .nav-link.logout:hover, .header-glass-jobseeker .navbar-nav .nav-link.logout:focus {
-  background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
   color: #fff;
 }
 @media (max-width: 900px) {
@@ -65,7 +65,7 @@
 <nav class="header-glass-jobseeker navbar navbar-expand-lg">
   <div class="container-fluid px-4" style="height:68px;">
     <a class="navbar-brand" href="job-list.php">
-      <i class="fa fa-rocket"></i> Job<span style="color:#00e0d6;">Portal</span>
+      <i class="fa fa-rocket"></i> Job<span style="color:#3b82f6;">Portal</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarJobseeker" aria-controls="navbarJobseeker" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -77,6 +77,7 @@
             <i class="fa fa-search"></i> Browse Jobs
           </a>
         </li>
+        <?php if (isset($_SESSION['userid']) && $_SESSION['user_type'] === 'B'): ?>
         <li class="nav-item">
           <a class="nav-link<?= basename($_SERVER['PHP_SELF']) == 'my-applications.php' ? ' active' : '' ?>" href="my-applications.php">
             <i class="fa fa-file-alt"></i> My Applications
@@ -88,20 +89,20 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? ' active' : '' ?>" href="contact.php">
-            <i class="fa fa-envelope"></i> Contact
-          </a>
-        </li>
-        <?php if (isset($_SESSION['userid'])): ?>
-        <li class="nav-item">
           <?php include 'notification-component.php'; ?>
         </li>
-        <?php endif; ?>
         <li class="nav-item">
           <a class="nav-link logout" href="/php/logout.php">
             <i class="fa fa-sign-out-alt"></i> Logout
           </a>
         </li>
+        <?php else: ?>
+        <li class="nav-item">
+          <a class="nav-link logout" href="login.php">
+            <i class="fa fa-sign-in-alt"></i> Login
+          </a>
+        </li>
+        <?php endif; ?>
       </ul>
     </div>
   </div>

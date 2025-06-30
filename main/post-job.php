@@ -51,30 +51,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-light: #e5e7eb;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+        }
+
         html, body {
             height: 100%;
         }
+
         body {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            font-family: 'Poppins', 'Inter', Arial, sans-serif !important;
-            background: linear-gradient(135deg, #181828 0%, #23233a 100%);
-            color: #f3f3fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            padding-top: 68px;
         }
+
         .main-content {
             flex: 1 0 auto;
         }
+
         .post-job-container {
-            min-height: 100vh;
+            min-height: calc(100vh - 68px);
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2rem 1rem;
         }
+
         .post-job-card {
-            background: rgba(36, 38, 58, 0.98);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(30, 20, 60, 0.10);
+            background: var(--bg-white);
+            border-radius: 18px;
+            box-shadow: var(--shadow-md);
             padding: 2.5rem 2rem 2rem 2rem;
             max-width: 900px;
             width: 100%;
@@ -82,78 +100,145 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
             opacity: 0;
             transform: translateY(40px);
             animation: fadeSlideIn 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
-            color: #f3f3fa;
-            border: 1.5px solid rgba(120,130,255,0.13);
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
         }
+
         .post-job-card h2 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #00e0d6;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
             margin-bottom: 1.5rem;
             letter-spacing: -0.5px;
             text-align: center;
         }
+
         .divider {
-            border-top: 1.5px solid #e9ecef;
+            border-top: 1.5px solid var(--border-light);
             margin: 2rem 0 1.5rem 0;
         }
+
         .form-label {
             font-weight: 600;
-            color: #e8eaf6 !important;
-            margin-bottom: 0.25rem;
+            color: var(--text-dark) !important;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
+
         .form-control, .form-select {
             border-radius: 12px;
-            border: 2px solid #e9ecef;
-            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-light);
+            padding: 0.85rem 1.2rem;
             font-size: 1rem;
             margin-bottom: 1rem;
             transition: border 0.2s, box-shadow 0.2s;
-            background: #39395a !important;
-            color: #f3f3fa !important;
-            box-shadow: 0 2px 12px rgba(123,63,228,0.08);
+            background: var(--bg-light) !important;
+            color: var(--text-dark) !important;
+            box-shadow: var(--shadow-md);
         }
+
         .form-control:focus, .form-select:focus {
-            border-color: #00e0d6;
-            box-shadow: 0 0 0 0.15rem rgba(0, 224, 214, 0.10);
-            background: #44446a !important;
-            color: #fff !important;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px #2563eb22;
+            background: var(--bg-white) !important;
+            color: var(--text-dark) !important;
         }
+
         .btn-primary {
-            background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
             border: none;
-            border-radius: 20px;
+            border-radius: 12px;
             font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.08);
-            transition: background 0.2s, box-shadow 0.2s;
+            padding: 0.75rem 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
             color: #fff;
         }
+
         .btn-primary:hover {
-            background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
-            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.12);
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.13);
             color: #fff;
+            transform: translateY(-1px);
         }
-        .btn-outline-secondary, .btn-outline-danger {
-            border-radius: 20px;
+
+        .btn-outline-secondary {
+            border: 2px solid var(--text-light);
+            color: var(--text-light);
+            border-radius: 12px;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
+
+        .btn-outline-secondary:hover {
+            background: var(--text-light);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger {
+            border: 2px solid #ef4444;
+            color: #ef4444;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-danger:hover {
+            background: #ef4444;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
         .alert {
             border-radius: 12px;
             font-size: 1rem;
             margin-bottom: 1.25rem;
+            border: none;
+            padding: 1rem 1.5rem;
         }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #059669;
+        }
+
+        .text-muted {
+            color: var(--text-light) !important;
+        }
+
+        .border-secondary {
+            border-color: var(--border-light) !important;
+        }
+
+        .text-secondary {
+            color: var(--text-light) !important;
+        }
+
         @media (max-width: 992px) {
             .post-job-card {
                 max-width: 98vw;
                 padding: 2rem 1rem 1.5rem 1rem;
             }
         }
+
         @media (max-width: 576px) {
             .post-job-card {
                 padding: 1.5rem 0.5rem 1rem 0.5rem;
             }
+            
+            .post-job-card h2 {
+                font-size: 1.5rem;
+            }
         }
+
         @keyframes fadeSlideIn {
             from {
                 opacity: 0;
@@ -164,6 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_suspended) {
                 transform: translateY(0);
             }
         }
+
         footer {
             flex-shrink: 0;
             width: 100vw;

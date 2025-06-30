@@ -1,136 +1,256 @@
+/* --- Modern Dark Glassmorphism Theme --- */
 :root {
-    --primary: #1E90FF;
-    /* FBLA Blue */
-    --secondary: #FFD700;
-    /* FBLA Gold */
-    --light: #F8F9FA;
-    /* Light background */
-    --dark: #2B3940;
-    /* Dark text */
+    --primary-purple: #7b1fa2;
+    --primary-blue: #1976d2;
+    --accent-cyan: #00e0d6;
+    --accent-pink: #ec4899;
+    --text-primary: #fff;
+    --text-secondary: #b3b3c6;
+    --glass-bg: rgba(255,255,255,0.10);
+    --glass-border: 1.5px solid rgba(255,255,255,0.13);
+    --glass-radius: 32px;
+    --glass-blur: blur(18px) saturate(1.2);
+    --glass-shadow: 0 8px 32px rgba(30,20,60,0.13);
+    --bg-light: #f8fafc;
+    --bg-white: #ffffff;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-light: #e5e7eb;
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+    --primary-blue-dark: #1d4ed8;
+    --accent-blue: #3b82f6;
 }
 
 body {
-    background: linear-gradient(135deg, #181828 0%, #23233a 100%);
-    color: #f3f3fa;
-    font-family: 'Inter', Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: radial-gradient(ellipse at 60% 20%, #2a1747 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, #0a2342 0%, transparent 70%),
+                linear-gradient(135deg, #0a0a13 0%, #181828 100%);
+    color: var(--text-primary);
     min-height: 100vh;
     margin: 0;
     overflow-x: hidden;
 }
 
-.profile-sidebar {
-    background-color: var(--light);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.profile-sidebar img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-}
-
-.profile-sidebar h4 {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.profile-sidebar p {
-    font-size: 14px;
-    color: #666;
-}
-
-.profile-sidebar hr {
-    margin: 20px 0;
-}
-
-.profile-main {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.profile-main h4 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.profile-main textarea {
-    width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.glass-panel, .card, .app-card, .job-details-container, .apply-glass-panel {
-    background: rgba(255,255,255,0.10);
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(30,20,60,0.13);
-    backdrop-filter: blur(18px) saturate(1.2);
-    border: 1.5px solid rgba(255,255,255,0.13);
-    margin: 2rem auto;
-    max-width: 1100px;
-    padding: 2.5rem 2rem 2rem 2rem;
-    z-index: 2;
+.glass-panel, .glass, .search-container, .filter-section, .job-card, .app-card {
+    background: var(--glass-bg);
+    border-radius: var(--glass-radius);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
     position: relative;
 }
 
-.btn-apply, .btn-primary, .btn-outline-primary, .btn-gradient {
-    background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
-    border: none;
-    border-radius: 25px;
-    padding: 0.75rem 2rem;
+.glass-panel::before, .glass::before, .search-container::before, .filter-section::before, .job-card::before, .app-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: var(--glass-radius);
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(175, 175, 175, 0.08) 0%, rgba(0,224,214,0.08) 100%);
+    z-index: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+    font-family: inherit;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+a, .btn, .btn-modern, .btn-apply, .search-btn, .view-btn {
+    border-radius: 18px;
     font-weight: 600;
-    color: #fff;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
+    text-decoration: none;
 }
 
-.btn-apply:hover, .btn-primary:hover, .btn-outline-primary:hover, .btn-gradient:hover {
-    background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+.btn-apply, .btn-modern, .search-btn, .view-btn {
+    background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--primary-purple) 100%);
     color: #fff;
-    box-shadow: 0 8px 25px rgba(0,224,214,0.3);
-}
-
-input[type="text"], input[type="email"], input[type="number"], input[type="file"], textarea, select {
-    background: rgba(255,255,255,0.13) !important;
-    border: 1.5px solid rgba(255,255,255,0.18) !important;
-    border-radius: 16px !important;
-    color: #f3f3fa !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,224,214,0.13);
+    padding: 0.7rem 1.7rem;
     font-size: 1.08rem;
-    font-weight: 500;
-    box-shadow: 0 2px 12px rgba(123,63,228,0.08);
-    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-apply:hover, .btn-modern:hover, .search-btn:hover, .view-btn:hover {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--accent-cyan) 100%);
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0,224,214,0.18);
+    transform: translateY(-2px) scale(1.03);
+}
+
+input, select, textarea {
+    background: rgba(255,255,255,0.13);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    color: #fff;
+    border-radius: 18px;
+    padding: 0.85rem 1.2rem;
+    font-size: 1rem;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-cyan);
+    background: rgba(255,255,255,0.18);
     outline: none;
-    backdrop-filter: blur(8px) saturate(1.1);
+    box-shadow: 0 0 0 2px #00e0d633;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="file"]:focus, textarea:focus, select:focus {
-    border: 1.5px solid #00e0d6 !important;
-    background: rgba(255,255,255,0.18) !important;
-    box-shadow: 0 4px 24px rgba(0,224,214,0.13);
-    color: #fff !important;
+.status-badge {
+    display: inline-block;
+    border-radius: 14px;
+    font-size: 0.92em;
+    font-weight: 700;
+    padding: 0.35em 0.9em;
+    letter-spacing: 0.02em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.status-pending { background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); color: #fff; }
+.status-hired { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: #fff; }
+.status-rejected { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: #fff; }
+.status-withdrawn { background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: #fff; }
+
+.salary-badge {
+    background: linear-gradient(135deg, #f093fb 0%, #00e0d6 100%);
+    color: #fff;
+    padding: 0.4rem 0.9rem;
+    border-radius: 14px;
+    font-size: 0.98rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.18);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
-::placeholder {
-    color: #b3b3c6 !important;
+.company-badge {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-blue) 100%);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.job-location {
+    color: #fff;
+    font-size: 0.98rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.job-title, .application-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.application-company {
+    color: var(--accent-cyan);
+    font-size: 1.05rem;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.application-meta, .job-description {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    margin-bottom: 0.8rem;
     font-weight: 400;
-    opacity: 1;
-    letter-spacing: 0.01em;
 }
 
-footer {
-    width: 100vw;
-    background: rgba(30, 30, 50, 0.38);
-    backdrop-filter: blur(18px) saturate(1.2);
-    border-top: 1.5px solid rgba(255,255,255,0.10);
-    margin-top:2rem;
-    padding: 1.5rem 0 1rem 0;
-    text-align:center;
-    font-size:1rem;
-    color:#f3f3fa;
+.empty-state, .no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+}
+.empty-state i, .no-results i {
+    font-size: 4rem;
+    color: var(--primary-purple);
+    margin-bottom: 1.2rem;
+    opacity: 0.7;
+}
+.empty-state h3, .no-results h4 {
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.empty-state p, .no-results p {
+    font-size: 1.08rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Footer Styling - Consistent across all pages */
+.footer {
+    background: var(--bg-white);
+    border-top: 1px solid var(--border-light);
+    padding: 3rem 0 2rem;
+    margin-top: 4rem;
+    text-align: center;
+    box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.05);
+}
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.footer-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--primary-blue);
+}
+.footer p {
+    color: var(--text-light);
+}
+.footer a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.footer a:hover {
+    color: var(--primary-blue-dark);
+}
+.footer i {
+    color: var(--primary-blue);
+}
+.admin-link {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 1rem;
+    display: inline-block;
+}
+.admin-link:hover {
+    opacity: 1;
+}
+.border-secondary {
+    border-color: var(--border-light) !important;
+}
+.text-secondary {
+    color: var(--text-light) !important;
+}
+
+@media (max-width: 900px) {
+    .glass-panel, .glass, .search-container, .filter-section, .job-card, .app-card {
+        max-width: 98vw;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+@media (max-width: 600px) {
+    .glass-panel, .glass, .search-container, .filter-section, .job-card, .app-card {
+        padding: 1.2rem 0.5rem;
+    }
+    h1, .applications-header h1 { font-size: 2.1rem; }
 }

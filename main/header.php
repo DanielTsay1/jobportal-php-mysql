@@ -5,7 +5,6 @@
         </div>
         <nav class="d-flex align-items-center gap-3" aria-label="Main Navigation">
             <a href="/main/job-list.php" class="nav-link-glass" aria-label="Browse Jobs">Jobs</a>
-            <a href="/main/contact.php" class="nav-link-glass" aria-label="Contact">Contact</a>
             <a href="/main/login.php" class="nav-link-glass nav-link-cta" aria-label="Login or Sign Up">Login / Sign Up</a>
         </nav>
     </div>

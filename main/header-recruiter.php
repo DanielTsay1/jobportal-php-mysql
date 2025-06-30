@@ -4,68 +4,117 @@
   top: 0; left: 0; width: 100vw;
   height: 68px;
   z-index: 2000;
-  background: rgba(30, 30, 50, 0.38);
-  backdrop-filter: blur(18px) saturate(1.2);
-  box-shadow: 0 2px 16px rgba(30,20,60,0.10);
-  border-bottom: 1.5px solid rgba(255,255,255,0.10);
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
-  transition: background 0.18s;
+  transition: all 0.3s ease;
 }
+
 .header-glass-recruiter .navbar-brand {
   font-size: 1.7rem;
   font-weight: 800;
   letter-spacing: -1.5px;
-  color: #fff;
+  color: #2563eb;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
 }
+
 .header-glass-recruiter .navbar-brand .fa {
-  color: #00e0d6;
+  color: #3b82f6;
   font-size: 1.3em;
 }
+
 .header-glass-recruiter .navbar-nav .nav-link {
-  color: #f3f3fa;
+  color: #1f2937;
   font-weight: 500;
-  font-size: 1.08rem;
+  font-size: 1rem;
   text-decoration: none;
-  padding: 0.3rem 1.1rem;
-  border-radius: 18px;
-  transition: background 0.18s, color 0.18s;
-  opacity: 0.92;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 0 0.25rem;
 }
-.header-glass-recruiter .navbar-nav .nav-link.active, .header-glass-recruiter .navbar-nav .nav-link:focus, .header-glass-recruiter .navbar-nav .nav-link:hover {
-  background: rgba(0,224,214,0.10);
-  color: #00e0d6;
+
+.header-glass-recruiter .navbar-nav .nav-link.active, 
+.header-glass-recruiter .navbar-nav .nav-link:focus, 
+.header-glass-recruiter .navbar-nav .nav-link:hover {
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
   text-decoration: none;
+  transform: translateY(-1px);
 }
+
 .header-glass-recruiter .navbar-nav .nav-link.logout {
-  background: linear-gradient(135deg, #00e0d6 0%, #7b3fe4 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   color: #fff !important;
-  font-weight: 700;
-  border-radius: 22px;
-  padding: 0.3rem 1.5rem;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
   margin-left: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,224,214,0.10);
-  transition: background 0.18s, color 0.18s;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  transition: all 0.3s ease;
 }
-.header-glass-recruiter .navbar-nav .nav-link.logout:hover, .header-glass-recruiter .navbar-nav .nav-link.logout:focus {
-  background: linear-gradient(135deg, #7b3fe4 0%, #00e0d6 100%);
+
+.header-glass-recruiter .navbar-nav .nav-link.logout:hover, 
+.header-glass-recruiter .navbar-nav .nav-link.logout:focus {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
   color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.13);
 }
+
+.header-glass-recruiter .navbar-toggler {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.header-glass-recruiter .navbar-toggler:focus {
+  box-shadow: 0 0 0 2px #2563eb22;
+  border-color: #2563eb;
+}
+
+.header-glass-recruiter .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(37, 99, 235, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 @media (max-width: 900px) {
-  .header-glass-recruiter .navbar-nav .nav-link { font-size: 1rem; padding: 0.3rem 0.7rem; }
-  .header-glass-recruiter .navbar-brand { font-size: 1.2rem; }
+  .header-glass-recruiter .navbar-nav .nav-link { 
+    font-size: 0.95rem; 
+    padding: 0.4rem 0.8rem; 
+    margin: 0.25rem 0;
+  }
+  .header-glass-recruiter .navbar-brand { 
+    font-size: 1.4rem; 
+  }
+  .header-glass-recruiter .navbar-nav .nav-link.logout {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-glass-recruiter .navbar-brand { 
+    font-size: 1.2rem; 
+  }
+  .header-glass-recruiter .navbar-nav .nav-link { 
+    font-size: 0.9rem; 
+    padding: 0.3rem 0.6rem; 
+  }
 }
 </style>
 <nav class="header-glass-recruiter navbar navbar-expand-lg">
   <div class="container-fluid px-4" style="height:68px;">
     <a class="navbar-brand" href="/main/recruiter.php">
-      <i class="fa fa-briefcase"></i> Job<span style="color:#00e0d6;">Portal</span>
+      <i class="fa fa-briefcase"></i> Job<span style="color:#3b82f6;">Portal</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarRecruiter" aria-controls="navbarRecruiter" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
