@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if (ob_get_level() == 0) ob_start();
 ini_set('display_errors', 0);
 set_error_handler(function($errno, $errstr, $errfile, $errline) {

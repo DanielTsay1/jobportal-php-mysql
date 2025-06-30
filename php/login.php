@@ -69,6 +69,11 @@ if ($userResult->num_rows > 0) {
         $_SESSION['username'] = $username;
         $_SESSION['user_type'] = 'B';
         $_SESSION['userid'] = $user['userid'];
+        // Update last_login
+        $updateStmt = $conn->prepare("UPDATE user SET last_login = NOW() WHERE userid = ?");
+        $updateStmt->bind_param('i', $user['userid']);
+        $updateStmt->execute();
+        $updateStmt->close();
         
         header("Location: ../main/job-list.php");
         exit;

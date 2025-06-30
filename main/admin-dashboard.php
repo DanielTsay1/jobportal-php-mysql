@@ -829,12 +829,6 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                                                 <div class="stat-label">Applications</div>
                                             </div>
                                         </div>
-                                        <div class="col-6">
-                                            <div class="stats-card">
-                                                <div class="stat-number">${user.total_jobs_posted || 0}</div>
-                                                <div class="stat-label">Jobs Posted</div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="mt-3">
                                         <button id="suspendUserBtn" class="btn btn-${isSuspended ? 'success' : 'warning'} w-100">
@@ -1004,12 +998,6 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                                 <div class="col-md-6">
                                     <h6>Statistics</h6>
                                     <div class="row">
-                                        <div class="col-6">
-                                            <div class="stats-card">
-                                                <div class="stat-number">${company.total_jobs_posted || 0}</div>
-                                                <div class="stat-label">Jobs Posted</div>
-                                            </div>
-                                        </div>
                                         <div class="col-6">
                                             <div class="stats-card">
                                                 <div class="stat-number">${company.total_applications_received || 0}</div>

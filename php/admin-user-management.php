@@ -23,11 +23,9 @@ switch ($action) {
         
         $stmt = $conn->prepare("
             SELECT u.*, 
-                   COUNT(DISTINCT a.`S. No`) as total_applications,
-                   COUNT(DISTINCT j.jobid) as total_jobs_posted
+                   COUNT(DISTINCT a.`S. No`) as total_applications
             FROM user u 
             LEFT JOIN applied a ON u.userid = a.userid
-            LEFT JOIN `job-post` j ON u.userid = j.userid
             WHERE u.userid = ?
             GROUP BY u.userid
         ");
@@ -50,7 +48,7 @@ switch ($action) {
             UNION ALL
             SELECT 'job_posted' as type, j.created_at as date, j.designation as title
             FROM `job-post` j 
-            WHERE j.userid = ?
+            WHERE j.recid = ?
             ORDER BY date DESC 
             LIMIT 10
         ");
@@ -127,6 +125,29 @@ switch ($action) {
             'page' => $page,
             'limit' => $limit
         ]);
+        break;
+        
+    case 'get_user_history':
+        $userid = intval($_GET['userid'] ?? 0);
+        if ($userid <= 0) {
+            echo json_encode(['error' => 'Invalid user ID']);
+            exit;
+        }
+        $stmt = $conn->prepare("
+            SELECT 'application' as type, a.applied_at as date, j.designation as title
+            FROM applied a 
+            JOIN `job-post` j ON a.jobid = j.jobid 
+            WHERE a.userid = ?
+            UNION ALL
+            SELECT 'job_posted' as type, j.created_at as date, j.designation as title
+            FROM `job-post` j 
+            WHERE j.userid = ?
+            ORDER BY date DESC
+        ");
+        $stmt->bind_param('ii', $userid, $userid);
+        $stmt->execute();
+        $history = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        echo json_encode(['success' => true, 'history' => $history]);
         break;
         
     default:
