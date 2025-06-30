@@ -393,25 +393,23 @@ $has_resumes = count($user_resumes) > 0;
                             Job not found.
                         </div>
                     <?php else: ?>
-                        <form method="post" action="/php/apply.php" enctype="multipart/form-data" id="applyForm">
+                        <form method="post" action="/php/apply.php" enctype="multipart/form-data" id="applyForm" novalidate>
                             <input type="hidden" name="jobid" value="<?= $jobid ?>">
                             <input type="hidden" name="resume_type" id="resume_type" value="<?= $has_resumes ? 'existing' : 'new' ?>">
-                            
                             <div class="mb-4">
-                                <label class="form-label">
+                                <label class="form-label" for="cover_letter_file">
                                     <i class="fas fa-file-alt me-2"></i>Cover Letter <span class="text-muted">(PDF/DOC/DOCX)</span>
                                 </label>
-                                <input type="file" name="cover_letter_file" class="form-control" accept=".pdf,.doc,.docx" required>
+                                <input type="file" name="cover_letter_file" id="cover_letter_file" class="form-control" accept=".pdf,.doc,.docx" required aria-required="true">
                                 <small class="text-muted">Upload your cover letter for this position</small>
                             </div>
-                            
                             <div class="mb-4">
-                                <label class="form-label">
+                                <label class="form-label" for="resume_file">
                                     <i class="fas fa-file-pdf me-2"></i>Resume <span class="text-muted">(PDF/DOC/DOCX)</span>
                                 </label>
                                 <?php if ($has_resumes): ?>
                                     <div class="mb-3">
-                                        <select class="form-select mb-2" name="selected_resume_id" id="selected_resume_id">
+                                        <select class="form-select mb-2" name="selected_resume_id" id="selected_resume_id" aria-label="Select from your saved resumes">
                                             <option value="">-- Select from your saved resumes --</option>
                                             <?php foreach ($user_resumes as $resume): ?>
                                                 <option value="<?= $resume['id'] ?>"><?= htmlspecialchars($resume['original_filename']) ?></option>
@@ -422,15 +420,14 @@ $has_resumes = count($user_resumes) > 0;
                                         </div>
                                     </div>
                                 <?php endif; ?>
-                                <input type="file" name="resume_file" class="form-control mb-2" accept=".pdf,.doc,.docx" <?= $has_resumes ? '' : 'required' ?> id="resume_file_input">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="save_resume_to_profile" id="save_resume_to_profile" checked>
+                                <input type="file" name="resume_file" class="form-control mb-2" accept=".pdf,.doc,.docx" <?= $has_resumes ? '' : 'required' ?> id="resume_file_input" aria-required="true">
+                                <div class="form-check" id="saveResumeCheck" style="display:none;">
+                                    <input class="form-check-input" type="checkbox" name="save_resume_to_profile" id="save_resume_to_profile">
                                     <label class="form-check-label" for="save_resume_to_profile">
                                         <i class="fas fa-save me-1"></i>Save this resume to my profile for future applications
                                     </label>
                                 </div>
                             </div>
-                            
                             <?php if (!empty($questions)): ?>
                                 <div class="additional-questions-section">
                                     <h6 class="fw-semibold mb-3">
@@ -438,18 +435,17 @@ $has_resumes = count($user_resumes) > 0;
                                     </h6>
                                     <?php foreach ($questions as $idx => $q): ?>
                                         <div class="mb-3">
-                                            <label class="form-label mb-1"><?= htmlspecialchars($q) ?></label>
-                                            <input type="text" name="question_answers[<?= $idx ?>]" class="form-control" required>
+                                            <label class="form-label mb-1" for="question_<?= $idx ?>"><?= htmlspecialchars($q) ?></label>
+                                            <input type="text" name="question_answers[<?= $idx ?>]" id="question_<?= $idx ?>" class="form-control" required aria-required="true">
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
-                            
-                            <div class="d-flex justify-content-end gap-3 mt-4">
-                                <a href="job-details.php?jobid=<?= $jobid ?>" class="btn btn-outline-secondary">
+                            <div class="d-flex flex-column flex-md-row justify-content-end gap-3 mt-4">
+                                <a href="job-details.php?jobid=<?= $jobid ?>" class="btn btn-outline-secondary order-2 order-md-1">
                                     <i class="fas fa-arrow-left me-2"></i>Back
                                 </a>
-                                <button type="submit" class="btn btn-gradient">
+                                <button type="submit" class="btn btn-gradient order-1 order-md-2">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Application
                                 </button>
                             </div>
@@ -469,80 +465,64 @@ $has_resumes = count($user_resumes) > 0;
 const resumeTypeInput = document.getElementById('resume_type');
 const resumeFileInput = document.getElementById('resume_file_input');
 const resumeDropdown = document.getElementById('selected_resume_id');
+const saveResumeCheck = document.getElementById('saveResumeCheck');
+const saveResumeCheckbox = document.getElementById('save_resume_to_profile');
 
+function updateResumeUI() {
+    if (resumeFileInput && resumeFileInput.value) {
+        resumeTypeInput.value = 'new';
+        if (resumeDropdown) resumeDropdown.value = '';
+        if (saveResumeCheck) saveResumeCheck.style.display = '';
+        if (saveResumeCheckbox) saveResumeCheckbox.checked = true;
+    } else if (resumeDropdown && resumeDropdown.value) {
+        resumeTypeInput.value = 'existing';
+        if (saveResumeCheck) saveResumeCheck.style.display = 'none';
+        if (saveResumeCheckbox) saveResumeCheckbox.checked = false;
+    } else {
+        if (saveResumeCheck) saveResumeCheck.style.display = 'none';
+        if (saveResumeCheckbox) saveResumeCheckbox.checked = false;
+    }
+}
 if (resumeFileInput) {
-    resumeFileInput.addEventListener('change', function() {
-        if (resumeFileInput.value) {
-            resumeTypeInput.value = 'new';
-            if (resumeDropdown) resumeDropdown.value = '';
-        }
-    });
+    resumeFileInput.addEventListener('change', updateResumeUI);
 }
 if (resumeDropdown) {
-    resumeDropdown.addEventListener('change', function() {
-        if (resumeDropdown.value) {
-            resumeTypeInput.value = 'existing';
-            if (resumeFileInput) resumeFileInput.value = '';
-        }
-    });
+    resumeDropdown.addEventListener('change', updateResumeUI);
 }
+updateResumeUI();
 
 // Form validation
-document.querySelector('form').addEventListener('submit', function(e) {
-    const resumeType = document.getElementById('resume_type').value;
-    if (!resumeType || (resumeType !== 'existing' && resumeType !== 'new')) {
-        e.preventDefault();
-        alert('Please select a resume option.');
-        return;
+const applyForm = document.getElementById('applyForm');
+applyForm.addEventListener('submit', function(e) {
+    let valid = true;
+    // Cover letter required
+    const coverLetter = document.getElementById('cover_letter_file');
+    if (!coverLetter.value) {
+        coverLetter.classList.add('is-invalid');
+        valid = false;
+    } else {
+        coverLetter.classList.remove('is-invalid');
     }
-    
-    if (resumeType === 'new') {
-        const fileInput = document.querySelector('input[name="resume_file"]');
-        if (!fileInput || !fileInput.files[0]) {
-            e.preventDefault();
-            alert('Please select a resume file to upload.');
-            return;
+    // Resume required
+    if (resumeTypeInput.value === 'new' && (!resumeFileInput.value || !/\.(pdf|docx?)$/i.test(resumeFileInput.value))) {
+        resumeFileInput.classList.add('is-invalid');
+        valid = false;
+    } else {
+        resumeFileInput.classList.remove('is-invalid');
+    }
+    // Additional questions required
+    const questionInputs = applyForm.querySelectorAll('[name^="question_answers"]');
+    questionInputs.forEach(input => {
+        if (!input.value.trim()) {
+            input.classList.add('is-invalid');
+            valid = false;
+        } else {
+            input.classList.remove('is-invalid');
         }
-        
-        // Check file size (5MB limit)
-        const fileSize = fileInput.files[0].size / 1024 / 1024; // Convert to MB
-        if (fileSize > 5) {
-            e.preventDefault();
-            alert('Resume file size must be less than 5MB.');
-            return;
-        }
-        
-        // Check file type
-        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        if (!allowedTypes.includes(fileInput.files[0].type)) {
-            e.preventDefault();
-            alert('Please upload a PDF, DOC, or DOCX file.');
-            return;
-        }
-    }
-    
-    // Check cover letter
-    const coverLetterInput = document.querySelector('input[name="cover_letter_file"]');
-    if (!coverLetterInput || !coverLetterInput.files[0]) {
+    });
+    if (!valid) {
         e.preventDefault();
-        alert('Please select a cover letter file.');
-        return;
-    }
-    
-    // Check cover letter file size (5MB limit)
-    const coverLetterSize = coverLetterInput.files[0].size / 1024 / 1024; // Convert to MB
-    if (coverLetterSize > 5) {
-        e.preventDefault();
-        alert('Cover letter file size must be less than 5MB.');
-        return;
-    }
-    
-    // Check cover letter file type
-    const allowedCoverTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!allowedCoverTypes.includes(coverLetterInput.files[0].type)) {
-        e.preventDefault();
-        alert('Please upload a PDF, DOC, or DOCX file for the cover letter.');
-        return;
+        alert('Please fill in all required fields and upload valid files.');
     }
 });
 </script>

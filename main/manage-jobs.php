@@ -767,11 +767,11 @@ $stmt->close();
                             <i class="fas fa-edit me-1"></i>Edit
                         </button>
                         <?php if ($job['status'] === 'Active'): ?>
-                            <button type="button" class="btn btn-warning btn-sm" onclick="performAction('unpost', <?= $job['jobid'] ?>, <?= json_encode($job['designation']) ?>)">
+                            <button type="button" class="btn btn-warning btn-sm action-btn-unpost" data-jobid="<?= $job['jobid'] ?>" data-title="<?= htmlspecialchars($job['designation']) ?>">
                                 <i class="fas fa-eye-slash me-1"></i>Unpost
                             </button>
                         <?php elseif ($job['status'] === 'Inactive' && !$company_suspended): ?>
-                            <button type="button" class="btn btn-success btn-sm" onclick="performAction('repost', <?= $job['jobid'] ?>, <?= json_encode($job['designation']) ?>)">
+                            <button type="button" class="btn btn-success btn-sm action-btn-repost" data-jobid="<?= $job['jobid'] ?>" data-title="<?= htmlspecialchars($job['designation']) ?>">
                                 <i class="fas fa-undo me-1"></i>Repost
                             </button>
                         <?php elseif ($job['status'] === 'Suspended'): ?>
@@ -779,7 +779,7 @@ $stmt->close();
                                 <i class="fas fa-ban me-1"></i>Suspended
                             </span>
                         <?php endif; ?>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="performAction('delete', <?= $job['jobid'] ?>, <?= json_encode($job['designation']) ?>)">
+                        <button type="button" class="btn btn-danger btn-sm action-btn-delete" data-jobid="<?= $job['jobid'] ?>" data-title="<?= htmlspecialchars($job['designation']) ?>">
                             <i class="fas fa-trash me-1"></i>Delete
                         </button>
                     </div>
@@ -820,27 +820,22 @@ window.performAction = function(action, jobId, jobTitle) {
     }
 };
 
-window.executeAction = function(action, jobId, jobTitle) {
-    console.log('executeAction called:', action, jobId, jobTitle);
+window.executeAction = function(action, jobId, jobTitle, onComplete) {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = 'flex';
-    
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
     const formData = new FormData();
     formData.append('ajax_action', action);
     formData.append('jobid', jobId);
-    
     fetch('manage-jobs.php', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        loadingOverlay.style.display = 'none';
-        
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        if (onComplete) onComplete();
         if (data.success) {
             showNotification(data.message, 'success');
-            
-            // Remove the job card from DOM if it was deleted
             if (action === 'delete') {
                 const jobCard = document.querySelector(`[data-jobid="${jobId}"]`);
                 if (jobCard) {
@@ -851,7 +846,6 @@ window.executeAction = function(action, jobId, jobTitle) {
                     }, 300);
                 }
             } else {
-                // Refresh the page to update job statuses
                 setTimeout(() => {
                     location.reload();
                 }, 1500);
@@ -862,8 +856,8 @@ window.executeAction = function(action, jobId, jobTitle) {
         }
     })
     .catch(error => {
-        loadingOverlay.style.display = 'none';
-        console.error('Error:', error);
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        if (onComplete) onComplete();
         showNotification('An error occurred. Please try again.', 'error');
         showAjaxError('AJAX error: ' + error);
     });
@@ -937,7 +931,52 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    document.querySelectorAll('.action-btn-unpost').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobId = parseInt(this.getAttribute('data-jobid'));
+            const jobTitle = this.getAttribute('data-title');
+            handleActionButton(this, 'unpost', jobId, jobTitle);
+        });
+    });
+    document.querySelectorAll('.action-btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobId = parseInt(this.getAttribute('data-jobid'));
+            const jobTitle = this.getAttribute('data-title');
+            handleActionButton(this, 'delete', jobId, jobTitle);
+        });
+    });
+    document.querySelectorAll('.action-btn-repost').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobId = parseInt(this.getAttribute('data-jobid'));
+            const jobTitle = this.getAttribute('data-title');
+            handleActionButton(this, 'repost', jobId, jobTitle);
+        });
+    });
 });
+
+function handleActionButton(button, action, jobId, jobTitle) {
+    let confirmMessage = '';
+    switch(action) {
+        case 'delete':
+            confirmMessage = `Are you sure you want to permanently delete the job "${jobTitle}" and all its applications?`;
+            break;
+        case 'unpost':
+            confirmMessage = `Are you sure you want to unpost the job "${jobTitle}"?`;
+            break;
+        case 'repost':
+            confirmMessage = `Are you sure you want to repost the job "${jobTitle}"?`;
+            break;
+    }
+    if (!confirm(confirmMessage)) return;
+    button.disabled = true;
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    window.executeAction(action, jobId, jobTitle, function() {
+        button.disabled = false;
+        button.innerHTML = originalHtml;
+    });
+}
 </script>
 
 <!-- Notification Container -->
