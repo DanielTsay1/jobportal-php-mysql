@@ -42,9 +42,11 @@ if ($jobid) {
                 a.status,
                 a.cover_letter_file,
                 a.resume_file,
+                a.answers,
                 u.username AS applicant_name, 
                 u.email AS applicant_email,
-                j.designation AS job_title
+                j.designation AS job_title,
+                j.questions
             FROM applied a
             JOIN user u ON a.userid = u.userid
             JOIN `job-post` j ON a.jobid = j.jobid
@@ -66,9 +68,11 @@ if ($jobid) {
                 a.status,
                 a.cover_letter_file,
                 a.resume_file,
+                a.answers,
                 u.username AS applicant_name, 
                 u.email AS applicant_email,
-                j.designation AS job_title
+                j.designation AS job_title,
+                j.questions
             FROM applied a
             JOIN user u ON a.userid = u.userid
             JOIN `job-post` j ON a.jobid = j.jobid
@@ -369,6 +373,7 @@ $conn->close();
                                 <th class="py-3 px-4">Applied On</th>
                                 <th class="py-3 px-4">Status</th>
                                 <th class="py-3 px-4">Documents</th>
+                                <th class="py-3 px-4">Q&amp;A</th>
                                 <th class="py-3 px-4">Actions</th>
                             </tr>
                         </thead>
@@ -393,6 +398,25 @@ $conn->close();
                                                 <a href="/uploads/<?= htmlspecialchars($app['cover_letter_file']) ?>" target="_blank" class="btn btn-gradient btn-sm" style="height: 50px; line-height: 1;"><i class="fas fa-file-alt me-1"></i>Cover</a>
                                             <?php endif; ?>
                                         </div>
+                                    </td>
+                                    <td class="px-4">
+                                        <?php
+                                        $questions = json_decode($app['questions'] ?? '[]', true);
+                                        $answers = json_decode($app['answers'] ?? '[]', true);
+                                        if ($questions && is_array($questions)) {
+                                            echo '<div style="background: #f4f8fd; border-radius: 12px; padding: 12px 16px; box-shadow: 0 2px 8px rgba(37,99,235,0.06); min-width: 220px; max-width: 340px; margin: 0 auto;">';
+                                            foreach ($questions as $idx => $question) {
+                                                $answer = $answers[$idx] ?? '<em>No answer</em>';
+                                                echo '<div style="margin-bottom: 14px;">';
+                                                echo '<div style="font-weight: 600; color: #2563eb; margin-bottom: 4px;">Q: ' . htmlspecialchars($question) . '</div>';
+                                                echo '<div style="color: #374151; background: #e0e7ef; border-radius: 6px; padding: 6px 10px; display: inline-block;">A: ' . htmlspecialchars($answer) . '</div>';
+                                                echo '</div>';
+                                            }
+                                            echo '</div>';
+                                        } else {
+                                            echo '<span class="text-muted">No questions</span>';
+                                        }
+                                        ?>
                                     </td>
                                     <td class="px-4">
                                         <div class="dropdown">
