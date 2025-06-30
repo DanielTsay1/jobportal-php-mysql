@@ -65,22 +65,26 @@ switch ($action) {
         
     case 'suspend_user':
         $userid = intval($_POST['userid'] ?? 0);
+        $reason = trim($_POST['reason'] ?? '');
         if ($userid <= 0) {
             echo json_encode(['error' => 'Invalid user ID']);
             exit;
         }
-        
-        // Add a suspended field to user table if it doesn't exist
-        $conn->query("ALTER TABLE user ADD COLUMN IF NOT EXISTS suspended TINYINT(1) DEFAULT 0");
-        
-        $stmt = $conn->prepare("UPDATE user SET suspended = 1 WHERE userid = ?");
-        $stmt->bind_param('i', $userid);
-        
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'User suspended successfully']);
-        } else {
-            echo json_encode(['error' => 'Failed to suspend user']);
+        if (!$reason) {
+            echo json_encode(['error' => 'Suspension reason required']);
+            exit;
         }
+        // Suspend user and set reason
+        $stmt = $conn->prepare("UPDATE user SET suspended = 1, suspension_reason = ? WHERE userid = ?");
+        $stmt->bind_param('si', $reason, $userid);
+        $stmt->execute();
+        $stmt->close();
+        // Withdraw all applications for this user
+        $stmt = $conn->prepare("UPDATE applied SET status = 'Withdrawn' WHERE userid = ? AND status != 'Withdrawn'");
+        $stmt->bind_param('i', $userid);
+        $stmt->execute();
+        $stmt->close();
+        echo json_encode(['success' => true, 'message' => 'User suspended, reason saved, and all applications withdrawn.']);
         break;
         
     case 'activate_user':
@@ -89,15 +93,12 @@ switch ($action) {
             echo json_encode(['error' => 'Invalid user ID']);
             exit;
         }
-        
-        $stmt = $conn->prepare("UPDATE user SET suspended = 0 WHERE userid = ?");
+        // Unsuspend user and clear reason
+        $stmt = $conn->prepare("UPDATE user SET suspended = 0, suspension_reason = NULL WHERE userid = ?");
         $stmt->bind_param('i', $userid);
-        
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'User activated successfully']);
-        } else {
-            echo json_encode(['error' => 'Failed to activate user']);
-        }
+        $stmt->execute();
+        $stmt->close();
+        echo json_encode(['success' => true, 'message' => 'User activated successfully']);
         break;
         
     case 'get_users_list':

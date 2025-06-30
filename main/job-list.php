@@ -74,6 +74,20 @@ $categories_stmt->execute();
 $categories = $categories_stmt->get_result();
 $categories_stmt->close();
 
+// Check if user is suspended (before $conn->close())
+$suspended = false;
+$suspension_reason = '';
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'B' && isset($_SESSION['userid'])) {
+    $stmt = $conn->prepare("SELECT suspended, suspension_reason FROM user WHERE userid = ?");
+    $stmt->bind_param("i", $_SESSION['userid']);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    if (!empty($result['suspended']) && $result['suspended'] == 1) {
+        $suspended = true;
+        $suspension_reason = $result['suspension_reason'] ?? 'No reason provided.';
+    }
+}
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -688,6 +702,29 @@ $conn->close();
 <body>
     <!-- Navigation -->
     <?php include 'header-jobseeker.php'; ?>
+
+    <!-- Suspended Banner -->
+    <?php if ($suspended): ?>
+        <div class="container-fluid bg-danger text-white py-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <h2 class="mb-2">
+                            <i class="fas fa-ban me-3"></i>
+                            Your account is suspended
+                        </h2>
+                        <p class="mb-0 fs-5">
+                            Reason: <strong><?= htmlspecialchars($suspension_reason) ?></strong>
+                        </p>
+                        <p class="mb-0 fs-6 mt-2">
+                            You cannot apply for jobs, upload resumes, or update your profile while suspended.<br>
+                            For further actions, contact <a href="mailto:support@jobportal.com" class="text-white text-decoration-underline">support@jobportal.com</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <!-- Hero Section -->
     <section class="hero-section">

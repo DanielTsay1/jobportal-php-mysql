@@ -1,4 +1,20 @@
 <?php
+if (ob_get_level() == 0) ob_start();
+ini_set('display_errors', 0);
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Server error: ' . $errstr]);
+    exit;
+});
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== NULL) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Fatal error: ' . $error['message']]);
+        exit;
+    }
+});
+
 session_start();
 require_once '../php/db.php';
 
@@ -532,77 +548,29 @@ $hired_stmt->close();
                 padding: 1rem;
             }
         }
-
-        #floatingChatBtn {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            z-index: 99999;
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-            color: #fff;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 24px rgba(37,99,235,0.18);
-            font-size: 2rem;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        #floatingChatBtn:hover {
-            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-            box-shadow: 0 12px 32px rgba(37,99,235,0.25);
-            transform: translateY(-2px) scale(1.07);
-            color: #fff;
-            text-decoration: none;
-        }
-        #floatingChatBtn:active {
-            transform: scale(0.97);
-        }
-        #floatingChatBtn i {
-            pointer-events: none;
-        }
-        @media (max-width: 600px) {
-            #floatingChatBtn {
-                right: 16px;
-                bottom: 16px;
-                width: 48px;
-                height: 48px;
-                font-size: 1.4rem;
-            }
-        }
     </style>
 </head>
 <body class="profile-page" style="padding-top:68px;">
 <?php include 'header-jobseeker.php'; ?>
     <div class="main-content" style="animation: fadeIn 0.7s cubic-bezier(.4,1.4,.6,1);">
-    <?php if ($is_hired): ?>
-    <!-- Congratulations Banner -->
-    <div class="container-fluid bg-success text-white py-4">
+    <?php if (!empty($user['suspended']) && $user['suspended'] == 1): ?>
+    <!-- Suspension Banner -->
+    <div class="container-fluid bg-danger text-white py-4">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <h2 class="mb-2">
-                        <i class="fas fa-trophy me-3"></i>
-                        Congratulations on Your New Job!
+                        <i class="fas fa-ban me-3"></i>
+                        Your account is suspended
                     </h2>
                     <p class="mb-0 fs-5">
-                        You've been hired as <strong><?= htmlspecialchars($hired_result['designation']) ?></strong> 
-                        at <strong><?= htmlspecialchars($hired_result['company_name']) ?></strong>
+                        Reason: <strong><?= htmlspecialchars($user['suspension_reason'] ?? 'No reason provided.') ?></strong>
                     </p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <div class="d-flex flex-column align-items-md-end">
-                        <span class="badge bg-light text-success fs-6 mb-2 px-3 py-2">
-                            <i class="fas fa-check-circle me-2"></i>Hired
-                        </span>
-                        <small class="text-light">Your profile is now marked as employed</small>
-                    </div>
+                    <p class="mb-0 fs-6 mt-2">
+                        All your applications have been forcibly withdrawn.<br>
+                        You cannot apply for jobs, upload resumes, or update your profile while suspended.<br>
+                        For further actions, contact <a href="mailto:support@jobportal.com" class="text-white text-decoration-underline">support@jobportal.com</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -681,7 +649,7 @@ $hired_stmt->close();
                             </div>
                         </div>
                         <?php endif; ?>
-                        <form id="personalForm">
+                        <form id="personalForm"<?= (!empty($user['suspended']) && $user['suspended'] == 1) ? ' style="pointer-events:none;opacity:0.6;"' : '' ?>>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="email" class="form-label">Email Address</label>
@@ -768,7 +736,7 @@ $hired_stmt->close();
                         $resumes_stmt->close();
                         ?>
                         <hr>
-                        <form id="resume-upload-form" class="mt-3" enctype="multipart/form-data">
+                        <form id="resume-upload-form" class="mt-3" enctype="multipart/form-data"<?= (!empty($user['suspended']) && $user['suspended'] == 1) ? ' style="pointer-events:none;opacity:0.6;"' : '' ?>>
                             <div class="mb-3">
                                 <label for="resume-file" class="form-label">Upload New Resume</label>
                                 <input type="file" class="form-control" id="resume-file" name="resume" accept=".pdf,.doc,.docx" required>
@@ -785,7 +753,7 @@ $hired_stmt->close();
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title mb-4">Change Password</h5>
-                        <form id="passwordForm">
+                        <form id="passwordForm"<?= (!empty($user['suspended']) && $user['suspended'] == 1) ? ' style="pointer-events:none;opacity:0.6;"' : '' ?>>
                             <div class="mb-3">
                                 <label for="currentPassword" class="form-label">Current Password</label>
                                 <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -1282,10 +1250,6 @@ $hired_stmt->close();
             });
         });
     </script>
-    <!-- Floating Chat Button -->
-    <a href="https://www.stack-ai.com/chat/68623c004fe0ebb9c4eaeec8-6jBGBvdYxWKz2625u0mQhn" target="_blank" rel="noopener" id="floatingChatBtn" title="Chat with JobPortal AI Agent">
-        <i class="fas fa-comments"></i>
-    </a>
 </body>
 </html>
 <?php

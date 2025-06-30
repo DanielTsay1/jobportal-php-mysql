@@ -766,19 +766,42 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
         </div>
     </div>
 
+    <!-- Add a modal for suspension reason -->
+    <div class="modal fade" id="suspendUserReasonModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suspend User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="suspendUserReasonInput" class="form-label">Reason for suspension</label>
+                        <textarea class="form-control" id="suspendUserReasonInput" rows="3" placeholder="Enter reason..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" id="confirmSuspendUserBtn">Suspend User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let suspendUserId = null;
         function viewUser(userId) {
             const modal = new bootstrap.Modal(document.getElementById('userModal'));
             const modalBody = document.getElementById('userModalBody');
-            
             modal.show();
             modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-            
+
             fetch(`/php/admin-user-management.php?action=get_user_details&userid=${userId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const user = data.user;
+                        const isSuspended = user.suspended == 1;
                         modalBody.innerHTML = `
                             <div class="row">
                                 <div class="col-md-6">
@@ -793,6 +816,8 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                                         </td></tr>
                                         <tr><td><strong>Joined:</strong></td><td>${new Date(user.created_at).toLocaleDateString()}</td></tr>
                                         <tr><td><strong>Last Login:</strong></td><td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td></tr>
+                                        <tr><td><strong>Status:</strong></td><td>${isSuspended ? '<span class="badge bg-danger">Suspended</span>' : '<span class="badge bg-success">Active</span>'}</td></tr>
+                                        ${isSuspended && user.suspension_reason ? `<tr><td><strong>Suspension Reason:</strong></td><td>${user.suspension_reason}</td></tr>` : ''}
                                     </table>
                                 </div>
                                 <div class="col-md-6">
@@ -810,6 +835,11 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                                                 <div class="stat-label">Jobs Posted</div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button id="suspendUserBtn" class="btn btn-${isSuspended ? 'success' : 'warning'} w-100">
+                                            <i class="fas fa-${isSuspended ? 'undo' : 'ban'}"></i> ${isSuspended ? 'Unsuspend' : 'Suspend'} User
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -831,6 +861,23 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                                 }
                             </div>
                         `;
+                        setTimeout(() => {
+                            const btn = document.getElementById('suspendUserBtn');
+                            if (btn) {
+                                btn.onclick = function() {
+                                    if (isSuspended) {
+                                        if (confirm('Are you sure you want to unsuspend this user?')) {
+                                            updateUserStatus(userId, 'activate_user');
+                                        }
+                                    } else {
+                                        suspendUserId = userId;
+                                        document.getElementById('suspendUserReasonInput').value = '';
+                                        const suspendModal = new bootstrap.Modal(document.getElementById('suspendUserReasonModal'));
+                                        suspendModal.show();
+                                    }
+                                };
+                            }
+                        }, 100);
                     } else {
                         modalBody.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
                     }
@@ -839,13 +886,51 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                     modalBody.innerHTML = `<div class="alert alert-danger">Error loading user details: ${error.message}</div>`;
                 });
         }
-        
+
+        document.getElementById('confirmSuspendUserBtn').onclick = function() {
+            const reason = document.getElementById('suspendUserReasonInput').value.trim();
+            if (!reason) {
+                alert('Please provide a reason for suspension.');
+                return;
+            }
+            updateUserStatus(suspendUserId, 'suspend_user', reason);
+            bootstrap.Modal.getInstance(document.getElementById('suspendUserReasonModal')).hide();
+        };
+
+        function updateUserStatus(userId, action, reason = '') {
+            const modalBody = document.getElementById('userModalBody');
+            const formData = new FormData();
+            formData.append('action', action);
+            formData.append('userid', userId);
+            if (action === 'suspend_user') {
+                formData.append('reason', reason);
+            }
+            fetch('/php/admin-user-management.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Refresh modal content
+                    viewUser(userId);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    modalBody.innerHTML += `<div class='alert alert-danger mt-2'>${data.error}</div>`;
+                }
+            })
+            .catch(error => {
+                modalBody.innerHTML += `<div class='alert alert-danger mt-2'>Error: ${error.message}</div>`;
+            });
+        }
+
         function suspendUser(userId) {
-            if (confirm('Are you sure you want to suspend this user?')) {
+            const reason = prompt('Enter a reason for suspension:');
+            if (reason && reason.trim() !== '') {
                 const formData = new FormData();
                 formData.append('action', 'suspend_user');
                 formData.append('userid', userId);
-                
+                formData.append('reason', reason);
                 fetch('/php/admin-user-management.php', {
                     method: 'POST',
                     body: formData
@@ -862,6 +947,8 @@ $companies = $conn->query("SELECT compid, name, email, industry, created_at, sus
                 .catch(error => {
                     alert('Error: ' + error.message);
                 });
+            } else {
+                alert('Suspension reason is required.');
             }
         }
         

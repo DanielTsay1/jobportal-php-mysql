@@ -26,6 +26,21 @@ if ($company_suspended) {
     exit;
 }
 
+// Check if user is suspended
+$suspended = false;
+$suspension_reason = '';
+if (isset($_SESSION['userid'])) {
+    $stmt = $conn->prepare("SELECT suspended, suspension_reason FROM user WHERE userid = ?");
+    $stmt->bind_param("i", $_SESSION['userid']);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    if (!empty($result['suspended']) && $result['suspended'] == 1) {
+        $suspended = true;
+        $suspension_reason = $result['suspension_reason'] ?? 'No reason provided.';
+    }
+}
+
 $questions = [];
 if ($job && !empty($job['questions'])) {
     $questions = json_decode($job['questions'], true) ?: [];
@@ -419,6 +434,17 @@ $has_resumes = count($user_resumes) > 0;
 <body>
 <?php include 'header-jobseeker.php'; ?>
 
+<?php if ($suspended): ?>
+    <div class="container mt-4">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading"><i class="fas fa-ban me-2"></i>Your account is suspended</h4>
+            <p>Reason: <strong><?= htmlspecialchars($suspension_reason) ?></strong></p>
+            <hr>
+            <p class="mb-0">You cannot apply for jobs while your account is suspended.</p>
+        </div>
+    </div>
+<?php else: ?>
+
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
@@ -500,6 +526,8 @@ $has_resumes = count($user_resumes) > 0;
         </div>
     </div>
 </div>
+
+<?php endif; ?>
 
 <?php include 'footer.php'; ?>
 
